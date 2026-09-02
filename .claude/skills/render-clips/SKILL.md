@@ -56,7 +56,7 @@ generate_video {
 
 | Order | Role | Value |
 | --- | --- | --- |
-| 1 | `start_image` | `renders/frames/block_<N-1>_last.jpg` — **only** if `start_from_previous_last_frame` and N > 1 |
+| 1 | `image_references` | `renders/frames/block_<N-1>_last.jpg` — the continuity anchor, **first in the list**, and declared in the prompt as `@Image 1 is the first frame` |
 | 2 | `image_references` | each character sheet the block cites |
 | 3 | `image_references` | the location plate |
 | 4 | `image_references` | each prop plate |
@@ -65,9 +65,21 @@ generate_video {
 Every `value` is a `media_id` from `.storyseam/media.json` — never a path, never a
 URL, never a previous `job_id`. A `job_id` in `medias` does not error; it hangs.
 
-**The single most expensive mistake in this pipeline is putting a character sheet in
-`start_image`.** Sheets are `image_references`. `start_image` holds exactly one thing:
-the previous block's last frame.
+**Do not use the `start_image` role on `seedance_2_5`.** The API declares it and accepts
+it; the model ignores it. A film has already been rendered where every block passed its
+anchor as `start_image`, the job JSON recorded `"role":"start_image"`, and not one block
+opened on that frame. On 2.5 the anchor is an ordinary `image_references` entry, placed
+first, and the *prompt* is what makes it the first frame:
+
+> `@Image 1 is the first frame. It defines the opening composition, subject position, pose,
+> prop state, scene, and camera direction. Do not change the first-frame composition
+> defined by @Image 1.`
+
+And the prompt's **`Shot 1` must describe that frame**, not a new framing — a Shot 1 that
+opens on a different shot size overrides the anchor and wastes it. If you need a
+frame-exact splice rather than a matching opening composition, use
+`mode: "video_extension"` with `extension_mode: "forward"` (see the `seedance-director`
+skill).
 
 When a voice reference is attached, the prompt must acknowledge it:
 > Use the attached voice references; ignore the black frames. Output only the spoken
@@ -104,11 +116,11 @@ ffmpeg -y -sseof -1 -i renders/clips/block_NN.mp4 -update 1 -q:v 2 \
   renders/frames/block_NN_last.jpg
 ```
 
-Upload it, confirm it, cache the `media_id` in `.storyseam/media.json`. It becomes
-block N+1's `start_image`.
+Upload it, confirm it, cache the `media_id` in `.storyseam/media.json`. It becomes block
+N+1's **first `image_references` entry**, declared in prose as `@Image 1 is the first frame`.
 
-**When to break the chain instead.** The chain is the default, not a law. Skip
-`start_image` when:
+**When to break the chain instead.** The chain is the default, not a law. Skip the anchor
+(and the `@Image 1 is the first frame` sentence with it) when:
 
 - the next block is a **new location** — chaining across a cut drags the old room
   into the new one;

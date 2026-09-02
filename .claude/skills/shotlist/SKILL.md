@@ -69,6 +69,11 @@ per 30s block at 480p) — the author is entitled to know what they are about to
    - end with `Audio: … No music.`;
    - end with a **final frame** description that the next block can open from — a
      stable, lit, legible composition, never a blur or a whip-pan;
+   - on any chained block, open `Shot 1` **on the anchor frame itself**: same shot size,
+     same composition, same character positions as the previous block's final frame, and
+     only then move. A `Shot 1` that introduces a new framing silently overrides the
+     anchor — this is the single most common way the continuity chain fails, and it fails
+     invisibly, because the room and the wardrobe still match;
    - contain **no art-style clauses**. The style comes from
      `prompts/video_style_prompt.txt`, appended at render time. A style baked into the
      block prompt fights the style file and the film stops matching itself.
@@ -99,7 +104,8 @@ per 30s block at 480p) — the author is entitled to know what they are about to
       ],
       "prompt": "Duration: 30 seconds. Aspect ratio: 16:9. Three timed shots ...",
       "final_frame": "Noah centre frame, eyes lifting toward Maya, both hands still on the rug.",
-      "start_from_previous_last_frame": true
+      "start_from_previous_last_frame": true,
+      "anchor_prose": "@Image 1 is the first frame. It defines the opening composition, subject position, pose, prop state, scene, and camera direction."
     }
   ]
 }

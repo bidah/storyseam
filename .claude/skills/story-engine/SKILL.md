@@ -25,8 +25,9 @@ Restate these whenever a stage is about to break one.
    10s, 480p, and stored as black-frame `.mp4` in `assets/audio/voices/blackframe/`.
 4. **Higgsfield MCP only** (`mcp__claude_ai_higgsfield__*`), never the CLI. `ffmpeg`
    locally is expected.
-5. **Blocks render one at a time, chained** — last frame of N becomes `start_image`
-   of N+1. Never in parallel.
+5. **Blocks render one at a time, chained** — the last frame of block N is passed as the
+   FIRST `image_references` entry of block N+1 and declared in prose as `@Image 1 is the
+   first frame`. Never `start_image` (2.5 ignores it), and never in parallel.
 
 ## Where are we? — read the folder, don't ask
 

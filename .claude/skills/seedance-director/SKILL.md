@@ -38,49 +38,110 @@ Trigger this skill the moment the user asks for a Seedance 2.5 prompt for a sing
 
 ## The Storyseam contract (read this before the craft below)
 
-This skill ships with generic Seedance advice. Where it disagrees with the following,
-the following wins — these come from the engine's invariants, not from taste.
+This skill inherits generic Seedance 2.0 advice. Where it disagrees with the following,
+the following wins — these come from the engine's invariants and from ByteDance's and
+Higgsfield's published 2.5 guidance, not from taste.
 
-| Generic advice | In Storyseam |
+| Generic advice | In Storyseam / on 2.5 |
 | --- | --- |
-| "Duration: 8 seconds" | A block is **up to 30 seconds** and is one paid render. Write for the block's actual `dur`. |
-| "Aspect ratio 16:9 / 9:16" | Whatever `config.json` says. Never mix within a film. |
-| Resolution unstated | **480p, always.** Never write 720p/1080p/4K into a prompt or a call. |
-| "Audio: … music cue …" | **Never music.** Every prompt's audio line ends with `No music.` Music is added by a human after `/assemble`. |
-| Style words in the prompt | The style lives in `prompts/video_style_prompt.txt` and is appended at render time. Do not bake a second, conflicting style into the block prompt. |
-| "one shot = one main idea" | Still true *per shot* — but a 30s block holds **2-4 timed shots**. Write them as numbered, timed beats inside one prompt. See "Writing a 30-second block". |
+| "Duration: 8 seconds" | A block is **up to 30 seconds** and is one paid render. |
+| Resolution unstated | **480p, always.** Never write a resolution into a prompt — it is a call parameter. |
+| "Audio: ... music cue ..." | **Never music.** The documented 2.5 convention is literally `No music, no discernible dialogue` (drop the dialogue clause when the block has lines). |
+| Style words scattered through the prompt | 2.5 wants **one visual rule at the top** (`GLOBAL STYLE`) and **one sound rule at the bottom** (`AUDIO`). |
+| `start_image` media role | **2.5 has no working `start_image`.** See "The first frame on 2.5" below — this one has already cost a film. |
 
-## Writing a 30-second block
+## The 2.5 prompt structure — use these labelled sections, in this order
 
-A 30s Seedance block is not one long shot and it is not a montage. It is **2-4 timed
-beats in one continuous location**, each with its own framing, sharing one set of
-character anchors.
+ByteDance's formula is *Subject + Action + Setting + Style + Camera + Sound*. Higgsfield's
+tested expansion of it is a single continuous block of text broken into labelled sections.
+**Skip a section and the output fails in a specific, predictable way.**
 
 ```
-Duration: 30 seconds. Aspect ratio: 16:9. Three timed shots, one continuous location.
-
-[Spatial blocking + Character anchors — written ONCE, they govern all three shots]
-
-Shot 1 (0-9s): [framing, camera, one action]
-Shot 2 (9-20s): [framing, camera, one action]
-Shot 3 (20-30s): [framing, camera, one action]
-
-[Camera / Environment / Aesthetics / Audio / Continuity / Final frame]
+GLOBAL STYLE            genre, grade, film stock or digital look, shutter, and what must NOT
+                        appear. Everything below has to match this.
+SCENE                   a one-line logline. Save the detail for the sections below.
+CHARACTERS              face, hair, build, wardrobe per person. If a reference covers it,
+                        just say which reference is which character.
+LOCATION                the space and its props, separate from the people in it.
+                        A vague LOCATION is the most common cause of drift between cuts.
+FIRST FRAME AND BLOCKING   exact starting positions, who is where, facing which way, right as
+                        the clip begins. This is what the model fixes before any motion starts.
+Shot 1 / Shot 2 / ...   shot type + action, a sentence or two each, ending in "Hard cut"
+                        wherever a cut belongs. Pacing is built here, not in a separate field.
+OPTICS and CAMERA       focal length, camera height, handheld / dolly / crane, per shot.
+PHYSICS                 how fabric, smoke, hair, liquid move - anything that would read wrong
+                        moving like a solid object.
+LIGHTING                where the light is motivated from, its direction, how it falls.
+AUDIO                   last. Ambience, specific SFX, and what must not be there.
+                        Ends: "No music."
 ```
 
-Rules that only apply at block length:
+`FIRST FRAME AND BLOCKING` is the section this engine most depends on, and it is the one the
+2.0 template did not have. Write it as the frame itself — *"The first visible frame already
+contains X under the streetlamp with the full street geography readable. No empty
+establishing frame, no delayed reveal."*
 
-- **The anchors are written once and are binding for the whole block.** Repeating
-  them per shot is how characters drift — the model reads the second description as
-  a change.
-- **Never cross a location inside a block.** A location change is a block boundary.
-  This is also what makes the last-frame chain work.
-- **The final frame matters more than usual**, because it literally becomes the first
-  frame of the next block. End on a composition the next block can open from: a clear,
-  stable, well-lit frame with the characters in known positions. Never end a block on
-  a whip-pan, a blur, a flash, or an empty frame.
-- Dialogue: keep each block to **2-4 short spoken lines**. A 30s block crammed with a
-  paragraph per character comes back with the lines clipped or gabbled.
+A 30s block still holds **2-4 timed shots** in one location, with the character anchors
+written once and binding for all of them. A location change is still a block boundary.
+
+## The first frame on 2.5 — the mistake that has already cost a film
+
+**Seedance 2.5 does not honour a `start_image` media role in `omni_reference`.** The
+Higgsfield API *declares* the role (the schema is shared with 2.0), *accepts* it, and
+*records* it on the job — and the model then treats that image as one more reference among
+the others. 2.5's routes are image-to-video (one image), first-and-last-frame (exactly two),
+and omni_reference (a flat pool of references). There is no start slot in the pool.
+
+This was verified the expensive way: a Storyseam film passed each block's previous last
+frame with `role: "start_image"`, the raw job JSON came back with `"role":"start_image"`
+intact, and not one block opened on that frame.
+
+**So the first frame is declared in PROSE, and the image is passed as a normal reference.**
+
+1. Put the anchor frame **first** in `image_references`.
+2. Name its role in the prompt, in its own sentence:
+   > `@Image 1 is the first frame. It defines the opening composition, subject position, pose, prop state, scene, and camera direction.`
+3. Add the positive lock:
+   > `Do not change the first-frame composition defined by @Image 1.`
+4. **Write `Shot 1` as that frame.** This is the other half of the failure: a Shot 1 that
+   opens on a different framing than the anchor will win, because the shot list is a later
+   and more specific instruction. If @Image 1 is a wide and Shot 1 says "medium two-shot",
+   you get a medium two-shot and the anchor is wasted. **The first shot of a chained block
+   never introduces a new framing** — it re-states the anchor, then moves from it.
+
+**Never merge the anchors.** `@Images 1 and 2 are the first and last frames` is the
+documented wrong form — one role sentence per image.
+
+## When you actually need frame-exact continuity: `video_extension`
+
+Prose anchoring gets you a clip that *begins on that composition*. It does not guarantee a
+seamless splice. When the cut has to be invisible, use the mode built for it:
+
+- `mode: "video_extension"`, `extension_mode: "forward"`, with the previous clip as the
+  reference video. Forward extension continues from the source's **last frame**.
+- `aspect_ratio` is ignored (inherited from the source); `duration` is settable 4-30s and is
+  what you are billed for.
+- **The one rule that decides success: align the boundary frame before describing new
+  content.** State where the clip picks up, *then* say what happens next — never the reverse.
+- **Do not write "Then connect to the source video."** That is the documented failure
+  phrasing: it leaks later elements in early and lets the image drift once it arrives.
+
+The trade-off, and why prose anchoring is still Storyseam's default: an extension inherits
+identity from the previous clip instead of re-anchoring it from the character sheets, so
+drift compounds down the chain. Past roughly 60 seconds of extensions, re-anchor from the
+original references rather than extending again.
+
+## Reference discipline on 2.5
+
+2.5 accepts up to 50 references (30 images, 10 videos, 10 audio). **Do not fill it.**
+ByteDance's own evaluation found that past a point extra material makes results worse — key
+features get diluted and noise goes up. One reference per element that must stay consistent:
+a face, a product, a location, a style.
+
+Label each one **narrowly**, and say what to *use* rather than what to leave out:
+
+> `@Image 1 defines the woman's face and green jacket only.`
+> `@Image 2 defines the coffee shop counter and the window light only.`
 
 ## Core Seedance formula
 
@@ -220,22 +281,24 @@ and they must agree.
 
 | Role | What goes here | Count |
 | --- | --- | --- |
-| `start_image` | The continuity anchor only — the last frame of the previous block | ≤ 1 |
+| `start_image` | **Declared by the API, ignored by 2.5.** Do not use it. The anchor goes in `image_references` and is declared in prose. | — |
 | `end_image` | A last-frame transition target (rare; usually omit) | ≤ 1 |
 | `image_references` | **Character sheets, location plates, prop plates** — every identity reference | many |
 | `video_references` | The black-frame `.mp4` voice reference, and true motion/camera refs | — |
 | `audio_references` | Rarely used in Storyseam; the black-frame `video_references` path is the one that works | 1 |
 
-**The mistake that costs the most:** putting a character sheet in `start_image`.
-It silently makes the entire block look like the sheet — a static portrait that
-slowly breathes. Character sheets are `image_references`. Only the previous block's
-last frame is ever `start_image`.
+**Two mistakes here, both expensive.** Putting a character sheet in `start_image`
+silently makes the whole block look like the sheet — a static portrait that slowly
+breathes. And on 2.5, `start_image` does nothing at all: the continuity anchor belongs
+in `image_references`, first in the list, declared in prose as `@Image 1 is the first
+frame`. See "The first frame on 2.5" above.
 
 Number the references in the prompt in the same order you pass them, and give every
 one a role in prose:
-> Image 1 is Noah's identity and costume reference. Image 2 is Maya's identity and
-> costume reference. Image 3 is the living-room environment reference. The start frame
-> is the final frame of the previous block and sets the exact opening composition.
+> @Image 1 is the first frame. It defines the opening composition, subject position, pose,
+> prop state, scene, and camera direction. @Image 2 defines Noah's face and wardrobe only.
+> @Image 3 defines Maya's face and wardrobe only. @Image 4 defines the living-room layout
+> and window light only. Do not change the first-frame composition defined by @Image 1.
 
 ## Mode selection rules
 
@@ -246,8 +309,7 @@ Seedance 2.5 takes a literal `mode` parameter. Pick it from what the block has:
 - **`t2v`** — prompt only, no references. In Storyseam this is essentially only
   block 1 of a film with no character sheets, which should not happen.
 - **`omni_reference`** — **the Storyseam default.** Any block carrying character
-  sheets, a location plate, a voice reference, or a `start_image` continuity anchor
-  uses this. That is every block in a real film.
+  sheets, a location plate, a voice reference, or a last-frame continuity anchor uses this. That is every block in a real film.
 - **`video_edit`** — edits one reference video. Billed by that video's length;
   `duration` and `aspect_ratio` are ignored. Not part of the normal pipeline.
 - **`video_extension`** — extends a reference video (needs `extension_mode`). This
