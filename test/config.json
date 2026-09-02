@@ -1,0 +1,10 @@
+{
+  "title": "Nothing To Do",
+  "aspect_ratio": "16:9",
+  "target_seconds": 120,
+  "block_seconds": 30,
+  "image": { "model": "gpt_image_2", "resolution": "2k", "quality": "high" },
+  "video": { "model": "seedance_2_5", "resolution": "480p", "generate_audio": true },
+  "audio": { "music": "never_generated", "voice_ref_format": "blackframe_mp4" },
+  "continuity": { "chain_last_frame": true }
+}

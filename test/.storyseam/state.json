@@ -1,0 +1,16 @@
+{
+  "blocks": {
+    "block_01": { "status": "pending" },
+    "block_02": { "status": "pending" },
+    "block_03": { "status": "pending" },
+    "block_04": { "status": "pending" }
+  },
+  "voices": {
+    "theo": { "status": "casting", "job_id": "8adc3e99-303a-4da5-932a-c79534ceb08d", "credits": 15 },
+    "milo": { "status": "casting", "job_id": "4078e746-0910-42f5-9b69-7db6c39ccf65", "credits": 15 }
+  },
+  "stills": { "status": "done", "count": 5, "credits": 13 },
+  "credits_spent": 43,
+  "runs_used": 2,
+  "run_budget": 10
+}

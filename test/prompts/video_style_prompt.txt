@@ -1,0 +1,10 @@
+Style: modern Pixar-style 3D animated feature. Rounded, stylised, appealing character
+design with large expressive eyes and soft subsurface-scattered skin. Soft warm
+late-afternoon key light raking in low from a window, gentle bounce fill. Saturated but
+natural palette: warm amber, dusty teal, cream. Feature-animation motion: weighted,
+anticipation before movement, settled follow-through, no rubbery drift. Clean readable
+silhouettes, shallow depth of field, physically plausible cloth and hair. Camera moves
+are slow and motivated. No outlines, no cel shading, no photorealism, no text or
+watermarks in frame.
+
+Audio: diegetic only — dialogue, room tone and Foley. No music.

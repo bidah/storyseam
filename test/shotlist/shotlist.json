@@ -1,0 +1,178 @@
+{
+  "title": "Nothing To Do",
+  "aspect_ratio": "16:9",
+  "block_seconds": 30,
+  "total_seconds": 120,
+  "blocks": [
+    {
+      "id": "block_01",
+      "scene": 1,
+      "movement": "KI — introduction",
+      "location": "theo-living-room",
+      "dur": 30,
+      "characters": [
+        "Theo",
+        "Milo"
+      ],
+      "props": [
+        "star-blanket"
+      ],
+      "voices": [
+        "Theo",
+        "Milo"
+      ],
+      "video_refs": [],
+      "start_from_previous_last_frame": false,
+      "shots": [
+        {
+          "t": "0-10",
+          "camera": "Wide, locked off, eye level, from inside the room facing the front door",
+          "action": "The door swings open. Theo stands in it mid-sentence, backlit by the hallway. Milo is on the mat, backpack still on.",
+          "dialogue": "THEO: Okay so I have four ideas and one of them is really good —"
+        },
+        {
+          "t": "10-20",
+          "camera": "Medium two-shot, slow push-in",
+          "action": "Milo steps past Theo into the room and stops. His eyes travel across the floor.",
+          "dialogue": "(no dialogue)"
+        },
+        {
+          "t": "20-30",
+          "camera": "Wide, static, both boys small in frame at the edge of the rug",
+          "action": "The rug is buried in board games. The long amber stripe of sun lies across them. Milo asks. Theo opens his mouth and closes it again.",
+          "dialogue": "MILO: Which one's the good one?"
+        }
+      ],
+      "final_frame": "Wide, held: Theo and Milo standing side by side at the near edge of the game-covered rug, Theo screen-left, Milo screen-right, both facing away from camera into the room, mouths closed, the amber sun stripe across the floor in front of them and the star-blanket clearly visible folded over the teal couch behind.",
+      "prompt": "Duration: 30 seconds. Aspect ratio: 16:9. Three timed shots, one continuous location. Mode: omni_reference.\n\nReference plan: Image 1 is Theo's identity and costume reference. Image 2 is Milo's identity and costume reference. Image 3 is the living-room environment reference. Image 4 is the star-blanket prop reference. Use the attached voice references for Theo and Milo; ignore the black frames.\n\nSpatial blocking: The camera sits inside a suburban living room facing an open front doorway in the background. Theo enters from that doorway and settles in the midground left. Milo follows and settles in the midground right. After they enter they never swap sides: Theo stays screen-left, Milo stays screen-right, and neither crosses the central vertical axis. A long amber rectangle of low sunlight lies across the floor in the foreground between camera and the boys.\n\nTheo anchor: The boy from Image 1, small for eight, warm brown skin, tight black cropped curls, faded mustard t-shirt with a washed-out rocket print, dark green shorts, mismatched socks, no shoes. His face, hair, costume, body proportions and silhouette remain identical throughout. He starts animated, talking with one hand raised, and ends standing still with his mouth closed. His bare feet stay planted on the hardwood.\n\nMilo anchor: The boy from Image 2, taller, pale, freckled, straight sandy hair falling over his eyes, blue hoodie with the sleeves pulled over his hands, jeans, red sneakers, small grey backpack on his back. His face, hair, costume, backpack, body proportions and silhouette remain identical throughout. The backpack stays on for the entire block.\n\nShot 1 (0-10s): Wide, locked off, eye level. The front door swings open. Theo stands in the doorway backlit by the hallway, already mid-sentence, gesturing with one hand. Milo stands on the mat just outside with his backpack on. Theo says at 1 second: \"Okay so I have four ideas and one of them is really good.\"\n\nShot 2 (10-20s): Medium two-shot, very slow dolly in. Milo steps past Theo into the room, stops, and his eyes travel down and across the floor. Theo watches him look. Neither speaks.\n\nShot 3 (20-30s): Wide, static. Both boys stand small in frame at the near edge of a rug buried in board-game boxes. Milo says at 24 seconds: \"Which one's the good one?\" Theo turns his head toward Milo, opens his mouth, and closes it again without speaking.\n\nCamera: 35mm, eye level throughout. One slow controlled dolly-in during shot 2, locked off otherwise, always preserving Theo screen-left and Milo screen-right. Deep enough focus that the room reads.\n\nEnvironment: a lived-in suburban living room in late afternoon. Low west sun through a window throws a long amber stripe across the floor. A worn teal couch with a navy star-printed fleece blanket folded over its back. A rug buried in board games, half the boxes unopened. Dust drifting in the light.\n\nContinuity: Theo remains screen-left and Milo screen-right after entering. Costumes, hair, silhouettes and the grey backpack stay identical throughout. The star-blanket stays folded over the back of the teal couch and is clearly visible in the final frame.\n\nAudio: quiet suburban room tone, a door handle and door swing at 0 seconds, sneakers on hardwood at 11 seconds, and the two spoken lines at their marked times. Output only the spoken dialogue and the scene's diegetic sound. No music.\n\nFinal frame: Wide and held. Theo screen-left and Milo screen-right stand side by side at the near edge of the game-covered rug, both facing away from camera into the room, mouths closed. The amber sun stripe lies across the floor in front of them and the navy star-printed blanket is clearly visible folded over the teal couch behind them."
+    },
+    {
+      "id": "block_02",
+      "scene": 2,
+      "movement": "SHŌ — development, the long second",
+      "location": "theo-living-room",
+      "dur": 30,
+      "characters": [
+        "Theo",
+        "Milo"
+      ],
+      "props": [
+        "star-blanket"
+      ],
+      "voices": [
+        "Theo",
+        "Milo"
+      ],
+      "video_refs": [],
+      "start_from_previous_last_frame": true,
+      "shots": [
+        {
+          "t": "0-11",
+          "camera": "Medium two-shot, low eye level, static",
+          "action": "They sit down among the boxes. Theo lifts a lid, looks inside, puts it back exactly where it was.",
+          "dialogue": "THEO: We could do this one. Or — that one's missing pieces."
+        },
+        {
+          "t": "11-21",
+          "camera": "Close-up on Milo's hands, then tilt to his face",
+          "action": "Milo picks up a small plastic dinosaur, turns it once, and sets it down in exactly the same spot.",
+          "dialogue": "MILO: There's nothing to do."
+        },
+        {
+          "t": "21-30",
+          "camera": "Wide, completely static, no move",
+          "action": "Neither boy answers. Dust turns over in the shaft of light. They just sit in it.",
+          "dialogue": "(no dialogue)"
+        }
+      ],
+      "final_frame": "Wide, held and still: both boys seated cross-legged among the board games, Theo screen-left, Milo screen-right, shoulders down, nobody speaking. Theo's eyes have begun to drift screen-left toward the teal couch and the star-blanket folded over its back, which is clearly visible and well lit.",
+      "prompt": "Duration: 30 seconds. Aspect ratio: 16:9. Three timed shots, one continuous location. Mode: omni_reference.\n\nReference plan: The start frame is the final frame of the previous block and sets the exact opening composition, lighting and character positions — continue from it directly. Image 1 is Theo's identity and costume reference. Image 2 is Milo's identity and costume reference. Image 3 is the living-room environment reference. Image 4 is the star-blanket prop reference. Use the attached voice references for Theo and Milo; ignore the black frames.\n\nSpatial blocking: The two boys lower themselves to sit cross-legged among the board-game boxes on the rug, in the midground. Theo stays screen-left, Milo stays screen-right. Neither crosses the central vertical axis and they never swap sides. The teal couch with the navy star-printed blanket over its back stays visible in the background screen-left. The amber sun stripe lies across the floor in the foreground.\n\nTheo anchor: The boy from Image 1 keeps the same face, tight black cropped curls, faded mustard rocket t-shirt, dark green shorts, mismatched socks, bare feet, body proportions and silhouette. He sits cross-legged and stays seated for the whole block. His energy drains across the block: talking at the start, silent and slumped by the end.\n\nMilo anchor: The boy from Image 2 keeps the same face, straight sandy hair over his eyes, blue hoodie with sleeves over his hands, jeans, red sneakers, grey backpack, body proportions and silhouette. He sits cross-legged and stays seated for the whole block. He keeps the backpack on.\n\nShot 1 (0-11s): Medium two-shot, low eye level, static. Both boys lower themselves to sit among the boxes. Theo lifts the lid off a board-game box, looks inside, and puts it back down in exactly the same place. Theo says at 4 seconds: \"We could do this one. Or, that one's missing pieces.\"\n\nShot 2 (11-21s): Close-up on Milo's hands, then a slow tilt up to his face. He picks up a small green plastic dinosaur, turns it over once, and sets it back down on exactly the same spot on the rug. Milo says at 17 seconds: \"There's nothing to do.\"\n\nShot 3 (21-30s): Wide, completely static, no camera move at all. Neither boy answers. They sit in the silence. Dust turns over slowly in the shaft of sunlight. Only their breathing, their hair and the dust move.\n\nCamera: 35mm, low eye level, matching the previous block's lighting exactly. Shot 3 is fully locked off — no drift, no push, no handheld.\n\nEnvironment: the same lived-in living room in late afternoon, unchanged from the previous block. The same board games on the same rug, the same amber sun stripe, the same teal couch, the same navy star-printed blanket folded over its back.\n\nContinuity: Theo remains screen-left and Milo screen-right, both seated, for the entire block. Costumes, hair, silhouettes and the grey backpack stay identical to the start frame. The board-game boxes stay in the same arrangement. The star-blanket stays folded over the couch back, well lit and clearly visible.\n\nAudio: quiet room tone, a cardboard box lid lifting and setting down at 6 seconds, a small plastic dinosaur tapping the floor at 15 seconds, and the two spoken lines at their marked times. A long silence from 21 seconds with only room tone. Output only the spoken dialogue and the scene's diegetic sound. No music.\n\nFinal frame: Wide, held and completely still. Both boys seated cross-legged among the board games, Theo screen-left and Milo screen-right, shoulders down, nobody speaking. Theo's eyes have drifted screen-left toward the teal couch and the navy star-printed blanket folded over its back, which is clearly visible, sharply lit and unobstructed."
+    },
+    {
+      "id": "block_03",
+      "scene": 3,
+      "movement": "TEN — the turn, the idea",
+      "location": "theo-living-room",
+      "dur": 30,
+      "characters": [
+        "Theo",
+        "Milo"
+      ],
+      "props": [
+        "star-blanket"
+      ],
+      "voices": [],
+      "video_refs": [],
+      "start_from_previous_last_frame": true,
+      "shots": [
+        {
+          "t": "0-8",
+          "camera": "Slow push to close-up on Theo",
+          "action": "Theo's eyes travel across the room and stop on the star-blanket. He goes completely still. He does not speak.",
+          "dialogue": "(no dialogue)"
+        },
+        {
+          "t": "8-20",
+          "camera": "Medium, handheld-steady, following Theo",
+          "action": "Theo is up and moving — hauling cushions off the teal couch and stacking them into walls. He explains nothing. Milo watches, one beat, two.",
+          "dialogue": "(no dialogue)"
+        },
+        {
+          "t": "20-30",
+          "camera": "Wide, static, both boys in frame",
+          "action": "Milo gets up and starts building the other side. Theo pulls the star-blanket down and throws it; it opens in the air and settles over the top of the fort.",
+          "dialogue": "(no dialogue)"
+        }
+      ],
+      "final_frame": "Wide, held: the finished blanket fort standing in the middle of the living room, the star-blanket settled across its top, its mouth open and dark facing camera. Theo crouches screen-left and Milo crouches screen-right at the mouth of the fort, both about to go in. Warm amber afternoon light across the floor.",
+      "prompt": "Duration: 30 seconds. Aspect ratio: 16:9. Three timed shots, one continuous location. Mode: omni_reference. No dialogue anywhere in this block.\n\nReference plan: The start frame is the final frame of the previous block and sets the exact opening composition, lighting and character positions — continue from it directly. Image 1 is Theo's identity and costume reference. Image 2 is Milo's identity and costume reference. Image 3 is the living-room environment reference. Image 4 is the star-blanket prop reference and controls the blanket's exact navy colour, pale-yellow star print, frayed satin binding and repaired corner.\n\nSpatial blocking: Theo begins seated screen-left and rises into the midground, moving to the teal couch at screen-left. Milo begins seated screen-right and rises second, working the screen-right side. They build toward the centre of the room, meeting at a cushion structure in the middle ground. Theo stays on the screen-left half and Milo on the screen-right half throughout; they never swap sides.\n\nTheo anchor: The boy from Image 1 keeps the same face, tight black cropped curls, faded mustard rocket t-shirt, dark green shorts, mismatched socks, bare feet, body proportions and silhouette. His expression is completely still and absorbed — no smile, no talking, no explaining. His stillness at the start is the point of the block.\n\nMilo anchor: The boy from Image 2 keeps the same face, straight sandy hair over his eyes, blue hoodie with sleeves over his hands, jeans, red sneakers, body proportions and silhouette. He takes the grey backpack off and drops it on the rug when he stands, and does not wear it again.\n\nShot 1 (0-8s): Slow controlled push in to a close-up on Theo, still seated. His eyes travel across the room and stop. He goes completely still. His mouth stays closed. Only his eyes and his breathing move.\n\nShot 2 (8-20s): Medium, steady following move. Theo is up and moving with purpose — pulling seat cushions off the teal couch one at a time and stacking them into a wall. He explains nothing and says nothing. Milo stays seated and watches, one beat, then two, his head turning to follow Theo.\n\nShot 3 (20-30s): Wide, static, both boys fully in frame. Milo gets up, drops his backpack, and starts dragging cushions to build the other side. Theo pulls the navy star-printed blanket down off the couch and throws it upward; it opens in the air and settles across the top of the cushion structure.\n\nCamera: 35mm, eye level. One slow push in shot 1, one steady following move in shot 2, locked off for shot 3. No handheld shake, no whip pans.\n\nEnvironment: the same lived-in living room in late afternoon, unchanged. The amber sun stripe has crept slightly lower across the floor. Board games still scattered on the rug.\n\nContinuity: Theo works the screen-left half and Milo the screen-right half throughout. Costumes, hair and silhouettes stay identical to the start frame. The blanket matches Image 4 exactly — navy fleece, small pale-yellow stars, frayed satin binding — before, during and after it is thrown.\n\nAudio: quiet room tone, fabric and foam as cushions are pulled free at 9, 12 and 15 seconds, bare feet and sneakers on hardwood, and a soft fabric whump as the blanket settles at 27 seconds. No speech at all in this block. Output only the scene's diegetic sound. No music.\n\nFinal frame: Wide and held. The finished blanket fort stands in the middle of the living room, the navy star-printed blanket settled across its top, its mouth open and dark facing camera. Theo crouches screen-left and Milo crouches screen-right at the mouth of the fort, both still, both about to go in. Warm amber afternoon light lies across the floor. The composition is sharp, lit and stable."
+    },
+    {
+      "id": "block_04",
+      "scene": 4,
+      "movement": "KETSU — resolution, inside",
+      "location": "fort-interior",
+      "dur": 30,
+      "characters": [
+        "Theo",
+        "Milo"
+      ],
+      "props": [
+        "star-blanket"
+      ],
+      "voices": [
+        "Milo"
+      ],
+      "video_refs": [],
+      "start_from_previous_last_frame": true,
+      "shots": [
+        {
+          "t": "0-10",
+          "camera": "Low angle from inside the fort, looking up past their faces",
+          "action": "They crawl in and lie back on their backs, shoulder to shoulder.",
+          "dialogue": "(no dialogue)"
+        },
+        {
+          "t": "10-22",
+          "camera": "Slow tilt up to their point of view",
+          "action": "The blanket ceiling is not a blanket anymore. Black depth, real starlight, a slow violet nebula drifting past a gap between two cushions. Neither boy moves.",
+          "dialogue": "(no dialogue)"
+        },
+        {
+          "t": "22-30",
+          "camera": "Continuous slow crane back out through the mouth of the fort, one unbroken move",
+          "action": "Milo speaks. The camera retreats, and the fort resolves into a small glowing blanket fort in an ordinary living room in the last of the afternoon.",
+          "dialogue": "MILO: That's the good one."
+        }
+      ],
+      "final_frame": "Wide, held: the blanket fort small in the middle of the ordinary living room, glowing faintly from within, board games still scattered on the rug around it, the last warm amber light low across the floor. No people visible.",
+      "prompt": "Duration: 30 seconds. Aspect ratio: 16:9. Three timed shots, one continuous move from inside the fort back out into the room. Mode: omni_reference.\n\nReference plan: The start frame is the final frame of the previous block and sets the exact opening composition — the two boys crouched at the mouth of the finished blanket fort. Image 1 is Theo's identity and costume reference. Image 2 is Milo's identity and costume reference. Image 3 is the fort-interior environment reference and controls what the ceiling looks like: the printed stars have become real starfield and drifting nebula. Image 4 is the star-blanket prop reference. Use the attached voice reference for Milo; ignore the black frames.\n\nSpatial blocking: The camera moves inside the fort with the boys and settles low, near the floor, looking up. Theo lies screen-left and Milo lies screen-right, shoulder to shoulder on their backs, heads toward camera. They stay on those sides and do not swap. Above them is the blanket ceiling. At the end the camera retreats back out through the mouth of the fort in one unbroken move.\n\nTheo anchor: The boy from Image 1 keeps the same face, tight black cropped curls, faded mustard rocket t-shirt, dark green shorts, mismatched socks, bare feet, body proportions and silhouette. He lies flat on his back and stays still, eyes open and upward, mouth closed. He does not speak in this block.\n\nMilo anchor: The boy from Image 2 keeps the same face, straight sandy hair over his eyes, blue hoodie, jeans, red sneakers, body proportions and silhouette. No backpack. He lies flat on his back and stays still, eyes open and upward. He speaks exactly one line.\n\nShot 1 (0-10s): Low angle from inside the fort, looking up past their faces as they crawl in and lie back shoulder to shoulder. Warm amber light from the room outside is still leaking in low along the floor behind their heads. Both go still.\n\nShot 2 (10-22s): Slow tilt up from their faces to what they are looking at. The blanket ceiling is no longer a blanket: real black depth, real starlight, and a slow violet and teal nebula drifting past a narrow gap between two cushions that reads as a viewport. Neither boy moves. Nobody speaks. Hold on the sky.\n\nShot 3 (22-30s): One continuous slow crane back, retreating out through the mouth of the fort without a cut. Milo says at 23 seconds: \"That's the good one.\" As the camera withdraws, the fort resolves into a small blanket fort glowing faintly from within, sitting in an ordinary living room in the last of the afternoon.\n\nCamera: 35mm, low angle, slow and motivated throughout. Shot 3 is a single unbroken retreating crane — no cut, no whip, no snap zoom. It comes to a complete rest before the block ends.\n\nEnvironment: inside, the fort interior from Image 3 — cushion walls, a ceiling of genuine deep space, a viewport gap, and warm amber floor spill at the very bottom of frame so it never stops being a living room. Outside, at the end, the same lived-in living room with board games still scattered on the rug and the last low sun across the floor.\n\nContinuity: Theo remains screen-left and Milo screen-right, both lying on their backs, for the whole block. Costumes, hair and silhouettes stay identical to the start frame. The blanket keeps its navy colour and pale-yellow star pattern where it is still readable as fabric at the fort's edges.\n\nAudio: very quiet close room tone inside the fabric, two sets of breathing, a soft fleece rustle at 3 seconds, and Milo's single spoken line at 23 seconds. A long held silence from 10 to 22 seconds with only breathing. Output only the spoken dialogue and the scene's diegetic sound. No music.\n\nFinal frame: Wide and held. The blanket fort sits small in the middle of the ordinary living room, glowing faintly from within, board games still scattered on the rug around it, the last warm amber light low across the floor. No people visible. The camera is at rest."
+    }
+  ],
+  "progress": {
+    "through_scene": 4,
+    "through_block": "block_04",
+    "note": "Full film covered: four 30s blocks, one physical location, fort interior is a reveal not a move.",
+    "complete": true
+  }
+}
