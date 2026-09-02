@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+*.log
+
+# Story working state — the tree is convention, the media is not source
+test/**/renders/
+test/**/assets/images/
+test/**/assets/audio/
+test/**/assets/video_refs/
+test/**/.storyseam/media.json
