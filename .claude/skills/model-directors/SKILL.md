@@ -26,17 +26,40 @@ image.model  gpt_image_2         /r/skills/<director>.json          seedance-2-5
                                                                     gpt-image-2-director/
 ```
 
+## A model has one default skill and any number of alternates
+
+This is the part worth understanding. A skill declares:
+
+- **`models`** — the model ids it is *compatible* with. An array, because some craft is
+  genuinely shared: `seedance-voice-casting` works identically on 2.0 and 2.5, so it is
+  listed under both rather than duplicated.
+- **`default_for`** — the subset of those it is *the default* for. A bare model id resolves
+  here.
+
+So `seedance_2_5` carries three skills: `seedance-2-5-director` (the default, for shot-list
+blocks), `seedance-2-5-extension-director` (frame-exact seams via `video_extension`), and
+`seedance-voice-casting` (shared with 2.0). Asking for the model gets you the default;
+asking for an alternate is by name.
+
+**Exactly one default per model** — the build refuses to publish a registry where a model has
+none (a bare id could not resolve) or two (the resolution would be arbitrary).
+
 ## Resolve and install
 
 ```bash
-bin/registry-add.py --list                  # what the registry offers
-bin/registry-add.py seedance_2_5            # install the director for a model id
-bin/registry-add.py --all                   # install every director
-STORYSEAM_ROOT=<story> bin/registry-add.py <model>   # install into a story folder
+bin/registry-add.py --list                            # catalogue, grouped by model
+bin/registry-add.py seedance_2_5                      # the DEFAULT for a model id
+bin/registry-add.py seedance-2-5-extension-director   # an alternate, by name
+bin/registry-add.py --model seedance_2_5 --all        # everything compatible with a model
+bin/registry-add.py --all                             # the whole registry
+STORYSEAM_ROOT=<story> bin/registry-add.py <model>    # install into a story folder
 ```
 
 The model id is **the exact string in `config.json`** (`video.model`, `image.model`) — that
 is the whole point of the indirection. Change the model, re-run, get the right craft.
+
+The positional argument accepts **either** a model id or a skill name; model ids are tried
+first. An unknown key prints both lists rather than guessing.
 
 Default registry: `https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r`.
 Override with `STORYSEAM_REGISTRY` to point at a fork or a local build.
@@ -63,13 +86,16 @@ If the director for a configured model is missing, **stop and install it** rathe
 falling back on general knowledge. Guessing at a model's reference semantics is how a film
 gets rendered against a role the model ignores.
 
-## Adding a model to the registry
+## Adding a skill to the registry
 
 ```
-registry/sources/<name>-director/
-  meta.json     name, model, kind, provider, title, description, constraints
-  SKILL.md      the director skill, with YAML frontmatter whose name matches meta.name
+registry/sources/<name>/
+  meta.json     name, models[], default_for[], kind, provider, title, description, constraints
+  SKILL.md      the skill, with YAML frontmatter whose name matches meta.name
 ```
+
+`models` is what it is compatible with; `default_for` is the subset it owns as default. A
+second skill for an existing model ships with `"default_for": []` and is asked for by name.
 
 Then:
 
@@ -77,16 +103,17 @@ Then:
 bin/registry-build.py <BASE_URL>     # validates and builds registry/r/
 ```
 
-The build **fails loudly** on a missing field, a frontmatter/meta name mismatch, or two
-directors claiming the same model — a registry that serves a broken item is worse than one
+The build **fails loudly** on a missing field, a frontmatter/meta name mismatch, a
+`default_for` entry not present in the skill's own `models`, a duplicate skill name, or a
+model with zero or several defaults — a registry that serves a broken item is worse than one
 that refuses to build.
 
 Publish `registry/r/` to any static host. The layout is the contract:
 
 ```
-/r/index.json                    catalogue: every director, with sha256 and constraints
-/r/models.json                   model id -> director route  (what the agent resolves against)
-/r/skills/<name>.json            one route per director; carries the files to write
+/r/index.json           catalogue: every skill, with models[], default_for[], sha256, constraints
+/r/models.json          model id -> { default, skills[], routes{} }   (what the agent resolves against)
+/r/skills/<name>.json   one route per skill; carries the files to write
 ```
 
 Each item is self-describing — it names its own destination paths — so the installer never

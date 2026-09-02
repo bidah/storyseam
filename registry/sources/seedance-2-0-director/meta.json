@@ -1,16 +1,38 @@
 {
   "name": "seedance-2-0-director",
   "type": "storyseam:director",
-  "model": "seedance_2_0",
+  "models": [
+    "seedance_2_0"
+  ],
+  "default_for": [
+    "seedance_2_0"
+  ],
   "kind": "video",
   "provider": "ByteDance",
   "title": "Seedance 2.0 Director",
   "description": "Shot-list director for Seedance 2.0. Clips 4-15s, real start_image/end_image roles, fast mode rejects audio_references.",
   "constraints": {
-    "duration_seconds": [4, 15],
-    "resolutions": ["480p", "720p", "1080p", "4k"],
-    "modes": ["std", "fast"],
-    "media_roles": ["start_image", "end_image", "image_references", "video_references", "audio_references"],
+    "duration_seconds": [
+      4,
+      15
+    ],
+    "resolutions": [
+      "480p",
+      "720p",
+      "1080p",
+      "4k"
+    ],
+    "modes": [
+      "std",
+      "fast"
+    ],
+    "media_roles": [
+      "start_image",
+      "end_image",
+      "image_references",
+      "video_references",
+      "audio_references"
+    ],
     "start_image_supported": true,
     "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std."
   }

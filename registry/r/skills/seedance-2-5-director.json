@@ -1,7 +1,12 @@
 {
   "name": "seedance-2-5-director",
   "type": "storyseam:director",
-  "model": "seedance_2_5",
+  "models": [
+    "seedance_2_5"
+  ],
+  "default_for": [
+    "seedance_2_5"
+  ],
   "kind": "video",
   "provider": "ByteDance",
   "title": "Seedance 2.5 Director",

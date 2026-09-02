@@ -1,13 +1,18 @@
 {
   "name": "storyseam-registry",
-  "version": 1,
-  "description": "Installable per-model director skills for Storyseam. One route per model.",
+  "version": 2,
+  "description": "Installable per-model skills for Storyseam. A model has one default skill and any number of alternates, asked for by name.",
   "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
   "updated": "2026-09-02",
   "items": [
     {
       "name": "gpt-image-2-director",
-      "model": "gpt_image_2",
+      "models": [
+        "gpt_image_2"
+      ],
+      "default_for": [
+        "gpt_image_2"
+      ],
       "kind": "image",
       "title": "GPT Image 2 Director",
       "description": "Reference-still director for GPT Image 2. Character sheets, location plates, prop plates at 2k/high.",
@@ -36,7 +41,12 @@
     },
     {
       "name": "seedance-2-0-director",
-      "model": "seedance_2_0",
+      "models": [
+        "seedance_2_0"
+      ],
+      "default_for": [
+        "seedance_2_0"
+      ],
       "kind": "video",
       "title": "Seedance 2.0 Director",
       "description": "Shot-list director for Seedance 2.0. Clips 4-15s, real start_image/end_image roles, fast mode rejects audio_references.",
@@ -71,7 +81,12 @@
     },
     {
       "name": "seedance-2-5-director",
-      "model": "seedance_2_5",
+      "models": [
+        "seedance_2_5"
+      ],
+      "default_for": [
+        "seedance_2_5"
+      ],
       "kind": "video",
       "title": "Seedance 2.5 Director",
       "description": "Shot-list director for Seedance 2.5. Blocks up to 30s, omni_reference, first frame declared in prose.",
@@ -105,6 +120,56 @@
           "videos": 10,
           "audio": 10
         }
+      }
+    },
+    {
+      "name": "seedance-2-5-extension-director",
+      "models": [
+        "seedance_2_5"
+      ],
+      "default_for": [],
+      "kind": "video",
+      "title": "Seedance 2.5 Extension Director",
+      "description": "Frame-exact continuation on Seedance 2.5 via video_extension. Use when the seam between blocks must be invisible and a prose first-frame anchor is not enough.",
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-extension-director.json",
+      "sha256": "2d595488a606af8c",
+      "updated": "2026-09-02",
+      "constraints": {
+        "duration_seconds": [
+          4,
+          30
+        ],
+        "modes": [
+          "video_extension"
+        ],
+        "extension_mode": [
+          "forward",
+          "backward"
+        ],
+        "notes": "aspect_ratio inherited from the source video; billed by the NEW segment's duration."
+      }
+    },
+    {
+      "name": "seedance-voice-casting",
+      "models": [
+        "seedance_2_0",
+        "seedance_2_5"
+      ],
+      "default_for": [],
+      "kind": "video",
+      "title": "Seedance Voice Casting",
+      "description": "Cast a reusable character voice by generating a short speaking take, then keeping only its audio as a black-frame mp4. Works on both Seedance 2.0 and 2.5; 2.0 fast is the cheap default.",
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-voice-casting.json",
+      "sha256": "1f027fadc9833845",
+      "updated": "2026-09-02",
+      "constraints": {
+        "recommended": {
+          "model": "seedance_2_0",
+          "mode": "fast",
+          "duration": 10,
+          "resolution": "480p"
+        },
+        "notes": "A voice reference reaches a render as a black-frame .mp4 in video_references, never audio_references."
       }
     }
   ]

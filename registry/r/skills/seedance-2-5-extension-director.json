@@ -1,0 +1,37 @@
+{
+  "name": "seedance-2-5-extension-director",
+  "type": "storyseam:director",
+  "models": [
+    "seedance_2_5"
+  ],
+  "default_for": [],
+  "kind": "video",
+  "provider": "ByteDance",
+  "title": "Seedance 2.5 Extension Director",
+  "description": "Frame-exact continuation on Seedance 2.5 via video_extension. Use when the seam between blocks must be invisible and a prose first-frame anchor is not enough.",
+  "constraints": {
+    "duration_seconds": [
+      4,
+      30
+    ],
+    "modes": [
+      "video_extension"
+    ],
+    "extension_mode": [
+      "forward",
+      "backward"
+    ],
+    "notes": "aspect_ratio inherited from the source video; billed by the NEW segment's duration."
+  },
+  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
+  "version": 1,
+  "updated": "2026-09-02",
+  "sha256": "2d595488a606af8c",
+  "files": [
+    {
+      "path": ".claude/skills/seedance-2-5-extension-director/SKILL.md",
+      "type": "skill",
+      "content": "---\nname: seedance-2-5-extension-director\ndescription: >-\n  Frame-exact continuation on Seedance 2.5 using `video_extension`. Use when the seam between\n  two blocks must be invisible and the prose first-frame anchor of the standard director is\n  not enough — a continuous camera move across a cut, a held object that must not jump, an\n  action that carries across the boundary. Not the default: an extension inherits identity\n  from the previous clip instead of re-anchoring from the character sheets, so drift\n  compounds. Alternative to `seedance-2-5-director` for the same model.\n---\n\n# Seedance 2.5 Extension Director\n\nThe standard 2.5 director anchors a block's opening with a reference image plus a prose\ndeclaration. That produces a clip that **begins on that composition** — good enough for a\ncut. It does not produce a **seamless splice**.\n\nWhen the seam has to be invisible, use the mode built for it.\n\n## When this is the right tool\n\n- A camera move that continues across the boundary.\n- An object in hand, mid-gesture, that must not jump.\n- An action that carries across the cut — a throw, a fall, a door opening.\n- Any moment where a viewer would read a mismatch as a mistake rather than as an edit.\n\n## When it is the wrong tool\n\n- **A location change.** Extensions continue what is there; a new room is a new block.\n- **After identity has drifted.** An extension inherits identity from the previous clip, not\n  from the character sheets. Extending a drifted clip locks the drift in.\n- **Long chains.** Past roughly **60 seconds** of consecutive extensions, stop and re-anchor\n  a fresh block from the original references. Drift compounds down the chain, and no amount\n  of prompting inside an extension recovers a face the previous clip already lost.\n\n## The call\n\n```\ngenerate_video {\n  model: \"seedance_2_5\",\n  mode: \"video_extension\",\n  extension_mode: \"forward\",       // REQUIRED, and not allowed in any other mode\n  duration: <4-30>,                // the NEW segment's length — this is what you pay for\n  resolution: \"480p\",\n  generate_audio: true,\n  medias: [ { role: \"video_references\", value: <previous clip media_id> } ],\n  prompt: \"<boundary alignment first, then new content>\"\n}\n```\n\n- **`aspect_ratio` is ignored** — the output inherits the source video's ratio. Do not pass a\n  conflicting one and expect it to win.\n- **Billing is by the new segment's duration**, not the source's. (That is the opposite of\n  `video_edit`, which bills by the *source's* duration and ignores `duration` entirely.)\n- `extension_mode` is **required** here and **rejected** in every other mode.\n\n## The one rule that decides success\n\n**Align the boundary frame before describing new content.**\n\nState where the clip picks up — what is on screen, who is where, what the camera is doing at\nthe moment of the join — and *only then* say what happens next. Every failure of this mode\ntraces back to describing the new action before establishing the boundary.\n\n```\nBOUNDARY: The segment opens exactly on the source's final frame: Theo crouched screen-left\nand Milo crouched screen-right at the open mouth of the blanket fort, both still, warm amber\nafternoon light low across the floor, camera at eye level and at rest.\n\nTHEN: Theo ducks his head and crawls in first, Milo follows, and the camera pushes gently\nafter them toward the dark opening.\n```\n\n## The phrase that breaks it\n\n**Never write \"Then connect to the source video.\"**\n\nThat is the documented failure phrasing. It leaks later elements in early — content from the\nend of your new segment starts appearing at the join — and it lets the image drift once it\narrives. Describe the boundary *as a frame*, not as a relationship to another clip.\n\n## Backward extension\n\n`extension_mode: \"backward\"` generates material that *leads into* the source. The boundary\nrule inverts: the source's **first frame** must be stated as the new segment's explicit **end\nstate**. Same discipline, other end.\n\n## Reviewing the result\n\nBoundary frames **connect naturally, not identically**. Do not expect a byte-identical match\nat the join — expect continuity of motion, light and position.\n\nCheck three things, in this order:\n1. **Both sides of the seam.** Play the last second of the source and the first second of the\n   extension together.\n2. **The whole extended segment**, not just the join — drift shows up late.\n3. **Identity against the character sheets.** This is the one the mode cannot protect for\n   you, and the reason it is not the default.\n"
+    }
+  ]
+}

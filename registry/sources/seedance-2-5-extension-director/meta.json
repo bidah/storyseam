@@ -1,0 +1,26 @@
+{
+  "name": "seedance-2-5-extension-director",
+  "type": "storyseam:director",
+  "models": [
+    "seedance_2_5"
+  ],
+  "default_for": [],
+  "kind": "video",
+  "provider": "ByteDance",
+  "title": "Seedance 2.5 Extension Director",
+  "description": "Frame-exact continuation on Seedance 2.5 via video_extension. Use when the seam between blocks must be invisible and a prose first-frame anchor is not enough.",
+  "constraints": {
+    "duration_seconds": [
+      4,
+      30
+    ],
+    "modes": [
+      "video_extension"
+    ],
+    "extension_mode": [
+      "forward",
+      "backward"
+    ],
+    "notes": "aspect_ratio inherited from the source video; billed by the NEW segment's duration."
+  }
+}

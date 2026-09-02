@@ -1,0 +1,14 @@
+{
+  "name": "seedance-voice-casting",
+  "type": "storyseam:director",
+  "models": ["seedance_2_0", "seedance_2_5"],
+  "default_for": [],
+  "kind": "video",
+  "provider": "ByteDance",
+  "title": "Seedance Voice Casting",
+  "description": "Cast a reusable character voice by generating a short speaking take, then keeping only its audio as a black-frame mp4. Works on both Seedance 2.0 and 2.5; 2.0 fast is the cheap default.",
+  "constraints": {
+    "recommended": { "model": "seedance_2_0", "mode": "fast", "duration": 10, "resolution": "480p" },
+    "notes": "A voice reference reaches a render as a black-frame .mp4 in video_references, never audio_references."
+  }
+}

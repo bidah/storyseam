@@ -1,15 +1,33 @@
 {
   "name": "gpt-image-2-director",
   "type": "storyseam:director",
-  "model": "gpt_image_2",
+  "models": [
+    "gpt_image_2"
+  ],
+  "default_for": [
+    "gpt_image_2"
+  ],
   "kind": "image",
   "provider": "OpenAI",
   "title": "GPT Image 2 Director",
   "description": "Reference-still director for GPT Image 2. Character sheets, location plates, prop plates at 2k/high.",
   "constraints": {
-    "resolutions": ["1k", "2k", "4k"],
-    "quality": ["low", "medium", "high"],
-    "media_roles": ["image"],
-    "defaults_to_avoid": { "resolution": "1k", "quality": "low" }
+    "resolutions": [
+      "1k",
+      "2k",
+      "4k"
+    ],
+    "quality": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "media_roles": [
+      "image"
+    ],
+    "defaults_to_avoid": {
+      "resolution": "1k",
+      "quality": "low"
+    }
   }
 }

@@ -1,9 +1,39 @@
 {
-  "description": "Resolve config.json's model id to its director skill route.",
+  "description": "Resolve a model id from config.json to its default skill, or list the alternates available for it and ask by name.",
   "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
   "models": {
-    "gpt_image_2": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/gpt-image-2-director.json",
-    "seedance_2_0": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-0-director.json",
-    "seedance_2_5": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-director.json"
+    "gpt_image_2": {
+      "default": "gpt-image-2-director",
+      "skills": [
+        "gpt-image-2-director"
+      ],
+      "routes": {
+        "gpt-image-2-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/gpt-image-2-director.json"
+      }
+    },
+    "seedance_2_0": {
+      "default": "seedance-2-0-director",
+      "skills": [
+        "seedance-2-0-director",
+        "seedance-voice-casting"
+      ],
+      "routes": {
+        "seedance-2-0-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-0-director.json",
+        "seedance-voice-casting": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-voice-casting.json"
+      }
+    },
+    "seedance_2_5": {
+      "default": "seedance-2-5-director",
+      "skills": [
+        "seedance-2-5-director",
+        "seedance-2-5-extension-director",
+        "seedance-voice-casting"
+      ],
+      "routes": {
+        "seedance-2-5-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-director.json",
+        "seedance-2-5-extension-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-extension-director.json",
+        "seedance-voice-casting": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-voice-casting.json"
+      }
+    }
   }
 }

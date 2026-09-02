@@ -90,26 +90,34 @@ one installable director skill per model, one route each. The agent resolves it 
 `config.json`.
 
 ```bash
-bin/registry-add.py --list                 # what the registry offers
-bin/registry-add.py seedance_2_5           # install the director for that model id
-bin/registry-add.py --all                  # install every director
+bin/registry-add.py --list                            # catalogue, grouped by model
+bin/registry-add.py seedance_2_5                      # the DEFAULT for that model id
+bin/registry-add.py seedance-2-5-extension-director   # an alternate, by name
+bin/registry-add.py --model seedance_2_5 --all        # everything compatible with a model
 ```
 
 ```
-/r/index.json              catalogue: every director, with sha256 and constraints
-/r/models.json             model id -> director route (what the agent resolves against)
-/r/skills/<name>.json      one route per director; carries the files to write
+/r/index.json           catalogue: every skill, with models[], default_for[], sha256, constraints
+/r/models.json          model id -> { default, skills[], routes{} }
+/r/skills/<name>.json   one route per skill; carries the files to write
 ```
+
+**A model can carry several skills.** Each declares `models` (what it is compatible with —
+an array, because `seedance-voice-casting` works identically on 2.0 and 2.5) and
+`default_for` (the subset it owns). A bare model id installs the default; an alternate is
+asked for by name. Exactly one default per model, enforced by the build.
 
 Each item is self-describing — it names its own destination paths — so the installer never
 needs to know what a director is. Registry items are *copied into* your project, so you can
 edit them; re-running the install overwrites with the published version.
 
-| Model | Director | Notes |
-| --- | --- | --- |
-| `seedance_2_5` | `seedance-2-5-director` | 30s blocks, `omni_reference`, first frame declared in prose |
-| `seedance_2_0` | `seedance-2-0-director` | 4-15s, real `start_image`/`end_image`, `fast` rejects audio refs |
-| `gpt_image_2` | `gpt-image-2-director` | reference stills at 2k/high |
+| Model | Skill | | Notes |
+| --- | --- | --- | --- |
+| `seedance_2_5` | `seedance-2-5-director` | default | 30s blocks, `omni_reference`, first frame declared in prose |
+| `seedance_2_5` | `seedance-2-5-extension-director` | alt | frame-exact seams via `video_extension` |
+| `seedance_2_0` | `seedance-2-0-director` | default | 4-15s, real `start_image`/`end_image`, `fast` rejects audio refs |
+| `seedance_2_0` `seedance_2_5` | `seedance-voice-casting` | alt | black-frame `.mp4` voice references |
+| `gpt_image_2` | `gpt-image-2-director` | default | reference stills at 2k/high |
 
 Adding a model is a directory under `registry/sources/` (a `meta.json` and a `SKILL.md`) and
 `bin/registry-build.py <BASE_URL>`. The build fails loudly on a missing field, a

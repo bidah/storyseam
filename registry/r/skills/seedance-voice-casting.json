@@ -1,0 +1,33 @@
+{
+  "name": "seedance-voice-casting",
+  "type": "storyseam:director",
+  "models": [
+    "seedance_2_0",
+    "seedance_2_5"
+  ],
+  "default_for": [],
+  "kind": "video",
+  "provider": "ByteDance",
+  "title": "Seedance Voice Casting",
+  "description": "Cast a reusable character voice by generating a short speaking take, then keeping only its audio as a black-frame mp4. Works on both Seedance 2.0 and 2.5; 2.0 fast is the cheap default.",
+  "constraints": {
+    "recommended": {
+      "model": "seedance_2_0",
+      "mode": "fast",
+      "duration": 10,
+      "resolution": "480p"
+    },
+    "notes": "A voice reference reaches a render as a black-frame .mp4 in video_references, never audio_references."
+  },
+  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
+  "version": 1,
+  "updated": "2026-09-02",
+  "sha256": "1f027fadc9833845",
+  "files": [
+    {
+      "path": ".claude/skills/seedance-voice-casting/SKILL.md",
+      "type": "skill",
+      "content": "---\nname: seedance-voice-casting\ndescription: >-\n  Cast a reusable character voice for Seedance. Generates a short take of the character\n  speaking, keeps only the audio, and muxes it against black video — the form Seedance\n  actually accepts as a voice reference. Use for \"cast the voices\", \"make the voice\n  reference\", \"this character sounds different in every block\". Compatible with Seedance 2.0\n  and 2.5; 2.0 in fast mode is the cheap default because a voice is a fixture, not a shot.\n---\n\n# Seedance Voice Casting\n\nA voice is an **asset on disk**, cast once and reused by every block that character speaks\nin. Without one, each block samples a new voice and the same character sounds like three\ndifferent children across a two-minute film.\n\n## The form that actually works\n\nSeedance takes a voice as a **black-frame `.mp4` passed in `video_references`.**\n\nNot `audio_references` — that path is narrower, and on 2.0 it is outright rejected by\n`mode: \"fast\"`. The black-frame video route works on both models and both modes.\n\n```\nassets/audio/voices/<slug>.mp3              the take (source of truth)\nassets/audio/voices/blackframe/<slug>.mp4   what goes into a render\n```\n\n`<slug>` is the character's slug from `world/characters.md`. **A slug mismatch means the\nwrong character speaks, and nothing errors** — you find out by watching.\n\n## Step 1 — generate the take\n\nUse the cheap model. A voice is a fixture cost, not a shot:\n\n```\ngenerate_video {\n  model: \"seedance_2_0\", mode: \"fast\", duration: 10, resolution: \"480p\",\n  aspect_ratio: <config.aspect_ratio>, generate_audio: true,\n  medias: [ { role: \"image_references\", value: <character sheet media_id> } ],\n  prompt: \"<Character> speaks directly to camera, medium close-up, locked-off camera,\n           neutral room. They say: \\\"<a short paragraph, ~25 words>\\\".\n           Audio: clean spoken dialogue only, quiet room tone. No music.\"\n}\n```\n\nTwo things decide whether the voice is usable:\n\n- **Cite the character sheet** as `image_references`, so the voice matches the face rather\n  than an invented one.\n- **Write the paragraph in the character's actual voice**, from `world/characters.md`. This\n  is the whole job. An eight-year-old handed a corporate sentence gives you a corporate\n  eight-year-old for the rest of the film — the take is not just a sample of a timbre, it is\n  a sample of a *delivery*, and the delivery is what carries.\n\n~25 words fits comfortably in 10 seconds. Longer and it gabbles.\n\n## Step 2 — keep the audio, throw away the picture\n\n```bash\nffmpeg -y -i take.mp4 -vn -c:a libmp3lame -q:a 2 assets/audio/voices/<slug>.mp3\nbin/voice-to-blackmp4.sh <slug>\n```\n\nThe picture from the casting take is never used. Its only job was to make the model speak.\n\n## Step 3 — cite it in the render\n\nPass the black-frame mp4 as `video_references`, and **tell the model what it is**, or it will\ntry to read the black frames as imagery:\n\n> `Use the attached voice reference for <Character>; ignore the black frames. Output only the\n> spoken dialogue and the scene's diegetic sound. No music.`\n\n## Cost discipline\n\nEach cast is a paid video run. So:\n\n- Cast only characters who **actually speak** — the `voices` list of a block, not\n  `characters`.\n- Cast each character **exactly once** and reuse.\n- A character with a single line still costs a full cast. Ask whether that line can move to\n  someone already cast before spending it.\n\n## When to re-cast\n\n- The delivery is wrong for the character (too old, too flat, wrong energy) — that is a\n  paragraph problem, so rewrite the paragraph, not the settings.\n- The take is clipped or rushed — shorten the paragraph.\n- The script's characterisation changed enough that the old delivery no longer fits.\n\nDo **not** re-cast to chase a marginally nicer timbre. Consistency across the film is worth\nmore than the best single take, and every re-cast is a run.\n"
+    }
+  ]
+}

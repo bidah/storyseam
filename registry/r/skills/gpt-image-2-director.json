@@ -1,7 +1,12 @@
 {
   "name": "gpt-image-2-director",
   "type": "storyseam:director",
-  "model": "gpt_image_2",
+  "models": [
+    "gpt_image_2"
+  ],
+  "default_for": [
+    "gpt_image_2"
+  ],
   "kind": "image",
   "provider": "OpenAI",
   "title": "GPT Image 2 Director",
