@@ -1,0 +1,37 @@
+{
+  "name": "provider-fal",
+  "type": "storyseam:provider",
+  "provider": "fal",
+  "title": "fal.ai",
+  "access": ["api_key"],
+  "auth": {
+    "api_key": {
+      "env": "FAL_KEY",
+      "header": "Authorization: Key $FAL_KEY",
+      "base_url": "https://queue.fal.run",
+      "obtain": "https://fal.ai/dashboard/keys",
+      "note": "Storyseam never reads, stores or prints the key. It checks only that the env var is set."
+    }
+  },
+  "capabilities": ["image", "video", "audio"],
+  "media_input": "public_url",
+  "endpoints": {
+    "submit": "POST https://queue.fal.run/{endpoint_id}",
+    "status": "GET https://queue.fal.run/{base}/requests/{request_id}/status",
+    "result": "GET https://queue.fal.run/{base}/requests/{request_id}"
+  },
+  "models": {
+    "seedance_2_5": { "kind": "video", "verified": true,
+                      "native": { "t2v": "bytedance/seedance-2.5/text-to-video",
+                                  "i2v": "bytedance/seedance-2.5/image-to-video",
+                                  "ref": "bytedance/seedance-2.5/reference-to-video" },
+                      "resolutions": ["480p", "720p"], "duration_seconds": [4, 30] },
+    "seedance_2_0": { "kind": "video", "verified": true,
+                      "native": { "t2v": "bytedance/seedance-2.0/text-to-video" },
+                      "duration_seconds": [4, 15] }
+  },
+  "gaps": {
+    "gpt_image_2": "Not offered. Use a fal image endpoint (e.g. nano-banana) and record it here once verified.",
+    "seed_audio": "No Seed Audio equivalent — fal has single-SFX endpoints, not multi-voice dialogue scenes."
+  }
+}

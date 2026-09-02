@@ -23,8 +23,10 @@ Restate these whenever a stage is about to break one.
 2. **Video is `seedance_2_5` at `480p`.** Always. Resolution is the cost lever.
 3. **Images are `gpt_image_2` at `2k`.** Voices are cast with `seedance_2_0` fast,
    10s, 480p, and stored as black-frame `.mp4` in `assets/audio/voices/blackframe/`.
-4. **Higgsfield MCP only** (`mcp__claude_ai_higgsfield__*`), never the CLI. `ffmpeg`
-   locally is expected.
+4. **The backend is configuration, not code.** `config.json` names a provider per
+   capability (`higgsfield` via MCP, `atlas` or `fal` via an API key the user exports).
+   Verify access with `bin/provider-check.py` before spending, and never fall back to
+   another provider silently. `ffmpeg` locally is expected either way. See `providers`.
 5. **Blocks render one at a time, chained** — the last frame of block N is passed as the
    FIRST `image_references` entry of block N+1 and declared in prose as `@Image 1 is the
    first frame`. Never `start_image` (2.5 ignores it), and never in parallel.

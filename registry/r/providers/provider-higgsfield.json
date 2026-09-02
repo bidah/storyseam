@@ -1,0 +1,75 @@
+{
+  "name": "provider-higgsfield",
+  "type": "storyseam:provider",
+  "provider": "higgsfield",
+  "title": "Higgsfield",
+  "access": [
+    "mcp"
+  ],
+  "auth": {
+    "mcp": {
+      "tool_prefix": "mcp__claude_ai_higgsfield__",
+      "probe_tool": "mcp__claude_ai_higgsfield__balance",
+      "install": "Connect the Higgsfield MCP server in the client. Storyseam cannot install it for you.",
+      "note": "Auth is the MCP connection itself. No key is stored by Storyseam."
+    }
+  },
+  "capabilities": [
+    "image",
+    "video",
+    "audio"
+  ],
+  "media_input": "upload_then_confirm",
+  "models": {
+    "seedance_2_5": {
+      "kind": "video",
+      "native": "seedance_2_5",
+      "verified": true,
+      "resolutions": [
+        "480p",
+        "720p",
+        "1080p"
+      ],
+      "duration_seconds": [
+        4,
+        30
+      ]
+    },
+    "seedance_2_0": {
+      "kind": "video",
+      "native": "seedance_2_0",
+      "verified": true,
+      "resolutions": [
+        "480p",
+        "720p",
+        "1080p",
+        "4k"
+      ],
+      "duration_seconds": [
+        4,
+        15
+      ]
+    },
+    "gpt_image_2": {
+      "kind": "image",
+      "native": "gpt_image_2",
+      "verified": true,
+      "resolutions": [
+        "1k",
+        "2k",
+        "4k"
+      ]
+    }
+  },
+  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
+  "version": 1,
+  "updated": "2026-09-02",
+  "sha256": "d5bf0deacc7798ec",
+  "files": [
+    {
+      "path": ".claude/skills/provider-higgsfield/SKILL.md",
+      "type": "skill",
+      "content": "---\nname: provider-higgsfield\ndescription: >-\n  Provider adapter for Higgsfield — access by MCP. Use when config.json names\n  `providers.*.id = \"higgsfield\"`. Covers the upload/confirm media flow, the media_id rule,\n  the preset gate, and what to do when the MCP server is not connected. Auth is the MCP\n  connection itself; Storyseam never handles a key for this provider.\n---\n\n# Provider: Higgsfield (access `mcp`)\n\n## Access check — before anything else\n\nHiggsfield is reached through MCP tools prefixed `mcp__claude_ai_higgsfield__`. There is no\nAPI key: **the MCP connection is the auth.**\n\nProbe with `mcp__claude_ai_higgsfield__balance`. If the tools are absent:\n\n> The Higgsfield MCP server is not connected. **Storyseam cannot install or connect it for\n> you** — the user connects it in their client, then re-runs.\n\nSay that and stop. Do not fall back to another provider silently: the shot list and the\nrender budget were written for the configured one.\n\n## Media: upload → confirm → `media_id`\n\nThis is the part that differs most from the API-key providers, and the part that fails\nsilently. **Every `medias[].value` must be a `media_id`.** Never an `https://` URL, never a\nprior `job_id` — a URL is rejected and a `job_id` hangs.\n\nLocal file:\n1. `media_upload { files: [{ filename, content_type }] }` → `upload_url` + `media_id`\n2. `curl -X PUT -H \"Content-Type: <the signed type>\" --data-binary @<file> '<upload_url>'`\n   — **the header must match the signed type** or the PUT appears to succeed and the render\n   404s later.\n3. `media_confirm { type: \"image\"|\"video\"|\"audio\", media_ids: [...] }`\n\nAlready on the web: `media_import_url` → `media_id`. This is much cheaper than re-uploading\nbytes when the file is already hosted (a previous generation's `result_url`, for example).\n\nCache every mapping in `.storyseam/media.json` so the expensive skill never blocks on an\nupload.\n\n## The preset gate\n\n`generate_video` may return a `preset_recommendation` instead of a job. **No credit is spent\nand nothing was submitted** — it is a free round trip, not a failure.\n\nResend the identical call with `declined_preset_id: \"<id>\"`. Three things about it:\n\n- The id is **per preset**, and a different call can come back recommending a *different*\n  preset. Read the id out of *this* response.\n- One of the presets on offer is called **DROWN IN MUSIC**, which breaks the no-music rule\n  outright.\n- Never ask the author which preset they want — the block prompt is the shot list's\n  considered output; a preset overrides it.\n\n## Job flow\n\n`generate_video` / `generate_image` → job id → `job_status` or `jobs_wait` → `result_url`.\nA 30-second 480p block takes roughly 20-30 minutes; images take 10-20 seconds.\n\n`generate_*_batch` exists for independent jobs, but **story blocks are never batched** — the\nlast-frame chain is sequential by construction.\n\n## Cost\n\n`balance` returns credits. Preflight an unfamiliar call with `get_cost: true`, but know that\nthe preflight lies low: a bare `t2v` 30s/480p preflights at 75 while a real\n`omni_reference` block with references has billed 75 and 105 for the same duration and\nresolution. Quote the ceiling and report actuals from `balance`.\n"
+    }
+  ]
+}

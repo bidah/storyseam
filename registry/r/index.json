@@ -7,6 +7,7 @@
   "items": [
     {
       "name": "gpt-image-2-director",
+      "type": "director",
       "models": [
         "gpt_image_2"
       ],
@@ -40,7 +41,47 @@
       }
     },
     {
+      "name": "provider-atlas",
+      "type": "provider",
+      "provider": "atlas",
+      "title": "Atlas Cloud",
+      "description": "",
+      "access": [
+        "api_key"
+      ],
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-atlas.json",
+      "sha256": "85d811da3adbae36",
+      "updated": "2026-09-02"
+    },
+    {
+      "name": "provider-fal",
+      "type": "provider",
+      "provider": "fal",
+      "title": "fal.ai",
+      "description": "",
+      "access": [
+        "api_key"
+      ],
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-fal.json",
+      "sha256": "a11596e66a559d33",
+      "updated": "2026-09-02"
+    },
+    {
+      "name": "provider-higgsfield",
+      "type": "provider",
+      "provider": "higgsfield",
+      "title": "Higgsfield",
+      "description": "",
+      "access": [
+        "mcp"
+      ],
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-higgsfield.json",
+      "sha256": "d5bf0deacc7798ec",
+      "updated": "2026-09-02"
+    },
+    {
       "name": "seedance-2-0-director",
+      "type": "director",
       "models": [
         "seedance_2_0"
       ],
@@ -81,6 +122,7 @@
     },
     {
       "name": "seedance-2-5-director",
+      "type": "director",
       "models": [
         "seedance_2_5"
       ],
@@ -124,6 +166,7 @@
     },
     {
       "name": "seedance-2-5-extension-director",
+      "type": "director",
       "models": [
         "seedance_2_5"
       ],
@@ -151,6 +194,7 @@
     },
     {
       "name": "seedance-voice-casting",
+      "type": "director",
       "models": [
         "seedance_2_0",
         "seedance_2_5"

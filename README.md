@@ -78,6 +78,51 @@ renders/{clips,frames,final}/
 A 2-minute film with two speaking characters and one location: 4 blocks + 2 voices +
 ~5 stills ≈ **345 credits, 6 runs**.
 
+## Providers — the backend is configuration
+
+Storyseam is provider-agnostic. The script, the shot list, the block structure and the
+continuity chain do not change when the backend does; what changes is how a job is submitted,
+how media is passed, and how access is proven. That lives in a **provider adapter**,
+installed from the registry like any other skill.
+
+```json
+"providers": {
+  "video": { "id": "higgsfield", "access": "mcp" },
+  "image": { "id": "atlas", "access": "api_key", "key_env": "ATLAS_KEY" }
+}
+```
+
+A provider is named **per capability**, so a story can render video on one backend and stills
+on another. Two access types:
+
+- **`mcp`** — the user connects the MCP server in their client. Storyseam cannot install it.
+- **`api_key`** — the user exports the named env var. **`key_env` names a variable, never a
+  value**; `config.json` is committed, and a key in it is a leaked key.
+
+```bash
+bin/provider-check.py            # is access satisfied for this story?
+bin/registry-add.py provider-atlas
+```
+
+`provider-check.py` reports whether a variable is **set** and its **length** — never its
+value, so a truncated paste is diagnosable without the secret being displayed. Storyseam
+never asks for a key in chat and never writes one to disk.
+
+| | Higgsfield | Atlas Cloud | fal.ai |
+| --- | --- | --- | --- |
+| Access | `mcp` | `api_key` (`ATLAS_KEY`) | `api_key` (`FAL_KEY`) |
+| Job shape | MCP tools | one prediction API, model in the body | a queue per endpoint, model in the path |
+| Reference media | upload → confirm → `media_id` | plain public URLs | plain public URLs |
+| Voice reference | black-frame `.mp4` | **`reference_audios`, native lip-sync** | no Seed Audio equivalent |
+| Billing | credits | credits | **dollars, token-based** |
+| Seedance 2.5 | ✅ to 1080p | ✅ | ✅ to 720p |
+| `gpt_image_2` | ✅ | ✗ (use `nano_banana_2`) | ✗ |
+
+Two consequences worth knowing before switching: on the API-key providers the reference
+stills must be **publicly reachable URLs**, so they have to be published before a render; and
+the **black-frame voice trick is a Higgsfield workaround**, not a Seedance requirement — on
+Atlas you pass the `.mp3` straight into `reference_audios`.
+
 ## The model registry
 
 Prompting is **model-specific craft**, not pipeline logic. Seedance 2.0 honours a real

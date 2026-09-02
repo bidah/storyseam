@@ -1,0 +1,200 @@
+{
+  "description": "Resolve config.json providers.<capability>.id to its adapter skill, its access type, and the canonical models it serves. Auth blocks name the ENV VAR to read; the registry never carries a credential.",
+  "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
+  "providers": {
+    "atlas": {
+      "name": "provider-atlas",
+      "provider": "atlas",
+      "title": "Atlas Cloud",
+      "access": [
+        "api_key"
+      ],
+      "capabilities": [
+        "image",
+        "video",
+        "audio"
+      ],
+      "models": {
+        "seedance_2_5": {
+          "kind": "video",
+          "verified": true,
+          "native": {
+            "t2v": "bytedance/seedance-2.5/text-to-video",
+            "i2v": "bytedance/seedance-2.5/image-to-video",
+            "ref": "bytedance/seedance-2.5/reference-to-video"
+          },
+          "duration_seconds": [
+            4,
+            30
+          ]
+        },
+        "seedance_2_0": {
+          "kind": "video",
+          "verified": true,
+          "native": {
+            "t2v": "bytedance/seedance-2.0/text-to-video",
+            "i2v": "bytedance/seedance-2.0/image-to-video",
+            "ref": "bytedance/seedance-2.0/reference-to-video"
+          },
+          "duration_seconds": [
+            4,
+            15
+          ]
+        },
+        "nano_banana_2": {
+          "kind": "image",
+          "verified": true,
+          "native": {
+            "t2i": "google/nano-banana-2/text-to-image",
+            "edit": "google/nano-banana-2/edit"
+          }
+        },
+        "seed_audio_1_0": {
+          "kind": "audio",
+          "verified": true,
+          "native": "bytedance/seed-audio-1.0"
+        }
+      },
+      "gaps": {
+        "gpt_image_2": "Not offered. Storyseam's default image model is Higgsfield-only; on Atlas use nano_banana_2."
+      },
+      "auth": {
+        "api_key": {
+          "env": "ATLAS_KEY",
+          "header": "Authorization: Bearer $ATLAS_KEY",
+          "base_url": "https://api.atlascloud.ai/api/v1",
+          "obtain": "https://www.atlascloud.ai — create an account, then copy the API key from settings",
+          "note": "Storyseam never reads, stores or prints the key. It checks only that the env var is set."
+        }
+      },
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-atlas.json",
+      "sha256": "85d811da3adbae36",
+      "updated": "2026-09-02"
+    },
+    "fal": {
+      "name": "provider-fal",
+      "provider": "fal",
+      "title": "fal.ai",
+      "access": [
+        "api_key"
+      ],
+      "capabilities": [
+        "image",
+        "video",
+        "audio"
+      ],
+      "models": {
+        "seedance_2_5": {
+          "kind": "video",
+          "verified": true,
+          "native": {
+            "t2v": "bytedance/seedance-2.5/text-to-video",
+            "i2v": "bytedance/seedance-2.5/image-to-video",
+            "ref": "bytedance/seedance-2.5/reference-to-video"
+          },
+          "resolutions": [
+            "480p",
+            "720p"
+          ],
+          "duration_seconds": [
+            4,
+            30
+          ]
+        },
+        "seedance_2_0": {
+          "kind": "video",
+          "verified": true,
+          "native": {
+            "t2v": "bytedance/seedance-2.0/text-to-video"
+          },
+          "duration_seconds": [
+            4,
+            15
+          ]
+        }
+      },
+      "gaps": {
+        "gpt_image_2": "Not offered. Use a fal image endpoint (e.g. nano-banana) and record it here once verified.",
+        "seed_audio": "No Seed Audio equivalent — fal has single-SFX endpoints, not multi-voice dialogue scenes."
+      },
+      "auth": {
+        "api_key": {
+          "env": "FAL_KEY",
+          "header": "Authorization: Key $FAL_KEY",
+          "base_url": "https://queue.fal.run",
+          "obtain": "https://fal.ai/dashboard/keys",
+          "note": "Storyseam never reads, stores or prints the key. It checks only that the env var is set."
+        }
+      },
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-fal.json",
+      "sha256": "a11596e66a559d33",
+      "updated": "2026-09-02"
+    },
+    "higgsfield": {
+      "name": "provider-higgsfield",
+      "provider": "higgsfield",
+      "title": "Higgsfield",
+      "access": [
+        "mcp"
+      ],
+      "capabilities": [
+        "image",
+        "video",
+        "audio"
+      ],
+      "models": {
+        "seedance_2_5": {
+          "kind": "video",
+          "native": "seedance_2_5",
+          "verified": true,
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p"
+          ],
+          "duration_seconds": [
+            4,
+            30
+          ]
+        },
+        "seedance_2_0": {
+          "kind": "video",
+          "native": "seedance_2_0",
+          "verified": true,
+          "resolutions": [
+            "480p",
+            "720p",
+            "1080p",
+            "4k"
+          ],
+          "duration_seconds": [
+            4,
+            15
+          ]
+        },
+        "gpt_image_2": {
+          "kind": "image",
+          "native": "gpt_image_2",
+          "verified": true,
+          "resolutions": [
+            "1k",
+            "2k",
+            "4k"
+          ]
+        }
+      },
+      "gaps": {},
+      "auth": {
+        "mcp": {
+          "tool_prefix": "mcp__claude_ai_higgsfield__",
+          "probe_tool": "mcp__claude_ai_higgsfield__balance",
+          "install": "Connect the Higgsfield MCP server in the client. Storyseam cannot install it for you.",
+          "note": "Auth is the MCP connection itself. No key is stored by Storyseam."
+        }
+      },
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-higgsfield.json",
+      "sha256": "d5bf0deacc7798ec",
+      "updated": "2026-09-02"
+    }
+  }
+}

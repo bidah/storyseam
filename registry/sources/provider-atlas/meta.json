@@ -1,0 +1,43 @@
+{
+  "name": "provider-atlas",
+  "type": "storyseam:provider",
+  "provider": "atlas",
+  "title": "Atlas Cloud",
+  "access": ["api_key"],
+  "auth": {
+    "api_key": {
+      "env": "ATLAS_KEY",
+      "header": "Authorization: Bearer $ATLAS_KEY",
+      "base_url": "https://api.atlascloud.ai/api/v1",
+      "obtain": "https://www.atlascloud.ai — create an account, then copy the API key from settings",
+      "note": "Storyseam never reads, stores or prints the key. It checks only that the env var is set."
+    }
+  },
+  "capabilities": ["image", "video", "audio"],
+  "media_input": "public_url",
+  "endpoints": {
+    "submit_image": "POST /model/generateImage",
+    "submit_video": "POST /model/generateVideo",
+    "submit_audio": "POST /model/generateAudio",
+    "poll": "GET /model/prediction/{id}"
+  },
+  "models": {
+    "seedance_2_5": { "kind": "video", "verified": true,
+                      "native": { "t2v": "bytedance/seedance-2.5/text-to-video",
+                                  "i2v": "bytedance/seedance-2.5/image-to-video",
+                                  "ref": "bytedance/seedance-2.5/reference-to-video" },
+                      "duration_seconds": [4, 30] },
+    "seedance_2_0": { "kind": "video", "verified": true,
+                      "native": { "t2v": "bytedance/seedance-2.0/text-to-video",
+                                  "i2v": "bytedance/seedance-2.0/image-to-video",
+                                  "ref": "bytedance/seedance-2.0/reference-to-video" },
+                      "duration_seconds": [4, 15] },
+    "nano_banana_2": { "kind": "image", "verified": true,
+                       "native": { "t2i": "google/nano-banana-2/text-to-image",
+                                   "edit": "google/nano-banana-2/edit" } },
+    "seed_audio_1_0": { "kind": "audio", "verified": true, "native": "bytedance/seed-audio-1.0" }
+  },
+  "gaps": {
+    "gpt_image_2": "Not offered. Storyseam's default image model is Higgsfield-only; on Atlas use nano_banana_2."
+  }
+}

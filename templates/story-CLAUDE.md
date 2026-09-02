@@ -9,7 +9,7 @@ the tree below.
 | Path | What |
 | --- | --- |
 | `STORY.md` | premise, logline, decisions, status |
-| `config.json` | models, **resolution**, aspect ratio, block length |
+| `config.json` | **providers**, models, **resolution**, aspect ratio, block length |
 | `script/script.md` | **the script** — the current draft, the one true version |
 | `script/drafts/` | immutable snapshots (`script.v1.md`, …). Never edit these. |
 | `script/outline.md` | the beat outline the script was written from |
@@ -51,8 +51,10 @@ A voice is cast once and reused by every block that character speaks in.
    the film after `/assemble`.
 2. **Video is `seedance_2_5` at `480p`.** Never higher — resolution is the cost lever.
 3. **Images are `gpt_image_2` at `2k`.**
-4. **Higgsfield MCP only** (`mcp__claude_ai_higgsfield__*`), never the CLI. `ffmpeg`
-   locally is expected.
+4. **The backend is configuration.** `config.json` names a provider per capability.
+   `higgsfield` is reached by MCP; `atlas` and `fal` by an API key the user exports
+   (`ATLAS_KEY` / `FAL_KEY`) — **never stored in this folder**. Verify with
+   `bin/provider-check.py` before spending.
 5. **Blocks render one at a time, chained**: the last frame of block N is the
    `start_image` of block N+1. Character sheets are `image_references` — putting one
    in `start_image` makes the whole block look like the sheet.

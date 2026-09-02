@@ -9,7 +9,10 @@
       ],
       "routes": {
         "gpt-image-2-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/gpt-image-2-director.json"
-      }
+      },
+      "providers": [
+        "higgsfield"
+      ]
     },
     "seedance_2_0": {
       "default": "seedance-2-0-director",
@@ -20,7 +23,12 @@
       "routes": {
         "seedance-2-0-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-0-director.json",
         "seedance-voice-casting": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-voice-casting.json"
-      }
+      },
+      "providers": [
+        "atlas",
+        "fal",
+        "higgsfield"
+      ]
     },
     "seedance_2_5": {
       "default": "seedance-2-5-director",
@@ -33,7 +41,12 @@
         "seedance-2-5-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-director.json",
         "seedance-2-5-extension-director": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-extension-director.json",
         "seedance-voice-casting": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-voice-casting.json"
-      }
+      },
+      "providers": [
+        "atlas",
+        "fal",
+        "higgsfield"
+      ]
     }
   }
 }

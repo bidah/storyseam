@@ -39,12 +39,15 @@ author corrects rather than composes:
    afternoon light"). This becomes `prompts/image_style_prompt.txt` and
    `prompts/video_style_prompt.txt`.
 5. **Shape** — cinematic `16:9` or vertical `9:16`.
+6. **Backend** — `higgsfield` (MCP, the default), `atlas` or `fal` (each needs an API key
+   the user exports themselves). Only ask if they have not already said; otherwise default
+   to `higgsfield` and state it.
 
 Tell them the cost implication in one line before they answer — "a 2-minute film is
 4 Seedance blocks, about 300 credits at 480p" — because runtime is the only choice
 here that spends money.
 
-**Do not ask a sixth question.** Arc structure, character names, act breaks and
+**Do not ask a seventh question.** Arc structure, character names, act breaks and
 shot style are `/write-script`'s business, and asking about them now is asking the
 author to design a film before they have a premise. If they volunteer any of it,
 write it into `STORY.md` under `## Notes` and move on.
@@ -105,6 +108,10 @@ preferences.
 ```json
 {
   "title": "<title>",
+  "providers": {
+    "video": { "id": "higgsfield", "access": "mcp" },
+    "image": { "id": "higgsfield", "access": "mcp" }
+  },
   "aspect_ratio": "16:9",
   "target_seconds": 120,
   "block_seconds": 30,
@@ -137,14 +144,20 @@ video call appends the second. Write them from the author's "look" answer:
   `Audio: diegetic only — dialogue, room tone and Foley. No music.`
 - Never leave them empty. An empty style file means every shot drifts.
 
-## Step 4b — install the directors for the configured models
+## Step 4b — install the adapters and directors, then verify access
 
-Right after `config.json` exists, install the director skill for each model it names:
+Right after `config.json` exists:
 
 ```bash
-bin/registry-add.py <config.video.model>    # e.g. seedance_2_5
-bin/registry-add.py <config.image.model>    # e.g. gpt_image_2
+bin/registry-add.py provider-<config.providers.video.id>   # the backend adapter
+bin/registry-add.py <config.video.model>                   # e.g. seedance_2_5
+bin/registry-add.py <config.image.model>                   # e.g. gpt_image_2
+bin/provider-check.py                                      # is access satisfied?
 ```
+
+If a provider needs an API key the user has not exported, **say which variable and where to
+get it, and stop** — do not ask them to paste it into the chat, and never write it into
+`config.json`. See the `providers` skill.
 
 This is what makes the story folder self-contained: `/shotlist` and `/cast` both write their
 prompts through these, and the craft they carry is model-specific. See the

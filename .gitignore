@@ -16,3 +16,6 @@ test/**/.storyseam/media.json
 .claude/skills/seedance-2-0-director/
 .claude/skills/seedance-voice-casting/
 .claude/skills/gpt-image-2-director/
+.claude/skills/provider-higgsfield/
+.claude/skills/provider-atlas/
+.claude/skills/provider-fal/

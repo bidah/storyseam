@@ -1,0 +1,25 @@
+{
+  "name": "provider-higgsfield",
+  "type": "storyseam:provider",
+  "provider": "higgsfield",
+  "title": "Higgsfield",
+  "access": ["mcp"],
+  "auth": {
+    "mcp": {
+      "tool_prefix": "mcp__claude_ai_higgsfield__",
+      "probe_tool": "mcp__claude_ai_higgsfield__balance",
+      "install": "Connect the Higgsfield MCP server in the client. Storyseam cannot install it for you.",
+      "note": "Auth is the MCP connection itself. No key is stored by Storyseam."
+    }
+  },
+  "capabilities": ["image", "video", "audio"],
+  "media_input": "upload_then_confirm",
+  "models": {
+    "seedance_2_5": { "kind": "video", "native": "seedance_2_5", "verified": true,
+                      "resolutions": ["480p", "720p", "1080p"], "duration_seconds": [4, 30] },
+    "seedance_2_0": { "kind": "video", "native": "seedance_2_0", "verified": true,
+                      "resolutions": ["480p", "720p", "1080p", "4k"], "duration_seconds": [4, 15] },
+    "gpt_image_2":  { "kind": "image", "native": "gpt_image_2", "verified": true,
+                      "resolutions": ["1k", "2k", "4k"] }
+  }
+}
