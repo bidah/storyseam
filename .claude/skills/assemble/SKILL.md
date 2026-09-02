@@ -33,9 +33,16 @@ stream copy path works and is lossless:
 
 ```bash
 cd <story root>
-printf "file '%s'\n" renders/clips/block_*.mp4 > .storyseam/concat.txt
+printf "file '%s'\n" "$PWD"/renders/clips/block_*.mp4 > .storyseam/concat.txt
 ffmpeg -y -f concat -safe 0 -i .storyseam/concat.txt -c copy renders/final/film.mp4
 ```
+
+> **Write ABSOLUTE paths into `concat.txt`.** ffmpeg's concat demuxer resolves each
+> `file` entry **relative to the directory the concat list lives in**, not to your
+> working directory. `concat.txt` sits in `.storyseam/`, so a relative
+> `renders/clips/block_01.mp4` is looked up at `.storyseam/renders/clips/block_01.mp4`
+> and fails with `Impossible to open`. The `"$PWD"/` prefix above is the whole fix.
+> (`-safe 0` is what allows absolute paths at all.)
 
 If stream copy produces a broken or stuttering file — different codec parameters
 between blocks, which happens when one block was re-rendered under different settings

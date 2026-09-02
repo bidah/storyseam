@@ -1,16 +1,76 @@
 {
   "blocks": {
-    "block_01": { "status": "pending" },
-    "block_02": { "status": "pending" },
-    "block_03": { "status": "pending" },
-    "block_04": { "status": "pending" }
+    "block_01": {
+      "status": "done",
+      "job_id": "21b72113-c44b-4583-9338-ab53b2dd71b4",
+      "clip": "renders/clips/block_01.mp4",
+      "last_frame": "renders/frames/block_01_last.jpg",
+      "last_frame_media_id": "06c69004-4fdc-49f7-9462-0ae8fe71a88c",
+      "duration": 30.04,
+      "credits": 105,
+      "chained_from": null
+    },
+    "block_02": {
+      "status": "done",
+      "job_id": "a330b8bc-24a7-43e4-808f-92ae3373fb57",
+      "clip": "renders/clips/block_02.mp4",
+      "last_frame": "renders/frames/block_02_last.jpg",
+      "last_frame_media_id": "7dd96f84-3e57-4e2b-af4c-1ee644791892",
+      "duration": 30.04,
+      "credits": 75,
+      "chained_from": "block_01"
+    },
+    "block_03": {
+      "status": "done",
+      "job_id": "0518a883-8853-473a-8612-9e4af377fafe",
+      "clip": "renders/clips/block_03.mp4",
+      "last_frame": "renders/frames/block_03_last.jpg",
+      "last_frame_media_id": "513d47d1-4bfa-41c2-91b2-1d8e13385e53",
+      "duration": 30.05,
+      "chained_from": "block_02"
+    },
+    "block_04": {
+      "status": "done",
+      "job_id": "3854cf49-effa-4fde-9cfe-21a3c029a781",
+      "clip": "renders/clips/block_04.mp4",
+      "last_frame": "renders/frames/block_04_last.jpg",
+      "duration": 30.05,
+      "chained_from": "block_03"
+    }
   },
   "voices": {
-    "theo": { "status": "casting", "job_id": "8adc3e99-303a-4da5-932a-c79534ceb08d", "credits": 15 },
-    "milo": { "status": "casting", "job_id": "4078e746-0910-42f5-9b69-7db6c39ccf65", "credits": 15 }
+    "theo": {
+      "status": "done",
+      "job_id": "8adc3e99-303a-4da5-932a-c79534ceb08d",
+      "credits": 15,
+      "mp3": "assets/audio/voices/theo.mp3",
+      "blackframe": "assets/audio/voices/blackframe/theo.mp4",
+      "media_id": "51725df9-4b91-4c03-a0d8-bc3592932a99"
+    },
+    "milo": {
+      "status": "done",
+      "job_id": "4078e746-0910-42f5-9b69-7db6c39ccf65",
+      "credits": 15,
+      "mp3": "assets/audio/voices/milo.mp3",
+      "blackframe": "assets/audio/voices/blackframe/milo.mp4",
+      "media_id": "01df44aa-0dcc-4a20-ad1c-e8a2d70cedf1"
+    }
   },
-  "stills": { "status": "done", "count": 5, "credits": 13 },
-  "credits_spent": 43,
-  "runs_used": 2,
-  "run_budget": 10
+  "stills": {
+    "status": "done",
+    "count": 5,
+    "credits": 13
+  },
+  "credits_spent": 222,
+  "runs_used": 6,
+  "run_budget": 10,
+  "final": {
+    "path": "renders/final/film.mp4",
+    "duration": 120.215,
+    "resolution": "854x480",
+    "video": "h264",
+    "audio": "aac stereo 32kHz",
+    "size_mb": 16.5,
+    "music": "none - by design"
+  }
 }

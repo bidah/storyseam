@@ -28,7 +28,8 @@ You are the only pass that turns a script into a bill. Compute it, don't gesture
 
 | Line item | Cost |
 | --- | --- |
-| One 30-second video block (`seedance_2_5`, 480p) | **75 credits**, and **1 run** |
+| One 30-second video block (`seedance_2_5`, 480p, `t2v`) | **75 credits**, and **1 run** |
+| One 30-second block in `omni_reference` with references | **75-105 credits**, and **1 run** |
 | One voice cast (`seedance_2_0` fast, 10s, 480p) | **15 credits**, and **1 run** |
 | One still — character sheet, location plate, prop plate (`gpt_image_2`, 2k) | **~2.5 credits** |
 
@@ -36,7 +37,7 @@ The arithmetic you owe the author, every time:
 
 ```
 blocks   = ceil(estimated_runtime_seconds / 30)
-video    = blocks * 75
+video    = blocks * 105   # price the CEILING; omni_reference bills 75-105
 voices   = (number of SPEAKING characters) * 15
 stills   = (characters + locations + consistent props) * 2.5
 runs     = blocks + speaking characters
@@ -45,6 +46,14 @@ runs     = blocks + speaking characters
 State the total in credits **and in runs**, because runs are usually the binding
 constraint — an author working to a 10-run budget can afford four blocks and two
 voices, and cannot afford a fifth location that needs its own block.
+
+> **Preflight lies low, and the real price moves.** `get_cost` on a bare `t2v` call
+> returns 75 for a 30s 480p block. Observed `omni_reference` blocks carrying character
+> sheets, a location plate and voice references have billed **75 and 105** for the same
+> duration and resolution — the charge is not a fixed function of duration alone.
+> **Quote the ceiling (105) and report the actual from `balance`**, because a film
+> quoted at the floor and billed at the ceiling is a 40% overrun the author did not
+> agree to.
 
 **What actually moves the number:**
 
@@ -55,7 +64,7 @@ voices, and cannot afford a fifth location that needs its own block.
   sentence you write.
 - **Location count.** A location change is a hard block boundary, so N locations means
   at least N blocks regardless of runtime. Three locations in a 60-second film costs
-  three blocks (225) where one location would cost two (150). Merging two scenes into
+  three blocks (315) where one location would cost two (210). Merging two scenes into
   one room is usually free dramatically and saves 75 credits.
 - **Speaking characters.** Each is a voice cast (15 credits, 1 run) plus a sheet. A
   character with one line is a whole fixture cost — ask whether the line can move to

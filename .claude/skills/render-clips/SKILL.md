@@ -77,7 +77,18 @@ When a voice reference is attached, the prompt must acknowledge it:
 
 - Submit. If the response carries a `preset_recommendation`, resend the **identical**
   call with `declined_preset_id: "<id>"` so the prompt renders literally. Do not
-  accept a preset — it overrides the block's blocking.
+  accept a preset — it overrides the block's blocking, and one of the presets on
+  offer is literally called **DROWN IN MUSIC**, which breaks rule 1 outright.
+
+  Three things about this that cost a turn each to learn:
+  - **The recommendation costs nothing.** No job is submitted and no credit is spent,
+    so it is a free round trip, not a failure. Do not treat it as an error.
+  - **`declined_preset_id` declines exactly one preset, by id.** A different block —
+    or the same block re-sent — can come back recommending a *different* preset, and
+    the id from last time will not suppress it. Read the id out of *this* response.
+  - **Never ask the author which preset they want.** The block prompt is the shot
+    list's considered output; a preset is a style bundle that overrides it. Decline
+    and move on.
 - Poll `job_status` (a 30s block takes roughly 2–4 minutes). Respect
   `poll_after_seconds`.
 - Download the result to `renders/clips/block_<NN>.mp4`.

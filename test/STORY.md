@@ -31,12 +31,16 @@ over Three-Act.
 
 | Item | Count | Credits | Runs |
 | --- | --- | --- | --- |
-| 30s blocks @ 480p | 4 | 300 | 4 |
+| 30s blocks @ 480p | 4 | 330 (actual) | 4 |
 | Voice casts | 2 | 30 | 2 |
-| Stills @ 2k | 5 | ~13 | 0 |
-| **Total** | | **~343** | **6** |
+| Stills @ 2k | 5 | 12.5 | 0 |
+| **Total** | | **372.5 actual** | **6 of 10** |
 
-Run budget for this production: **10**. Four in hand for retries.
+Estimated ~343, billed 372.5. The variance is the blocks: `omni_reference` does not
+bill a flat rate — block 1 cost 105 and block 2 cost 75 at identical duration and
+resolution. The `producer` price list now quotes the 105 ceiling for this reason.
+
+**Zero retries used.** Every block landed on its first render.
 
 ## Decisions
 
@@ -55,7 +59,18 @@ Run budget for this production: **10**. Four in hand for retries.
 - [x] scaffolded
 - [x] outline
 - [x] script
-- [ ] shot list
-- [ ] cast
-- [ ] render
-- [ ] assemble
+- [x] shot list — 4 blocks, 120s
+- [x] cast — 5 stills @ 2k, 2 voices cast and black-framed
+- [x] render — 4/4 blocks, chained, no retries
+- [x] assemble — `renders/final/film.mp4`
+
+## Result
+
+**`renders/final/film.mp4` — 120.2s, 854x480, h264 + aac stereo, 16.5 MB.**
+
+The last-frame chain held across all three seams: same room, same late-afternoon
+light, same costumes, Theo screen-left and Milo screen-right for the whole film, and
+the star-blanket in the same place on the couch until it is taken down in block 3.
+
+No music, by design. Drop a track in `assets/audio/music/` and mux it with the
+one-liner in the `assemble` skill.
