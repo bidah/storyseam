@@ -1,0 +1,9 @@
+{
+  "description": "Resolve config.json's model id to its director skill route.",
+  "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
+  "models": {
+    "gpt_image_2": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/gpt-image-2-director.json",
+    "seedance_2_0": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-0-director.json",
+    "seedance_2_5": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-director.json"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "seedance-2-5-director",
+  "type": "storyseam:director",
+  "model": "seedance_2_5",
+  "kind": "video",
+  "provider": "ByteDance",
+  "title": "Seedance 2.5 Director",
+  "description": "Shot-list director for Seedance 2.5. Blocks up to 30s, omni_reference, first frame declared in prose.",
+  "constraints": {
+    "duration_seconds": [4, 30],
+    "resolutions": ["480p", "720p", "1080p"],
+    "modes": ["t2v", "omni_reference", "video_edit", "video_extension"],
+    "media_roles": ["image_references", "video_references", "audio_references"],
+    "start_image_supported": false,
+    "reference_ceiling": { "images": 30, "videos": 10, "audio": 10 }
+  }
+}

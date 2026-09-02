@@ -1,0 +1,111 @@
+{
+  "name": "storyseam-registry",
+  "version": 1,
+  "description": "Installable per-model director skills for Storyseam. One route per model.",
+  "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
+  "updated": "2026-09-02",
+  "items": [
+    {
+      "name": "gpt-image-2-director",
+      "model": "gpt_image_2",
+      "kind": "image",
+      "title": "GPT Image 2 Director",
+      "description": "Reference-still director for GPT Image 2. Character sheets, location plates, prop plates at 2k/high.",
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/gpt-image-2-director.json",
+      "sha256": "fbf112d2ddaf4d47",
+      "updated": "2026-09-02",
+      "constraints": {
+        "resolutions": [
+          "1k",
+          "2k",
+          "4k"
+        ],
+        "quality": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "media_roles": [
+          "image"
+        ],
+        "defaults_to_avoid": {
+          "resolution": "1k",
+          "quality": "low"
+        }
+      }
+    },
+    {
+      "name": "seedance-2-0-director",
+      "model": "seedance_2_0",
+      "kind": "video",
+      "title": "Seedance 2.0 Director",
+      "description": "Shot-list director for Seedance 2.0. Clips 4-15s, real start_image/end_image roles, fast mode rejects audio_references.",
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-0-director.json",
+      "sha256": "3d199430e3dff0aa",
+      "updated": "2026-09-02",
+      "constraints": {
+        "duration_seconds": [
+          4,
+          15
+        ],
+        "resolutions": [
+          "480p",
+          "720p",
+          "1080p",
+          "4k"
+        ],
+        "modes": [
+          "std",
+          "fast"
+        ],
+        "media_roles": [
+          "start_image",
+          "end_image",
+          "image_references",
+          "video_references",
+          "audio_references"
+        ],
+        "start_image_supported": true,
+        "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std."
+      }
+    },
+    {
+      "name": "seedance-2-5-director",
+      "model": "seedance_2_5",
+      "kind": "video",
+      "title": "Seedance 2.5 Director",
+      "description": "Shot-list director for Seedance 2.5. Blocks up to 30s, omni_reference, first frame declared in prose.",
+      "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-director.json",
+      "sha256": "2348536af4b15c96",
+      "updated": "2026-09-02",
+      "constraints": {
+        "duration_seconds": [
+          4,
+          30
+        ],
+        "resolutions": [
+          "480p",
+          "720p",
+          "1080p"
+        ],
+        "modes": [
+          "t2v",
+          "omni_reference",
+          "video_edit",
+          "video_extension"
+        ],
+        "media_roles": [
+          "image_references",
+          "video_references",
+          "audio_references"
+        ],
+        "start_image_supported": false,
+        "reference_ceiling": {
+          "images": 30,
+          "videos": 10,
+          "audio": 10
+        }
+      }
+    }
+  ]
+}

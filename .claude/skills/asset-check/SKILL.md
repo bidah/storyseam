@@ -41,6 +41,10 @@ the total first.
 
 ## Step 2 — character sheets (`gpt_image_2`, 2k)
 
+Write every still through the director for `config.image.model` (`gpt_image_2` ->
+`gpt-image-2-director`). Install it with `bin/registry-add.py gpt_image_2` if missing.
+
+
 One image per character, at `assets/images/characters/<slug>.png`. This single image
 is the identity every block cites, so it is worth the care:
 

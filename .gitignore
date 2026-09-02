@@ -8,3 +8,9 @@ test/**/assets/images/
 test/**/assets/audio/
 test/**/assets/video_refs/
 test/**/.storyseam/media.json
+
+# Director skills are installed from the registry (bin/registry-add.py --all).
+# The sources live in registry/sources/; these are build output.
+.claude/skills/seedance-2-5-director/
+.claude/skills/seedance-2-0-director/
+.claude/skills/gpt-image-2-director/

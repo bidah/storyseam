@@ -137,6 +137,19 @@ video call appends the second. Write them from the author's "look" answer:
   `Audio: diegetic only — dialogue, room tone and Foley. No music.`
 - Never leave them empty. An empty style file means every shot drifts.
 
+## Step 4b — install the directors for the configured models
+
+Right after `config.json` exists, install the director skill for each model it names:
+
+```bash
+bin/registry-add.py <config.video.model>    # e.g. seedance_2_5
+bin/registry-add.py <config.image.model>    # e.g. gpt_image_2
+```
+
+This is what makes the story folder self-contained: `/shotlist` and `/cast` both write their
+prompts through these, and the craft they carry is model-specific. See the
+`model-directors` skill.
+
 ## Step 5 — the story's own CLAUDE.md
 
 Write `CLAUDE.md` into the story folder (and symlink `AGENTS.md` to it) from

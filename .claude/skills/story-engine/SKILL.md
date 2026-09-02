@@ -67,6 +67,20 @@ Two numbers matter and both live in `.storyseam/state.json`:
 Announce them as you go. When the author sets a run budget, it is a hard stop, not a
 target: report what is done and what remains rather than spending the next one.
 
+## Per-model craft lives in the registry, not in the pipeline
+
+Prompting is model-specific. `.claude/skills/` holds the pipeline; the **registry** holds one
+installable **director skill per model**, resolved from `config.json`:
+
+```
+bin/registry-add.py --list          what the registry offers
+bin/registry-add.py seedance_2_5    install the director for a model id
+```
+
+`/shotlist` writes through the director for `config.video.model`; `/cast` writes through the
+director for `config.image.model`. If a configured model has no director installed, install
+it — do not fall back on general knowledge. See the `model-directors` skill.
+
 ## The convention
 
 ```

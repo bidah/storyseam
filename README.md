@@ -78,6 +78,46 @@ renders/{clips,frames,final}/
 A 2-minute film with two speaking characters and one location: 4 blocks + 2 voices +
 ~5 stills ≈ **345 credits, 6 runs**.
 
+## The model registry
+
+Prompting is **model-specific craft**, not pipeline logic. Seedance 2.0 honours a real
+`start_image` role; Seedance 2.5 declares it and ignores it. One skill covering both is wrong
+for whichever model you are actually using — and we learned that by rendering a whole film
+whose continuity chain silently did nothing.
+
+So the pipeline lives in `.claude/skills/`, and the per-model craft lives in a **registry**:
+one installable director skill per model, one route each. The agent resolves it from
+`config.json`.
+
+```bash
+bin/registry-add.py --list                 # what the registry offers
+bin/registry-add.py seedance_2_5           # install the director for that model id
+bin/registry-add.py --all                  # install every director
+```
+
+```
+/r/index.json              catalogue: every director, with sha256 and constraints
+/r/models.json             model id -> director route (what the agent resolves against)
+/r/skills/<name>.json      one route per director; carries the files to write
+```
+
+Each item is self-describing — it names its own destination paths — so the installer never
+needs to know what a director is. Registry items are *copied into* your project, so you can
+edit them; re-running the install overwrites with the published version.
+
+| Model | Director | Notes |
+| --- | --- | --- |
+| `seedance_2_5` | `seedance-2-5-director` | 30s blocks, `omni_reference`, first frame declared in prose |
+| `seedance_2_0` | `seedance-2-0-director` | 4-15s, real `start_image`/`end_image`, `fast` rejects audio refs |
+| `gpt_image_2` | `gpt-image-2-director` | reference stills at 2k/high |
+
+Adding a model is a directory under `registry/sources/` (a `meta.json` and a `SKILL.md`) and
+`bin/registry-build.py <BASE_URL>`. The build fails loudly on a missing field, a
+frontmatter/meta name mismatch, or two directors claiming the same model.
+
+Published at `https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r`; override with
+`STORYSEAM_REGISTRY`.
+
 ## The specialist room
 
 Twenty-one subagents in `.claude/agents/`, run in stage order:

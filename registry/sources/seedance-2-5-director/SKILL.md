@@ -1,5 +1,5 @@
 ---
-name: seedance-director
+name: seedance-2-5-director
 description: >-
   Elite film prompt director for Seedance 2.5. Converts a beat, a scene or a shotlist
   block into a production-ready Seedance 2.5 prompt with strict character anchoring,
