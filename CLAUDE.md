@@ -114,6 +114,24 @@ score there after `/assemble`.
   can bill above the default — the test film's first block billed 105 for 30s at 480p —
   so any tally computed from `costs` is a floor, and is said to be one.
 
+## This file is also AGENTS.md
+
+`AGENTS.md` is the cross-tool name for agent instructions (Codex, Cursor, Gemini CLI and
+others read it); Claude Code reads `CLAUDE.md`. They are one file: `AGENTS.md` is a symlink
+to this one, at the engine root and in every scaffolded story. If your checkout turned the
+symlink into a one-line text file (Windows without `core.symlinks`), copy `CLAUDE.md` over
+it; `bin/storyseam-init.sh` does the same fallback when it cannot create a symlink.
+
+If you are not Claude Code, three things here are Claude-shaped and translate directly:
+
+- A `/command` is a thin wrapper that loads `.claude/skills/<name>/SKILL.md`. Read the
+  skill file and follow it; the command adds nothing the skill does not say.
+- The specialist room is `.claude/agents/*.md`: a system prompt per specialist, with the
+  tools it may use in the frontmatter. Run one as a subagent if you can, or inline it and
+  end with the envelope from `docs/specialist-contract.md`.
+- `mcp__claude_ai_higgsfield__*` are the Higgsfield MCP server's tools as Claude names
+  them. Any MCP client sees the same tools without the prefix.
+
 ## Commands
 
 | Command | What it does |

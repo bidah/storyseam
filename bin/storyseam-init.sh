@@ -68,7 +68,11 @@ if [ -n "$TITLE" ] && [ ! -e CLAUDE.md ]; then
     < "$TEMPLATE" > CLAUDE.md
   echo "wrote CLAUDE.md for \"$TITLE\""
 fi
-[ -e AGENTS.md ] || { [ -e CLAUDE.md ] && ln -s CLAUDE.md AGENTS.md; } || true
+# AGENTS.md is the cross-tool name for the same instructions: a symlink where the
+# filesystem allows it, a copy where it does not (Windows without symlink support).
+if [ ! -e AGENTS.md ] && [ -e CLAUDE.md ]; then
+  ln -s CLAUDE.md AGENTS.md 2>/dev/null || cp CLAUDE.md AGENTS.md
+fi
 
 echo "Storyseam convention created in: $ROOT"
 find . -type d -not -path "*/.git/*" | sort | sed 's|^\./||'

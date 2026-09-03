@@ -50,6 +50,10 @@ Then, in Claude Code:
 
 Anything you leave out of the first line, `/start-story` asks for in one message.
 
+Not on Claude Code? `AGENTS.md` (the cross-tool convention) is a symlink to `CLAUDE.md`
+at the root and in every story, and its first sections say how the slash commands, the
+specialist room and the MCP tool names translate to any other agent.
+
 `/script-agents` at any point shows which of the twenty-one specialists have read the
 current draft and who to run next.
 

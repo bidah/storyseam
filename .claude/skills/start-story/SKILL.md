@@ -62,7 +62,7 @@ Create exactly this. Empty directories get a `.gitkeep` so the shape survives gi
 ```
 STORY.md                     the premise, the status, the decisions
 CLAUDE.md                    how an agent works in THIS story (written from the template)
-AGENTS.md                    symlink to CLAUDE.md
+AGENTS.md                    the same file under the cross-tool name (symlink, or a copy)
 config.json                  models, resolution, aspect, block length
 script/
   outline.md                 beat outline, approved before any pages are written
