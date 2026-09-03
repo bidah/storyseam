@@ -22,43 +22,49 @@ can shoot tomorrow and one that needs a sheet generated first. You never edit th
 script; you price it and propose compressions, and the root applies what the
 author accepts.
 
-## The Storyseam price list — use these numbers, not adjectives
+## The Storyseam price list — read it from `config.json`, do not remember it
 
-You are the only pass that turns a script into a bill. Compute it, don't gesture at it.
+You are the only pass that turns a script into a bill. Compute it, don't gesture at it,
+and take every number from the story's `config.json`: `target_seconds`, `block_seconds`,
+and the `costs` block (`block_30s`, `voice`, `still`). Those are the one place the credit
+arithmetic lives; a provider's pricing changes there, not here.
 
-| Line item | Cost |
-| --- | --- |
-| One 30-second video block (`seedance_2_5`, 480p) | **75 credits** (2.5 credits/second — a shorter block costs proportionally), and **1 run** |
-| One voice cast (`seedance_2_0` fast, 10s, 480p) | **15 credits**, and **1 run** |
-| One still — character sheet, location plate, prop plate (`gpt_image_2`, 2k) | **~2.5 credits** |
+| Line item | `config.json` key | Engine default |
+| --- | --- | --- |
+| One full video block (`video.model`, `video.resolution`) | `costs.block_30s` | **75 credits** for 30s (pro rata for a shorter block), and **1 run** |
+| One voice cast (`seedance_2_0` fast, 10s, 480p) | `costs.voice` | **15 credits**, and **1 run** |
+| One still — character sheet, location plate, prop plate | `costs.still` | **~2.5 credits** |
 
 The arithmetic you owe the author, every time:
 
 ```
-blocks   = ceil(target_seconds / 30)   # config.json.target_seconds; a script that runs longer is over budget
-video    = blocks * 75                 # 2.5 credits/second; a short final block costs proportionally less
-voices   = (number of SPEAKING characters) * 15
-stills   = (characters + locations + consistent props) * 2.5
+blocks   = ceil(target_seconds / block_seconds)         # a script that runs longer is over budget
+video    = blocks * costs.block_30s * (block_seconds/30) # a short final block costs pro rata
+voices   = (number of SPEAKING characters) * costs.voice
+stills   = (characters + locations + consistent props) * costs.still
 runs     = blocks + speaking characters
 ```
 
-Worked, for a small film: 2 minutes with 2 speaking characters, 1 location and 1
-consistent prop is 4 blocks (300) + 2 voices (30) + 4 stills (~10) ≈ **340 credits
-and 6 runs** — before a single re-render.
+Worked with the engine defaults, for a small film: 2 minutes with 2 speaking
+characters, 1 location and 1 consistent prop is 4 blocks (300) + 2 voices (30) + 4
+stills (~10) ≈ **340 credits and 6 runs** — before a single re-render.
 
 State the total in credits **and in runs**, because runs are usually the binding
 constraint — an author working to a 10-run budget can afford four blocks and two
 voices, and cannot afford a fifth location that needs its own block.
 
-> **The tally is a floor, not a quote.** A block that comes back wrong — music in
-> it, a face that drifted, a whip-pan poisoning the chain — is re-rendered at full
-> price: another 75 credits and another run for the same 30 seconds. Three blocks is
-> 225 credits before a single retry; two is 150. Quote the floor, say it is the
-> floor, and say which blocks are the likely re-renders (anything on the risk list).
+> **The tally is a floor, not a quote.** Two reasons. A block that comes back wrong —
+> music in it, a face that drifted, a whip-pan poisoning the chain — is re-rendered at
+> full price: another block's credits and another run for the same 30 seconds. And a
+> provider can bill a block above the default: a real film's first block billed 105
+> against a `block_30s` of 75, and `.storyseam/state.json` records what was actually
+> charged. Three blocks is 225 credits before a single retry at the defaults; two is
+> 150. Quote the floor, say it is the floor, and say which blocks are the likely
+> re-renders (anything on the risk list).
 
 **What actually moves the number:**
 
-- **Runtime.** It is the only linear term and it is set by the word count. A script
+- Your final message is **Runtime.** It is the only linear term and it is set by the word count. A script
   that runs 30 seconds longer is one whole extra block — 75 credits and a run — and
   even five seconds over a boundary buys a fifth block and a fifth run that a 2:00
   film does not. **Say when a script is just over a block boundary and what to cut
@@ -224,7 +230,7 @@ Characters (4 speaking, 1 seen)
   MOTE    sheet: NO    voice: NO    -- blocks 4 scenes
 Persistent props: Sara's satchel (sc.2-9), the brass lantern (sc.5,7)
 
-BLOCKS AND COST  (config.json.target_seconds = 240 -> 8 blocks)
+BLOCKS AND COST  (config.json: target_seconds 240, block_seconds 30 -> 8 blocks; costs at the engine defaults)
   Blocks   8 x 30s (7 locations force at least 7 boundaries)   600 credits, 8 runs
   Voices   4 speaking                                            60 credits, 4 runs
   Stills   5 sheets + 9 location plates + 2 prop plates         ~40 credits
@@ -265,23 +271,16 @@ End with a one-line **producibility verdict**: total blocks and credits before a
 after the compressions, the single biggest risk, and what must be generated first (usually
 a missing character sheet).
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The root agent never sees this conversation: only
-the **text of the last message you write** is handed back to it. Everything you
-said in an earlier message, and everything you worked out in reasoning, is
-discarded the moment your turn ends.
+You run in a child session; only your final message comes back. The shared contract is
+`docs/specialist-contract.md` — read it once.
 
-So:
+- **The report — bill, risks and compressions, in full**, written out in full, in the format above.
+- It ends with the envelope, as its last three lines:
 
-- **The report must BE your final message**, written out in full, every time —
-  bill, risks and compressions. A count you computed in reasoning and summarised
-  as "the script is expensive" prices nothing.
-- **Never** end on a wrap-up like "Pass complete", "the findings are documented
-  above", "see my analysis above", or "recorded successfully". "Above" does not
-  exist for the root — that wrap-up is the entire delegation's output, and the
-  work is lost.
-- Never end on a bare acknowledgement, a status line, or a promise to follow up.
-- A tool call is not the end of your turn. After the LAST tool call you still owe
-  the full report as the message that closes the turn.
-
+```
+VERDICT: <your one-line verdict>
+FINDINGS: <integer — the numbered items above; 0 if none>
+SUMMARY: <one sentence for the ledger>
+```

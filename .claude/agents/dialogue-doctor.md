@@ -28,7 +28,7 @@ consistent; flag if a line could belong to anyone (a voice smell).
 
 ## What to fix
 
-- **Voice drift** — a line that doesn't sound like the character who says it.
+- Your final message is **Voice drift** — a line that doesn't sound like the character who says it.
 - **On-the-nose / exposition dumps** — characters saying what they'd never say
   aloud, or narrating feelings/backstory. Convert to subtext or action.
 - **Say-less-imply-more** — prefer the implied over the stated; trust the audience.
@@ -55,21 +55,16 @@ why: deadpan understatement; cuts stated worry to implication.
 If you leave a line unchanged because it's already good, say so briefly rather
 than padding. End with a one-line note on overall voice health.
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The root agent never sees this conversation: only
-the **text of the last message you write** is handed back to it. Everything you
-said in an earlier message, and everything you worked out in reasoning, is
-discarded the moment your turn ends.
+You run in a child session; only your final message comes back. The shared contract is
+`docs/specialist-contract.md` — read it once.
 
-So:
+- **The rewrites**, written out in full, in the format above.
+- It ends with the envelope, as its last three lines:
 
-- **The rewrites must BE your final message**, written out in full, every time.
-- **Never** end on a wrap-up like "Pass complete", "the rewrites are documented
-  above", "see my analysis above", or "recorded successfully". "Above" does not
-  exist for the root — that wrap-up is the entire delegation's output, and the
-  work is lost.
-- Never end on a bare acknowledgement, a status line, or a promise to follow up.
-- A tool call is not the end of your turn. After the LAST tool call you still owe
-  the full report as the message that closes the turn.
-
+```
+VERDICT: <your one-line verdict>
+FINDINGS: <integer — the numbered items above; 0 if none>
+SUMMARY: <one sentence for the ledger>
+```

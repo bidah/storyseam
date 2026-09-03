@@ -56,18 +56,13 @@ A voice is cast once and reused by every block that character speaks in.
 
 ## The invariants
 
-1. **No music, ever.** Every video prompt's audio line ends `No music.` A human scores
-   the film after `/assemble`.
-2. **Video is `seedance_2_5` at `480p`.** Never higher — resolution is the cost lever.
-3. **Images are `gpt_image_2` at `2k`.**
-4. **The backend is configuration.** `config.json` names a provider per capability.
-   `higgsfield` is reached by MCP; `atlas` and `fal` by an API key the user exports
-   (`ATLAS_KEY` / `FAL_KEY`) — **never stored in this folder**. Verify with
-   `$STORYSEAM_HOME/bin/provider-check.py` before spending.
-5. **Blocks render one at a time, chained**: the last frame of block N is the first
-   `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the
-   first frame`. Never `start_image` — Seedance 2.5 accepts it and ignores it. The
-   character sheets follow it in the same list, each labelled in prose.
+<!-- rules: generated from CLAUDE.md, do not edit here -->
+1. **Never generate music.** Every video prompt ends with the canonical audio line, and a render that comes back with music is a failed render.
+2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because resolution is the cost lever.
+3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft reference poisons every block that cites it.
+4. **The backend is configuration.** `config.json` names a provider per capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or `fal` (reached with an API key the author exports; Storyseam never handles the value).
+5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the first frame`.
+<!-- /rules -->
 
 ## What to run next
 
@@ -82,6 +77,7 @@ block that is already on disk.
 
 ## Money
 
-`75` credits and 1 run per 30-second block. `15` credits and 1 run per voice cast.
-`~2.5` credits per still. Both counters live in `.storyseam/state.json`. Announce them
-as you go; when the author sets a run budget it is a hard stop, not a target.
+One run per video call (a block, a voice cast, a retry). Credits per unit are in
+`config.json` under `costs`; a block can bill above `costs.block_30s`, so every tally is
+a floor. Both counters live in `.storyseam/state.json`. Announce them as you go; when
+the author sets a run budget it is a hard stop, not a target.

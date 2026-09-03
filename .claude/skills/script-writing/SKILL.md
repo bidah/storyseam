@@ -160,18 +160,42 @@ exist.
 
 ## The ledger — you keep it, not them
 
-After a specialist returns, append its pass to the `passes` array in
-`script/reviews.json` (the scaffold seeds it as `{ "passes": [] }`):
+Every specialist's final message ends with the same three-line envelope
+(`docs/specialist-contract.md`):
+
+```
+VERDICT: <one line>
+FINDINGS: <integer>
+SUMMARY: <one sentence>
+```
+
+After a specialist returns, append one entry to the `passes` array in
+`script/reviews.json` (the scaffold seeds it as `{ "passes": [] }`), copying the
+envelope verbatim — never a number you estimated from the body:
 
 ```json
 { "passes": [
   { "specialist": "scene-doctor", "draft": "v2", "words": 291,
     "when": "2026-09-02T16:20:00Z", "findings": 3,
+    "verdict": "Three of four scenes turn; scene 2 is inert.",
     "summary": "Scene 2 does not turn — Maya arrives already decided." }
 ] }
 ```
 
+- `findings`, `verdict`, `summary` — the envelope's three lines, unchanged.
+- `draft` — the `vN` of the newest snapshot in `script/drafts/` when the pass ran. If the
+  script has never been snapshotted, snapshot it as `v1` first; a pass must name a draft
+  that exists on disk.
+- `words` — `wc -w script/script.md` when the pass ran. `/script-agents` re-runs the same
+  command to decide fresh vs stale, so use that command and nothing else.
+- `when` — ISO-8601 UTC.
+
+A table read is **one** entry (`specialist: "table-read"`), never one per actor. A
+specialist that returned a question instead of a deliverable (`story-architect` may) gets
+no entry: nothing was read.
+
 The subagents do not write this file; you do, from what they return. `/script-agents`
 reads it to answer "what now". **Never record a pass that did not happen**, and never
 claim a doctor read the current draft when the ledger shows it read an earlier one —
-report that as what it is and offer the re-run.
+report that as what it is and offer the re-run. `bin/story-check.py` validates the file
+against `schema/reviews.schema.json`.

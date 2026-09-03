@@ -53,6 +53,13 @@ for b in blocks:
         need[f"assets/images/props/{slug(p)}.png"] = ("prop plate", CREDITS_PER_STILL)
     for v in b.get("video_refs", []):
         need[f"assets/video_refs/{v}"] = ("video ref", 0)
+    # an explicit ordered reference list names the exact files the prompt numbers
+    for r in b.get("references") or []:
+        if r.get("kind") == "anchor":
+            continue
+        kind = r.get("kind", "reference")
+        cost = CREDITS_PER_VOICE if kind == "voice" else (0 if kind == "video" else CREDITS_PER_STILL)
+        need.setdefault(r["path"], (kind, cost))
 
 # the anchor frame: a reference /render itself produces, cited by the next chained block
 state = load(".storyseam/state.json", default={}) or {}
@@ -62,22 +69,23 @@ for prev, cur in zip(blocks, blocks[1:]):
         need[f"renders/frames/{prev['id']}_last.jpg"] = ("anchor frame", 0)
 
 missing_cost, unuploaded, stale, over = 0, 0, 0, []
-print(f"{'ASSET':<52} {'KIND':<20} {'STATUS':<13} {'MEDIA_ID'}")
+print(f"{'ASSET':<52} {'KIND':<20} {'STATUS':<15} {'REGISTERED AS'}")
 print("-" * 100)
 for path in sorted(need):
     kind, cost = need[path]
     full = os.path.join(root, path)
     entry = cache.get(path) or {}
-    mid = entry.get("media_id")
+    mid = entry.get("media_id") or entry.get("url")
+    registered = (entry.get("media_id") and entry.get("confirmed")) or entry.get("url")
     if not os.path.exists(full):
         status, tail = "MISSING", "—"; missing_cost += cost
-    elif not (mid and entry.get("confirmed")):
-        status, tail = "NOT UPLOADED", "—"; unuploaded += 1
+    elif not registered:
+        status, tail = "NOT REGISTERED", "—"; unuploaded += 1
     elif entry.get("mtime") is not None and os.path.getmtime(full) > float(entry["mtime"]) + 1:
         status, tail = "STALE", mid[:8] + "…"; stale += 1
     else:
-        status, tail = "present", mid[:8] + "…"
-    print(f"{path:<52} {kind:<20} {status:<13} {tail}")
+        status, tail = "present", (mid[:8] + "…" if len(mid) > 9 else mid)
+    print(f"{path:<52} {kind:<20} {status:<15} {tail}")
 
 for b in blocks:
     d = b.get("dur", 0)
@@ -93,7 +101,7 @@ for o in over:
 if missing_cost:
     print(f"MISSING assets cost ~{missing_cost:g} credits to make. Run /cast.")
 if unuploaded:
-    print(f"{unuploaded} asset(s) exist but are not uploaded/confirmed. Run /cast.")
+    print(f"{unuploaded} asset(s) exist but are not registered with the provider. Run /cast.")
 if stale:
     print(f"{stale} asset(s) changed on disk after upload — re-upload before rendering against them.")
 if not (missing_cost or unuploaded or stale or over):

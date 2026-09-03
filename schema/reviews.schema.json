@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://storyseam.dev/schema/reviews.schema.json",
   "title": "Storyseam specialist ledger (script/reviews.json)",
-  "description": "Every specialist pass over the script, recorded by the root agent. Nothing that is not in it happened. /script-agents compares each entry's draft and words against the current script to decide fresh vs stale.",
+  "description": "Every specialist pass over the script, recorded by the root agent from the specialist's VERDICT / FINDINGS / SUMMARY envelope (docs/specialist-contract.md). Nothing that is not in it happened. /script-agents marks an entry fresh when its words equals `wc -w script/script.md` and its draft is the newest snapshot in script/drafts/.",
   "type": "object",
   "required": [
     "passes"
@@ -19,6 +19,7 @@
           "words",
           "when",
           "findings",
+          "verdict",
           "summary"
         ],
         "additionalProperties": true,
@@ -29,11 +30,13 @@
           },
           "draft": {
             "type": "string",
-            "pattern": "^v[0-9]+$"
+            "pattern": "^v[0-9]+$",
+            "description": "vN of the newest script/drafts/script.vN.md at pass time."
           },
           "words": {
             "type": "integer",
-            "minimum": 0
+            "minimum": 0,
+            "description": "wc -w script/script.md at pass time."
           },
           "when": {
             "type": "string",
@@ -41,14 +44,18 @@
           },
           "findings": {
             "type": "integer",
-            "minimum": 0
+            "minimum": 0,
+            "description": "The FINDINGS integer, verbatim: numbered items in the body."
           },
           "summary": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "The SUMMARY line, verbatim."
           },
           "verdict": {
-            "type": "string"
+            "type": "string",
+            "minLength": 1,
+            "description": "The VERDICT line, verbatim."
           }
         }
       }

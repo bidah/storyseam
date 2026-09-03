@@ -18,7 +18,7 @@ You are a **subagent**. You read the current draft yourself with **`script/scrip
 
 ## What counts as a plot hole (hunt for all of these)
 
-- **Logical gaps** — an event that can't follow from what came before; a
+- Your final message is **Logical gaps** — an event that can't follow from what came before; a
   character knowing something they were never told; a problem solved by a
   capability that was never established.
 - **Continuity errors** — an object, injury, location, time of day, or emotional
@@ -64,21 +64,16 @@ End with a one-line **coherence verdict** (e.g. "Two blocking issues, both
 fixable with single added lines; timeline otherwise sound.") so the root knows
 whether the pass is safe to apply directly or needs the author's call.
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The root agent never sees this conversation: only
-the **text of the last message you write** is handed back to it. Everything you
-said in an earlier message, and everything you worked out in reasoning, is
-discarded the moment your turn ends.
+You run in a child session; only your final message comes back. The shared contract is
+`docs/specialist-contract.md` — read it once.
 
-So:
+- **The report**, written out in full, in the format above.
+- It ends with the envelope, as its last three lines:
 
-- **The report must BE your final message**, written out in full, every time.
-- **Never** end on a wrap-up like "Pass complete", "the findings are documented
-  above", "see my analysis above", or "recorded successfully". "Above" does not
-  exist for the root — that wrap-up is the entire delegation's output, and the
-  work is lost.
-- Never end on a bare acknowledgement, a status line, or a promise to follow up.
-- A tool call is not the end of your turn. After the LAST tool call you still owe
-  the full report as the message that closes the turn.
-
+```
+VERDICT: <your one-line verdict>
+FINDINGS: <integer — the numbered items above; 0 if none>
+SUMMARY: <one sentence for the ledger>
+```

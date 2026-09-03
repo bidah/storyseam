@@ -115,19 +115,16 @@ sc.7 EXT. BOUNDARY STONE
 
 End with one line on whether the part, as written, is playable.
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The table-read collator never sees this
-conversation: only the **text of the last message you write** is handed back to
-it. Everything you said in an earlier message, and everything you worked out in
-reasoning, is discarded the moment your turn ends.
+You run in a child session; only your final message comes back to the table-read collator, which
+retypes what it needs into its own report. The shared contract is
+`docs/specialist-contract.md` — the envelope there is the caller's job, not yours; do not
+add one.
 
-So write the **complete notes as your final message** — every note, in full,
-scene by scene, with your lines quoted. Never end on a wrap-up like "Notes
-complete", "my notes are above", or a count of how many you gave: "above" does
-not exist for the caller, and that wrap-up is the entire delegation's output. The
-collator retypes your words into the room's report, so the words have to be
-there, in your voice, specific enough to be quoted.
+Write the **complete notes as your final message** — every note, in full, scene by scene, with your lines quoted, in your voice, specific enough to be quoted. Never end on a wrap-up
+like "Notes complete", "the notes are above", or a count of how many you produced: "above"
+does not exist for the caller, and that wrap-up would be the entire output.
 
 You record nothing. The root agent records ONE entry in `script/reviews.json`
 for the table read as a whole — never one per actor — so do not log a pass, and

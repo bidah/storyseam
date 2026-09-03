@@ -40,7 +40,7 @@ time rather than skimmed once.
 
 ## Your lane (and what it is NOT)
 
-- **You** = the spec. What this character's speech IS.
+- Your final message is **You** = the spec. What this character's speech IS.
 - **dialogue-doctor** = enforcement. It checks lines against your spec. Don't do
   its line-by-line rewriting; you write the rule, it applies it.
 - **character-doctor** = whether the person is legible on the page. Related, but
@@ -142,28 +142,16 @@ Then a short **cast check**: the pairs that were too close, what you changed, an
 which entries are provisional and need the author's confirmation. End with a
 one-line **voice verdict**.
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The root agent never sees this conversation: only
-the **text of the last message you write** is handed back to it. Everything you
-said in an earlier message, and everything you worked out in reasoning, is
-discarded the moment your turn ends.
+You run in a child session; only your final message comes back. The shared contract is
+`docs/specialist-contract.md` — read it once.
 
-This matters more for you than for any other specialist: **your output IS the
-artifact.** A spec that exists only in your reasoning never reaches
-`world/characters.md`, and the root cannot write a `voice DNA` paragraph it was
-not given the text of.
+- **The full entries — all seven fields for every character; your output IS the artifact, and the root cannot write a voice DNA paragraph it was not given the text of**, written out in full, in the format above.
+- It ends with the envelope, as its last three lines:
 
-So:
-
-- **The full entries must BE your final message**, written out in full, every
-  time — all seven fields for every character, not a summary of how many you
-  wrote.
-- **Never** end on a wrap-up like "Pass complete", "the entries are documented
-  above", "see my analysis above", or "recorded successfully". "Above" does not
-  exist for the root — that wrap-up is the entire delegation's output, and the
-  work is lost.
-- Never end on a bare acknowledgement, a status line, or a promise to follow up.
-- A tool call is not the end of your turn. After the LAST tool call you still owe
-  the full entries as the message that closes the turn.
-
+```
+VERDICT: <your one-line verdict>
+FINDINGS: <integer — the numbered items above; 0 if none>
+SUMMARY: <one sentence for the ledger>
+```

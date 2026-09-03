@@ -22,7 +22,7 @@ remember that asking costs a whole round trip through the root: ask only when a
 sensible choice genuinely isn't available. The choices (a freeform answer is
 allowed too):
 
-- **Hero's Journey** — a protagonist leaves the ordinary world, is tested, and
+- Your final message is **Hero's Journey** — a protagonist leaves the ordinary world, is tested, and
   returns transformed. Big, mythic, adventure-shaped.
 - **Story Circle** (Dan Harmon) — a tight 8-step want/need loop; great for
   episodic TV and character change in a small space.
@@ -77,34 +77,29 @@ outline with five locations in two minutes has priced the film before a line is
 written — say so. Don't write full
 dialogue or action prose — that's the root's job (and the dialogue-doctor's).
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The root agent never sees this conversation: only
-the **text of the last message you write** is handed back to it. Everything you
-said in an earlier message, everything the arc expert told you, and everything
-you worked out in reasoning, is discarded the moment your turn ends.
+You run in a child session; only your final message comes back. The shared contract is
+`docs/specialist-contract.md` — read it once.
 
-So:
+- **The full beat outline — every beat, not a count of them**, written out in full, in the format above.
+- It ends with the envelope, as its last three lines:
 
-- **The full beat outline must BE your final message**, written out in full,
-  every time — every beat, not a count of them.
-- **Never** end on a wrap-up like "Pass complete", "the outline is documented
-  above", "the eight beats are above", or "recorded successfully". "Above" does
-  not exist for the root — that wrap-up is the entire delegation's output, and
-  the work is lost.
-- The arc expert's beats reach the root **only because you retype them into your
-  final message.** Delegating to `three-act` and then reporting that it answered
-  hands the root nothing.
-- A tool call is not the end of your turn. After the LAST tool call you still owe
-  the full outline as the message that closes the turn.
+```
+VERDICT: <your one-line verdict>
+FINDINGS: <integer — the numbered items above; 0 if none>
+SUMMARY: <one sentence for the ledger>
+```
+- The arc expert's beats reach the root **only because you retype them into your final
+  message.** Delegating to `three-act` and then reporting that it answered hands the root
+  nothing. `FINDINGS` is the number of beats.
 
 ### When you have to ask instead of deliver
 
 You cannot talk to the author directly — the root relays for you. If the arc or
 the premise is missing (Step 1) and you must ask, then **the question itself is
-your entire final message**: a short question plus the choices, nothing else. In
-that case do **not** consult an expert and do **not** call one on a guess. But
-when the delegation prompt already implies a shape, do not ask: pick the fitting
+your entire final message**: a short question plus the choices, nothing else, and no
+envelope. In that case do **not** consult an expert and do **not** call one on a guess.
+But when the delegation prompt already implies a shape, do not ask: pick the fitting
 arc, deliver the outline, and say in one line which arc you chose and why, so the
 author can redirect. Prefer delivering over asking.
-

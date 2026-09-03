@@ -74,30 +74,28 @@ renders/{clips,frames,final}/
 bin/asset-audit.sh <story>     # every reference the shot list cites: present, uploaded, stale
 bin/story-check.py <story>     # the state files against schema/, plus the cross-file checks
 bin/provider-check.py          # is the configured backend reachable, without printing a key
+bin/rules-check.py             # engine only: the five rules have one owner and no contradiction
 ```
 
-All three are free and dependency-free. `schema/` holds the JSON schemas for the files the
+All four are free and dependency-free. The first three check a story; the last checks the
+engine itself and is what to run before committing a change to a skill. `schema/` holds the JSON schemas for the files the
 skills hand each other: `shotlist.json`, `state.json`, `media.json`. They are the contract
 between `/shotlist`, `/cast` and `/render`; a skill that changes a field changes the schema.
 
 ## The rules it will not break
 
-1. **No music.** Every video prompt says so. A human scores the film at the end, into
-   `assets/audio/music/`.
-2. **Video is Seedance 2.5 at 480p.** Always. Resolution is the cost lever.
-3. **Images are GPT Image 2 at 2k.** Voices are cast with Seedance 2.0 fast (10s,
-   480p) and stored as black-frame `.mp4` — the only form Seedance accepts as a voice
-   reference.
-4. **The backend is configuration.** `config.json` names a provider per capability;
-   Higgsfield by MCP is the default, Atlas Cloud and fal.ai by an API key you export.
-   Never the `higgsfield` CLI: it can pass one reference image, which breaks every
-   character-anchored shot.
-5. **One block at a time, chained.** The last frame of each clip becomes the first
-   frame of the next — passed as the first `image_references` entry and declared in
-   prose, because Seedance 2.5 ignores `start_image`. Never parallel — the chain *is*
-   the continuity.
+<!-- rules: generated from CLAUDE.md, do not edit here -->
+1. **Never generate music.** Every video prompt ends with the canonical audio line, and a render that comes back with music is a failed render.
+2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because resolution is the cost lever.
+3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft reference poisons every block that cites it.
+4. **The backend is configuration.** `config.json` names a provider per capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or `fal` (reached with an API key the author exports; Storyseam never handles the value).
+5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the first frame`.
+<!-- /rules -->
 
 ## Cost
+
+The prices live in each story's `config.json` under `costs`, and every script and skill
+reads them from there. These are the defaults `/start-story` ships with:
 
 | | Credits | Runs |
 | --- | --- | --- |
@@ -106,8 +104,9 @@ between `/shotlist`, `/cast` and `/render`; a skill that changes a field changes
 | Still (sheet / plate) | ~2.5 | 0 |
 
 A 2-minute film with two speaking characters and one location: 4 blocks + 2 voices +
-~5 stills ≈ **345 credits, 6 runs**. A block that comes back wrong is re-rendered at full
-price, so the budget is a floor. Preflight with `get_cost: true` when unsure.
+~5 stills ≈ **345 credits, 6 runs**. That is a floor: a block can bill above the default
+(the reference film's first block billed 105), and a block that comes back wrong is
+re-rendered at full price. Preflight with `get_cost: true` when unsure.
 
 ## Providers — the backend is configuration
 

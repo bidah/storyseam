@@ -91,6 +91,12 @@ stage below, and distinct from a draft snapshot, even though the words collide.
 **Ledger**:
 `script/reviews.json`: the record of every pass. Nothing that is not in it happened.
 
+**Envelope**:
+The three fixed lines (`VERDICT`, `FINDINGS`, `SUMMARY`) every root-called specialist
+ends its message with, copied verbatim into the ledger. The body above it is the
+specialist's own format; the envelope is the only part the root parses.
+_Avoid_: footer, summary block
+
 ### The shot list
 
 **Shot list**:
@@ -105,6 +111,12 @@ _Avoid_: segment, chunk, clip (the clip is what the block renders to)
 **Shot**:
 A timed camera unit inside a block: a framing and one clear action, with start and end
 seconds. Shots are prose inside the block's prompt; they are never rendered separately.
+
+**Reference list**:
+A block's ordered list of the references its prompt numbers (`@Image 1 …`), the anchor
+frame first on a chained block. The shot list writes it, the director numbers against it,
+`/render` passes it in that order, and `story-check` verifies the three agree.
+_Avoid_: media list, inputs
 
 **Final frame**:
 The stable, legible composition a block is written to end on, so that the next block can
@@ -222,9 +234,11 @@ The catalogue of directors and provider adapters, built from `registry/sources/`
 installed into a project by name or by model id. A model has exactly one default director
 and any number of alternates.
 
-**Media id**:
-Higgsfield's handle for an uploaded reference, cached in `.storyseam/media.json`. A
-provider concept, not a story one; URL-based providers have no equivalent.
+**Registered reference**:
+A reference the configured provider can fetch: a confirmed `media_id` on Higgsfield, a
+public `url` on Atlas or fal. Recorded per file in `.storyseam/media.json`; an entry
+older than the file on disk is stale.
+_Avoid_: uploaded (only true on one provider), media id (the Higgsfield form of it)
 
 ### The pipeline
 

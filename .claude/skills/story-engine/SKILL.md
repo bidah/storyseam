@@ -16,20 +16,13 @@ idea ──▶ /start-story ──▶ /write-script ──▶ /shotlist ──�
 
 ## The five hard rules
 
-Restate these whenever a stage is about to break one.
-
-1. **Never generate music.** Every video prompt's audio line ends `No music.` The
-   human scores the film after `/assemble`, into `assets/audio/music/`.
-2. **Video is `seedance_2_5` at `480p`.** Always. Resolution is the cost lever.
-3. **Images are `gpt_image_2` at `2k`.** Voices are cast with `seedance_2_0` fast,
-   10s, 480p, and stored as black-frame `.mp4` in `assets/audio/voices/blackframe/`.
-4. **The backend is configuration, not code.** `config.json` names a provider per
-   capability (`higgsfield` via MCP, `atlas` or `fal` via an API key the user exports).
-   Verify access with `bin/provider-check.py` before spending, and never fall back to
-   another provider silently. `ffmpeg` locally is expected either way. See `providers`.
-5. **Blocks render one at a time, chained** — the last frame of block N is passed as the
-   FIRST `image_references` entry of block N+1 and declared in prose as `@Image 1 is the
-   first frame`. Never `start_image` (2.5 ignores it), and never in parallel.
+<!-- rules: generated from CLAUDE.md, do not edit here -->
+1. **Never generate music.** Every video prompt ends with the canonical audio line, and a render that comes back with music is a failed render.
+2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because resolution is the cost lever.
+3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft reference poisons every block that cites it.
+4. **The backend is configuration.** `config.json` names a provider per capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or `fal` (reached with an API key the author exports; Storyseam never handles the value).
+5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the first frame`.
+<!-- /rules -->
 
 ## Where are we? — read the folder, don't ask
 
@@ -63,7 +56,8 @@ sheets should look like — those are decisions this engine is built to make.
 
 Two numbers matter and both live in `.storyseam/state.json`:
 
-- **`credits_spent`** — 75 per 30s block, 15 per voice cast, ~2.5 per still.
+- **`credits_spent`** — priced from `config.json` → `costs` (`block_30s`, `voice`,
+  `still`); never from memory. A block can bill above `block_30s`, so a tally is a floor.
 - **`runs_used`** — every `generate_video` call, including voice casts and retries.
 
 Announce them as you go. When the author sets a run budget, it is a hard stop, not a

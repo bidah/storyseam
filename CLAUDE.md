@@ -12,28 +12,38 @@ idea ──▶ /start-story ──▶ /write-script ──▶ /shotlist ──�
 
 ## The five hard rules
 
-These are not defaults. They are invariants. Every skill restates them because
-every skill can break them.
+These are invariants, not defaults. **This block is the only place they are written.**
+The copies in `README.md`, the `story-engine` skill and `templates/story-CLAUDE.md` are
+generated from it by `bin/rules-check.py --write` and carry a marker saying so; the same
+script fails the build when a copy or any skill drifts. Each rule's bold first sentence is
+its **headline** and never changes wording.
 
-1. **NEVER generate music.** Not a score, not a sting, not a "subtle ambient bed".
-   Every video prompt ends with an audio line that says *no music*. Music is added
-   by a human at the end, into `assets/audio/music/`. A render that comes back with
-   music in it is a failed render.
-2. **Video is Seedance 2.5 at 480p. Always 480p.** Never 720p, never 1080p.
-   `seedance_2_5` is expensive and the resolution is the cost lever.
-3. **Images are GPT Image 2 at 2k.** `gpt_image_2`, `resolution: "2k"`.
-4. **The backend is configuration, not code.** `config.json` names a provider per
-   capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`),
-   `atlas` or `fal` (reached with an API key the user exports; Storyseam never handles
-   the value). Verify access with `bin/provider-check.py` before spending, and never
-   fall back to another provider silently. Never the `higgsfield` CLI — it can only
-   pass one reference image, which breaks every character-anchored shot. `ffmpeg` for
-   local frame/audio work is fine and expected.
-5. **One clip at a time, chained.** Blocks render sequentially. The last frame of
-   block N is the **first `image_references` entry** of block N+1, declared in the
-   prompt as `@Image 1 is the first frame`. Never `start_image` — Seedance 2.5
-   accepts the role and ignores it (see `docs/seedance-2.5-research.md`). Never fan
-   out video generation in parallel — the chain is the continuity.
+1. **Never generate music.** Every video prompt ends with the canonical audio line, and a
+   render that comes back with music is a failed render. Not a score, not a sting, not a
+   "subtle ambient bed". The human adds music after `/assemble`, into `assets/audio/music/`,
+   the one folder Storyseam never writes to. The canonical audio line is:
+   `Audio: diegetic only — dialogue, room tone and Foley. No music.`
+2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because
+   resolution is the cost lever. `config.json` carries the model and resolution the engine
+   ships with (`seedance_2_5`, `480p`); a skill reads them from there rather than
+   hardcoding, and if an author asks for 720p or 1080p, quote the multiplier and leave it.
+3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop
+   plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft
+   reference poisons every block that cites it. Voices are cast once with `seedance_2_0`
+   fast (10s, 480p) and stored as a black-frame `.mp4` under
+   `assets/audio/voices/blackframe/`, the only form a Higgsfield render accepts as a voice.
+4. **The backend is configuration.** `config.json` names a provider per capability:
+   `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or
+   `fal` (reached with an API key the author exports; Storyseam never handles the value).
+   Verify access with `bin/provider-check.py` before spending and never fall back to
+   another provider silently. Never the `higgsfield` CLI — it passes one reference image,
+   which breaks every character-anchored shot. `ffmpeg` for local frame and audio work is
+   expected on every provider.
+5. **One block at a time, chained.** Blocks render sequentially, and the last frame of
+   block N is the first `image_references` entry of block N+1, declared in the prompt as
+   `@Image 1 is the first frame`. Never `start_image` on 2.5 — the API accepts the role
+   and the model ignores it (ADR-0001, `docs/seedance-2.5-research.md`). Never fan out
+   video generation in parallel; the chain is the continuity.
 
 ## Resolution & model settings
 
@@ -98,8 +108,11 @@ score there after `/assemble`.
 - **`.mov` is rejected.** Re-encode to `.mp4` (`libx264` + `aac`).
 - If `generate_video` returns a `preset_recommendation`, resend the identical call
   with `declined_preset_id: "<id>"` to render the prompt literally.
-- Preflight cost with `get_cost: true` before any run you are not sure about.
-  30s @ 480p ≈ 75 credits. A 2-minute film ≈ 300 credits.
+- Preflight cost with `get_cost: true` before any run you are not sure about. The
+  per-unit prices live in `config.json` under `costs` (the engine ships `block_30s: 75`,
+  `voice: 15`, `still: 2.5`), and every script and skill reads them from there. A block
+  can bill above the default — the test film's first block billed 105 for 30s at 480p —
+  so any tally computed from `costs` is a floor, and is said to be one.
 
 ## Commands
 
@@ -144,6 +157,9 @@ look wrong until you know why.
 ## Working on the engine itself
 
 - Skills live in `.claude/skills/<name>/SKILL.md`. Subagents live in `.claude/agents/`.
+- Before committing an engine change run `bin/rules-check.py` (the five rules: one owner,
+  generated copies, no known contradiction anywhere) and `bin/story-check.py test` (the
+  schemas still accept a real story). Both are free and dependency-free.
 - Director and provider skills are edited in `registry/sources/<name>/`, then
   `bin/registry-build.py <BASE_URL>` and `bin/registry-add.py --all` to reinstall. Editing
   the installed copy under `.claude/skills/` is lost on the next install.
@@ -151,6 +167,7 @@ look wrong until you know why.
   story's title, characters or premise — examples use placeholder names.
 - A skill is instructions for a model, not documentation for a human. Write the
   failure mode, not the happy path — the happy path is what the model already does.
-- When you change a rule that appears in more than one skill (the five above are all
-  like this), change it everywhere. A rule stated in one skill and contradicted in
-  another is worse than a rule stated nowhere.
+- The five rules are edited in this file only; `bin/rules-check.py --write` regenerates
+  the copies. A stage skill may restate the rule it can break in its own words, but a
+  restatement that contradicts the owner fails `bin/rules-check.py`, and a rule stated in
+  one skill and contradicted in another is worse than a rule stated nowhere.

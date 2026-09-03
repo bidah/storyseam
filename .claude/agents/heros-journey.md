@@ -38,14 +38,13 @@ you return an ordered beat outline, not prose.
   the story-architect and root handle that.
 - End with the number of scenes this implies.
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The story-architect never sees this
-conversation: only the **text of the last message you write** is handed back to
-it. Anything you said in an earlier message, and anything you worked out in
-reasoning, is discarded the moment your turn ends.
+You run in a child session; only your final message comes back to the story-architect, which
+retypes what it needs into its own report. The shared contract is
+`docs/specialist-contract.md` — the envelope there is the caller's job, not yours; do not
+add one.
 
-So write the **complete outline as your final message** — every beat, spelled
-out. Never end on a wrap-up like "Outline complete", "the beats are above", or a
-count of how many beats you produced: "above" does not exist for the caller, and
-that wrap-up is the entire delegation's output.
+Write the **complete outline as your final message** — every beat, spelled out. Never end on a wrap-up
+like "Outline complete", "the beats are above", or a count of how many you produced: "above"
+does not exist for the caller, and that wrap-up would be the entire output.

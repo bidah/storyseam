@@ -56,7 +56,7 @@
         "seedance_2_5"
       ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-atlas.json",
-      "sha256": "8f2f752fecd83b87",
+      "sha256": "a2a70cd278f1dfbc",
       "updated": "2026-09-02"
     },
     {
@@ -73,7 +73,7 @@
         "seedance_2_5"
       ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-fal.json",
-      "sha256": "a11596e66a559d33",
+      "sha256": "993d1d16d0f3a291",
       "updated": "2026-09-02"
     },
     {
@@ -91,7 +91,7 @@
         "seedance_2_5"
       ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-higgsfield.json",
-      "sha256": "d5bf0deacc7798ec",
+      "sha256": "5d9851a3aafa3ba8",
       "updated": "2026-09-02"
     },
     {
@@ -148,7 +148,7 @@
       "title": "Seedance 2.5 Director",
       "description": "Shot-list director for Seedance 2.5. Blocks up to 30s, omni_reference, first frame declared in prose.",
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-director.json",
-      "sha256": "2348536af4b15c96",
+      "sha256": "58cfac9e1804059e",
       "updated": "2026-09-02",
       "constraints": {
         "duration_seconds": [

@@ -1,143 +1,139 @@
 ---
 name: render-clips
 description: >-
-  Render the shot list into video, ONE 30-second Seedance 2.5 block at a time,
-  chaining the last frame of each clip into the start frame of the next. Use for
-  "/render", "render the blocks", "generate the video", "render the next block".
-  Always 480p. Always no music. Never parallel. Resumable from .storyseam/state.json.
-  This is the only skill that spends real money — it re-audits before every call.
+  Render the shot list into video, ONE block at a time, chaining the last frame of each
+  clip into the first frame of the next. Use for "/render", "render the blocks", "generate
+  the video", "render the next block". Provider-neutral: the block is built here, submitted
+  through the provider adapter named in config.json, and verified here. Always 480p. Always
+  no music. Never parallel. Resumable from .storyseam/state.json. This is the only skill
+  that spends real money — it re-audits before every call.
 ---
 
 # /render — one block at a time, chained
 
-This is the expensive skill. A 30-second block at 480p is **75 credits**. Everything
-here is arranged so that no credit is spent on a call that was going to fail.
+This is the expensive skill. A 30-second block costs `config.costs.block_30s` credits
+(shorter blocks cost proportionally). Everything here is arranged so that no credit is
+spent on a call that was going to fail.
+
+## What this skill knows, and what it delegates
+
+This skill owns the **order of operations** and the **state**. Two other skills own the
+detail, and you load both before the first paid call:
+
+- **The director for `config.video.model`** (`seedance_2_5` → `seedance-2-5-director`)
+  owns the prompt contract: how the anchor frame is declared, how references are numbered
+  in the prompt, the audio line, what never goes in a prompt. The shot list was written
+  through it; you pass what it wrote and do not edit the prompt here.
+- **The provider adapter for `config.providers.video.id`** (`provider-higgsfield`,
+  `provider-atlas`, `provider-fal`) owns the mechanics: how a reference reaches the
+  provider, the exact call, the job flow, the download, the billing unit, and that
+  provider's failure modes. Install it with `bin/registry-add.py provider-<id>` if it is
+  not in `.claude/skills/`.
+
+If either is missing, **stop and install it**. Rendering from memory of either is how a
+film gets rendered against a role the model ignores.
 
 ## The invariants
 
-1. **`seedance_2_5`, `resolution: "480p"`.** Never 720p, never 1080p. If someone asks
-   for higher, quote the multiplier and leave it at 480p.
-2. **`generate_audio: true`, and the prompt says `No music.`** The clip should come
+1. **Video is Seedance 2.5 at 480p. Always 480p.** If someone asks for higher, quote the
+   multiplier from the adapter and leave it at 480p.
+2. **Every video prompt ends with an audio line that says no music.** The clip should come
    back with dialogue, room tone and Foley — and nothing else.
-3. **One call at a time.** Never `generate_video_batch`, never two blocks in flight.
-   The chain is sequential by construction: block N+1 needs a frame that does not
-   exist until block N has finished.
-4. **Resume, never restart.** `.storyseam/state.json` records what is done. A
-   re-run picks up at the first unrendered block.
+3. **One clip at a time, chained.** Never a batch, never two blocks in flight. Block N+1
+   needs a frame that does not exist until block N has finished.
+4. **Resume, never restart.** `.storyseam/state.json` records what is done. A re-run
+   picks up at the first block whose status is not `done`.
 
 ## Step 0 — pre-flight (free, and not optional)
 
-Before the first paid call, `bin/story-check.py` and `bin/asset-audit.sh` must both pass.
-Then:
+Before the first paid call:
 
-1. Read `shotlist/shotlist.json`, `config.json`, `.storyseam/state.json`,
-   `.storyseam/media.json`, and `prompts/video_style_prompt.txt`.
-2. Re-run the `/cast` audit. If **any** reference a block cites is missing or
-   unconfirmed, stop and say so. Do not render a block against a missing sheet — it
-   will not error, it will produce something plausible and wrong at full price.
-3. Print the plan: how many blocks remain, the cost each, the total, and the run
-   budget. Then start.
+1. `bin/story-check.py` and `bin/asset-audit.sh` must both pass. They check the shot list
+   against its schema, every block's references on disk and registered with the provider,
+   and — for a chained block — that the previous block's anchor frame exists.
+2. Read `config.json`, `shotlist/shotlist.json`, `.storyseam/state.json` and
+   `prompts/video_style_prompt.txt`.
+3. Verify provider access the way the `providers` skill says: `bin/provider-check.py`,
+   then the adapter's own probe. Unsatisfied access means stop, not switch.
+4. Print the plan: blocks remaining, cost each from `config.costs`, the total, and the run
+   budget. Say the cost is a floor — a block that comes back wrong is re-rendered at full
+   price. Then start.
 
-## Step 1 — build the call for block N
+## Step 1 — build block N (provider-neutral)
 
-```
-generate_video {
-  model: "seedance_2_5",
-  mode: "omni_reference",
-  duration: <block.dur>,          // 4-30
-  resolution: "480p",
-  aspect_ratio: <config.aspect_ratio>,
-  generate_audio: true,
-  prompt: <block.prompt> + "\n\n" + <video_style_prompt.txt>,
-  medias: [ ...see below... ]
-}
-```
+A block is exactly these things, and nothing provider-specific:
 
-**The `medias` array, in this order:**
+| Field | From |
+| --- | --- |
+| `prompt` | `block.prompt` + `"\n\n"` + `prompts/video_style_prompt.txt`. Never edited here. |
+| `references` | the block's ordered reference list — see below |
+| `duration` | `block.dur` (4–30) |
+| `resolution` | `config.video.resolution` — `480p` |
+| `aspect_ratio` | `config.aspect_ratio` |
+| `generate_audio` | `true` |
 
-| Order | Role | Value |
-| --- | --- | --- |
-| 1 | `image_references` | `renders/frames/block_<N-1>_last.jpg` — the continuity anchor, **first in the list**, and declared in the prompt as `@Image 1 is the first frame` |
-| 2 | `image_references` | each character sheet the block cites |
-| 3 | `image_references` | the location plate |
-| 4 | `image_references` | each prop plate |
-| 5 | `video_references` | each speaking character's `assets/audio/voices/blackframe/<slug>.mp4` |
+**The reference list is ordered, and the order is the director's.** The director says how
+references are numbered in the prompt; the shot list records that order in the block's
+`references` array (anchor frame first on a chained block, then character sheets, then
+the location plate, then prop plates, then voice references). You pass them to the
+adapter **in that order** — the adapter maps positions to its own roles or arrays, and
+`@Image 1` in the prompt must be the first image you pass or the anchor is silently
+wasted. `bin/story-check.py` verifies the prompt's `@Image N` mentions agree with the
+array. If a block has no `references` array (an older shot list), build the list in the
+director's order from `characters`, `location`, `props` and `voices`, anchor first.
 
-Every `value` is a `media_id` from `.storyseam/media.json` — never a path, never a
-URL, never a previous `job_id`. A `job_id` in `medias` does not error; it hangs.
+On a chained block the first reference is `renders/frames/block_<N-1>_last.jpg`, and it
+must already be registered with the provider (Step 4 of the previous block).
 
-**Do not use the `start_image` role on `seedance_2_5`.** The API declares it and accepts
-it; the model ignores it. A film has already been rendered where every block passed its
-anchor as `start_image`, the job JSON recorded `"role":"start_image"`, and not one block
-opened on that frame. On 2.5 the anchor is an ordinary `image_references` entry, placed
-first, and the *prompt* is what makes it the first frame:
+## Step 2 — submit through the provider adapter
 
-> `@Image 1 is the first frame. It defines the opening composition, subject position, pose,
-> prop state, scene, and camera direction. Do not change the first-frame composition
-> defined by @Image 1.`
+Hand the built block to the adapter and follow its section on submitting a video job. The
+adapter owns: how each reference is passed (a media id, a public URL), the call shape, any
+recommendation or preset gate, polling, and the download. **Do not improvise any of that
+from another provider's habits** — a value that is right on one provider hangs on another.
 
-And the prompt's **`Shot 1` must describe that frame**, not a new framing — a Shot 1 that
-opens on a different shot size overrides the anchor and wastes it. If you need a
-frame-exact splice rather than a matching opening composition, use
-`mode: "video_extension"` with `extension_mode: "forward"` — the
-`seedance-2-5-extension-director` skill, installed by name with `bin/registry-add.py`.
+What must be true when the adapter is done, whatever the provider:
 
-When a voice reference is attached, the prompt must acknowledge it:
-> Use the attached voice references; ignore the black frames. Output only the spoken
-> dialogue and the scene's diegetic sound. No music.
+- `renders/clips/block_<NN>.mp4` exists and plays.
+- You know the provider's job id and what it actually billed.
 
-## Step 2 — submit, wait, download
+## Step 3 — verify before chaining
 
-- Submit. If the response carries a `preset_recommendation`, resend the **identical**
-  call with `declined_preset_id: "<id>"` so the prompt renders literally. Do not
-  accept a preset — it overrides the block's blocking, and one of the presets on
-  offer is literally called **DROWN IN MUSIC**, which breaks rule 1 outright.
+Watch the clip. Check: right characters, right location, right number of beats, dialogue
+audible, real duration within a second of `block.dur` (`ffprobe`), **no music**. A block
+with music in it is a failed block — re-prompt with a harder audio line rather than
+carrying it forward, because it cannot be un-mixed later. A clamped duration means the
+call dropped or capped `duration`; that block is re-rendered, not concatenated.
 
-  Three things about this that cost a turn each to learn:
-  - **The recommendation costs nothing.** No job is submitted and no credit is spent,
-    so it is a free round trip, not a failure. Do not treat it as an error.
-  - **`declined_preset_id` declines exactly one preset, by id.** A different block —
-    or the same block re-sent — can come back recommending a *different* preset, and
-    the id from last time will not suppress it. Read the id out of *this* response.
-  - **Never ask the author which preset they want.** The block prompt is the shot
-    list's considered output; a preset is a style bundle that overrides it. Decline
-    and move on.
-- Poll `job_status` (a 30s block takes roughly 2–4 minutes). Respect
-  `poll_after_seconds`.
-- Download the result to `renders/clips/block_<NN>.mp4`.
-- **Watch it before chaining.** Check: right characters, right location, right number
-  of beats, dialogue audible, **no music**. A block with music in it is a failed
-  block — re-prompt with a harder audio line rather than carrying it forward, because
-  it cannot be un-mixed later.
-
-## Step 3 — extract the last frame (the chain)
+## Step 4 — extract and register the anchor frame (the chain)
 
 ```bash
-ffmpeg -y -sseof -1 -i renders/clips/block_NN.mp4 -update 1 -q:v 2 \
-  renders/frames/block_NN_last.jpg
+bin/last-frame.sh renders/clips/block_NN.mp4      # -> renders/frames/block_NN_last.jpg
 ```
 
-Upload it, confirm it, cache the `media_id` in `.storyseam/media.json`. It becomes block
-N+1's **first `image_references` entry**, declared in prose as `@Image 1 is the first frame`.
+Register that frame with the provider the way the adapter registers any reference, so it
+is ready to be block N+1's first reference. Record where it went in `state.json`
+(`last_frame`, and the provider's handle if it has one).
 
 **When to break the chain instead.** The chain is the default, not a law. Skip the anchor
-(and the `@Image 1 is the first frame` sentence with it) when:
+(and the director's first-frame declaration with it) when:
 
-- the next block is a **new location** — chaining across a cut drags the old room
-  into the new one;
-- the last frame came back **blurred, dark, mid-motion or empty** — a bad anchor
-  poisons the next block worse than no anchor. Re-render the block if the beat needs
-  it, otherwise start the next block clean from its references;
+- the next block is a **new location** — chaining across a cut drags the old room into
+  the new one;
+- the last frame came back **blurred, dark, mid-motion or empty** — a bad anchor poisons
+  the next block worse than no anchor. Re-render the block if the beat needs it,
+  otherwise start the next block clean from its references;
 - identity has visibly **drifted** — the sheets re-anchor identity on every block, so
   dropping the chain for one block is the cheapest available correction.
 
 Say out loud when you break the chain and why. A silent break looks like a bug in the
 finished film.
 
-## Step 4 — record state after every block
+## Step 5 — record state after every block
 
-Write `.storyseam/state.json` **after each block completes**, before starting the
-next. An interrupted run must never re-render a block that is already on disk:
+Write `.storyseam/state.json` **after each block completes**, before starting the next
+(shape: `schema/state.schema.json`). An interrupted run must never re-render a block that
+is already on disk:
 
 ```json
 {
@@ -154,25 +150,27 @@ next. An interrupted run must never re-render a block that is already on disk:
 ```
 
 `duration` is the clip's real length from `ffprobe`, not the requested one — `/assemble`
-compares it to the block's `dur`. `credits` is what the job actually billed, which can
-differ from 75 (a declined preset re-send bills once, a re-render bills again).
+compares it to the block's `dur`. `credits` is **what the job actually billed**, which can
+differ from `config.costs.block_30s` (the adapter says how to read the real figure); a
+re-render bills again and is added, never overwritten. On a provider that bills in
+another unit, record that unit and say so.
 
 ## The run budget
 
-Video runs are counted, not just credits. Read `runs_used` and any budget the author
-set, and **stop when it is reached** — report what is done and what remains rather
-than quietly spending the next one. A retry is a run. Voice casting in `/cast` is a
-run. Announce the count as you go: "block 2 of 4 done, 2 runs used of 10."
+Video runs are counted, not just credits. Read `runs_used` and any budget the author set,
+and **stop when it is reached** — report what is done and what remains rather than
+quietly spending the next one. A retry is a run. Voice casting in `/cast` is a run.
+Announce the count as you go: "block 2 of 4 done, 2 runs used of 10."
 
 ## Failure handling
 
-- **Rejected call** — read the error before retrying. Wrong `mode`, a URL in
-  `medias[].value`, or an unconfirmed `media_id` are the three common ones, and all
-  three are free to fix.
-- **Bad render** (wrong blocking, drifted character, clipped dialogue) — fix the
-  *prompt*, not the seed. Tighten the anchor, cut a beat, shorten the dialogue. A
-  re-roll of the same prompt usually reproduces the same failure and costs the same
-  75 credits.
+- **Rejected call** — read the error before retrying, then read the adapter's failure
+  list. Nearly every rejection is a reference passed in the wrong form for this provider,
+  and all of those are free to fix.
+- **Bad render** (wrong blocking, drifted character, clipped dialogue) — fix the *prompt*
+  through the director, not the seed. Tighten the anchor, cut a beat, shorten the
+  dialogue. A re-roll of the same prompt usually reproduces the same failure at the same
+  price.
 - **Music in the output** — strengthen the audio line and re-render. Never carry it
   forward.
 - Never retry the same failing call more than twice. Stop, report, and let the author
@@ -183,5 +181,7 @@ run. Announce the count as you go: "block 2 of 4 done, 2 runs used of 10."
 - Do not render blocks in parallel or in a batch.
 - Do not raise the resolution.
 - Do not add music, or accept a clip that has it.
-- Do not proceed past a failed block into the next one. The chain is ordered; a hole
-  in the middle means every later block is anchored to the wrong frame.
+- Do not proceed past a failed block into the next one. The chain is ordered; a hole in
+  the middle means every later block is anchored to the wrong frame.
+- Do not write provider mechanics into this skill or into the shot list. They belong in
+  the adapter, where a bad render can correct them once for every story.

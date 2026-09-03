@@ -18,13 +18,18 @@ question an author actually asks about them — **"what now?"**
 ## 1. Read the ledger first
 
 `script/reviews.json` is the record: `{ "passes": [ … ] }`, each entry
-`{ specialist, draft, words, when, findings, summary }`. Compare each entry's
-`draft`/`words` against the current `script/script.md`:
+`{ specialist, draft, words, when, findings, verdict, summary }`, written by the root from
+the specialist's envelope (`docs/specialist-contract.md`). Run `wc -w script/script.md` and
+`ls script/drafts/` once, then compare every entry against those two values:
 
 - **`pending`** — no entry. Never run on this script.
-- **`stale`** — an entry exists, but the script has changed since. Their findings
-  point at text that may no longer exist.
-- **`fresh`** — the entry matches the current draft.
+- **`stale`** — an entry exists, but its `words` differs from the current count or its
+  `draft` is not the newest snapshot. Their findings point at text that may no longer
+  exist.
+- **`fresh`** — `words` matches and `draft` is the newest snapshot.
+
+The board shows `findings` and `verdict` as recorded; `summary` is the "what it found"
+column. Do not re-derive any of them from memory of the pass.
 
 If `script/reviews.json` does not exist, everything is `pending`. Say that, do not
 guess.

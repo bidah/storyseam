@@ -67,10 +67,20 @@ The canonical model id in `config.json` maps to a **route per job shape**:
 Pick the route from what the job carries: any reference array → `reference-to-video`; else a
 start frame → `image-to-video`; else `text-to-video`. Images with `images[]` → `edit`.
 
-## References are plain URLs — no upload step
+## Registering a reference: publish it to a public URL
 
-This is the big operational difference from Higgsfield. Reference arrays take **absolute,
-publicly fetchable URLs directly**:
+This is the big operational difference from Higgsfield. There is no upload step and no
+media id: reference arrays take **absolute, publicly fetchable URLs directly**. So
+"registering" a reference in `/cast` means **publishing the file** somewhere Atlas can
+fetch it (an R2 or S3 bucket, any static host) and recording the URL against the local
+path — put it in `.storyseam/media.json` as `{ "url": "…", "mtime": … }` so the audit can
+still tell a stale file from a current one. The anchor frame each block produces is
+published the same way before the next block cites it.
+
+## Submitting a video block
+
+The pipeline hands you a built block: prompt, an **ordered** reference list, duration,
+resolution, aspect ratio, `generate_audio`. Map it to the reference route:
 
 ```json
 { "model": "bytedance/seedance-2.5/reference-to-video",
@@ -84,8 +94,16 @@ publicly fetchable URLs directly**:
 No `media_upload`, no `media_confirm`, no `media_id` cache. The stills must be reachable by
 Atlas — publish them (the project's R2 bucket works) rather than pointing at local paths.
 
+`reference_images` follows the block's `references` order exactly (anchor first on a
+chained block), because the director numbered `@Image 1..K` in that order in the prompt.
+
 Limits: **≤9 reference images, ≤3 reference videos, ≤3 reference audios.** That is much
-tighter than Seedance's own 30/10/10 ceiling, so prune to the references that carry identity.
+tighter than Seedance's own 30/10/10 ceiling, so prune to the references that carry
+identity — and say so in the shot list, because dropping the fifth prop plate silently
+changes what the prompt's `@Image 5` points at.
+
+Poll `GET /model/prediction/<id>` until `status` leaves `processing`, then download
+`outputs[0]` to `renders/clips/block_<NN>.mp4`. There is no preset gate on Atlas.
 
 Note `ratio` (not `aspect_ratio`) and `adaptive`, which matches the first reference or frame.
 
@@ -97,6 +115,13 @@ natively. Pass the character's `.mp3` **directly** and keep `generate_audio: tru
 The black-frame `.mp4` workaround is a Higgsfield constraint, not a Seedance one. On Atlas,
 skip it — and skip `bin/voice-to-blackmp4.sh` with it. Refer to the stem positionally in the
 prompt ("lip-sync exactly to audio 1").
+
+## Billing
+
+Credits, read from the account, but not the same credits as Higgsfield: `config.costs` was
+written for the default provider, so on a story that renders here, check one block's
+actual charge against it and correct `config.costs` before quoting a total. Record what
+each job actually billed in `state.json`.
 
 ## Capability gaps against the Higgsfield default
 

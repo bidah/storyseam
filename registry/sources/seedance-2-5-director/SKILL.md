@@ -293,8 +293,13 @@ breathes. And on 2.5, `start_image` does nothing at all: the continuity anchor b
 in `image_references`, first in the list, declared in prose as `@Image 1 is the first
 frame`. See "The first frame on 2.5" above.
 
-Number the references in the prompt in the same order you pass them, and give every
-one a role in prose:
+**The reference-order contract.** The shot list records each block's references as an
+ordered list (`references[]`: anchor frame first on a chained block, then character
+sheets, the location plate, prop plates, then voice references). Number the image-kind
+references `@Image 1..K` in exactly that order, give every one a role in prose, and the
+provider adapter passes them to the model in the same order — that is the only thing
+that makes `@Image 1` be the anchor. The roles in the table above are Higgsfield's; on a
+URL-based provider the adapter maps the same ordered list to its own arrays.
 > @Image 1 is the first frame. It defines the opening composition, subject position, pose,
 > prop state, scene, and camera direction. @Image 2 defines Noah's face and wardrobe only.
 > @Image 3 defines Maya's face and wardrobe only. @Image 4 defines the living-room layout

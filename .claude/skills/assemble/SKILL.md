@@ -71,7 +71,8 @@ Record the result under `final` in `.storyseam/state.json` (path, duration, reso
 Report:
 
 - the path, the runtime, the resolution;
-- total credits spent and runs used;
+- total credits spent and runs used, read from `.storyseam/state.json` (the sum of what
+  each job actually billed, in the provider's unit — never recomputed from `config.costs`);
 - **that there is no music, by design**, and that
   `assets/audio/music/` is where the human drops the score. Muxing it is a one-liner
   they run when they have it:

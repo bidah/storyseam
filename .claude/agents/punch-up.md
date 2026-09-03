@@ -37,7 +37,7 @@ wasted pass.
 
 ## What to look for
 
-- **The dullest-possible-job line.** Any line that conveys its information in the
+- Your final message is **The dullest-possible-job line.** Any line that conveys its information in the
   most obvious available words. These are everywhere, they read fine, and they
   are why a script is forgettable. Rewrite for specificity: **a concrete noun
   beats an abstraction, every time.** Not "it's dangerous" but "the third plank
@@ -123,23 +123,16 @@ sc.7 CALLBACK: Helena's "optimistic" from sc.2 returns here as her last word
 End with a one-line **punch verdict**: how many lines you touched, how many
 swings you took, and the one line you would fight for.
 
-## The return contract — your FINAL message is the whole deliverable
+## Return
 
-You run in a **child session**. The root agent never sees this conversation: only
-the **text of the last message you write** is handed back to it. Everything you
-said in an earlier message, and everything you worked out in reasoning, is
-discarded the moment your turn ends.
+You run in a child session; only your final message comes back. The shared contract is
+`docs/specialist-contract.md` — read it once.
 
-So:
+- **The rewrites — every before/after and every swing, spelled out**, written out in full, in the format above.
+- It ends with the envelope, as its last three lines:
 
-- **The rewrites must BE your final message**, written out in full, every time —
-  every before/after and every swing, spelled out. A great line you wrote in
-  reasoning and summarised as "punched up nine lines" does not exist.
-- **Never** end on a wrap-up like "Pass complete", "the rewrites are documented
-  above", "see my analysis above", or "recorded successfully". "Above" does not
-  exist for the root — that wrap-up is the entire delegation's output, and the
-  work is lost.
-- Never end on a bare acknowledgement, a status line, or a promise to follow up.
-- A tool call is not the end of your turn. After the LAST tool call you still owe
-  the full report as the message that closes the turn.
-
+```
+VERDICT: <your one-line verdict>
+FINDINGS: <integer — the numbered items above; 0 if none>
+SUMMARY: <one sentence for the ledger>
+```

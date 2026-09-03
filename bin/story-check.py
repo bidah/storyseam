@@ -7,8 +7,9 @@
 No third-party dependencies: this is a small validator for the subset of JSON Schema the
 Storyseam schemas use (type, required, properties, additionalProperties, patternProperties,
 items, minItems, enum, minimum, maximum, minLength, pattern). It also runs the cross-file
-checks a schema cannot express: a `done` block must have its clip on disk, and every path
-the media cache names must exist.
+checks a schema cannot express: a `done` block must have its clip on disk, every path the
+media cache names must exist, and a block's `references` order must agree with the
+`@Image N` numbering in its prompt (anchor frame first on a chained block).
 
 Exit codes: 0 valid, 1 invalid, 2 bad input.
 """
@@ -140,6 +141,49 @@ def cross_checks(root):
         if extra:
             print(f"BROKEN   {b.get('id')}: voices {sorted(extra)} are not in the block's characters")
             ok = False
+    ok &= reference_contract(sl)
+    return ok
+
+
+IMAGE_KINDS = ("anchor", "character", "location", "prop")
+
+
+def reference_contract(sl):
+    """The prompt numbers @Image 1..K in the order of the block's image-kind references, the
+    anchor frame first on a chained block. Only checked when a block carries `references`."""
+    ok = True
+    blocks = sl.get("blocks", [])
+    for i, b in enumerate(blocks):
+        refs = b.get("references")
+        if not isinstance(refs, list):
+            continue
+        bid = b.get("id", f"#{i}")
+        images = [r for r in refs if r.get("kind") in IMAGE_KINDS]
+        chained = bool(b.get("start_from_previous_last_frame"))
+        anchors = [j for j, r in enumerate(refs) if r.get("kind") == "anchor"]
+        if chained:
+            prev = blocks[i - 1].get("id") if i else None
+            want = f"renders/frames/{prev}_last.jpg" if prev else None
+            if anchors != [0]:
+                print(f"BROKEN   {bid}: chained, so references[0] must be the one anchor frame (found anchors at {anchors})")
+                ok = False
+            elif want and refs[0].get("path") != want:
+                print(f"BROKEN   {bid}: anchor path is {refs[0].get('path')}, expected {want}")
+                ok = False
+        elif anchors:
+            print(f"BROKEN   {bid}: not chained but carries an anchor reference")
+            ok = False
+        prompt = b.get("prompt", "")
+        mentioned = sorted({int(n) for n in re.findall(r"@Image\s+(\d+)", prompt)})
+        if mentioned and mentioned[-1] > len(images):
+            print(f"BROKEN   {bid}: prompt cites @Image {mentioned[-1]} but only {len(images)} image references are listed")
+            ok = False
+        if chained and images and 1 not in mentioned:
+            print(f"BROKEN   {bid}: chained but the prompt never declares @Image 1 (the anchor frame)")
+            ok = False
+        missing = [n for n in range(1, len(images) + 1) if n not in mentioned]
+        if mentioned and missing:
+            print(f"WARN     {bid}: image references {missing} are listed but never cited in the prompt")
     return ok
 
 

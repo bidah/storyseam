@@ -1,20 +1,16 @@
 ---
-description: Render the blocks one at a time, chaining last frame to next start frame
+description: Render the blocks one at a time, chaining each last frame into the next block
 argument-hint: [all | next | block_NN]
 ---
-Load the `render-clips` skill and follow it.
+Load the `render-clips` skill and follow it. Load the director for `config.video.model`
+and the provider adapter for `config.providers.video.id` before the first paid call.
 
 Scope: $ARGUMENTS  (empty means: render every block that is not yet done)
 
-Pre-flight first — re-run the asset audit and print the plan (blocks remaining, cost
-each, total, run budget). Then render sequentially: `seedance_2_5`, `mode:
-"omni_reference"`, `resolution: "480p"`, `generate_audio: true`, prompt +
-`prompts/video_style_prompt.txt`.
+Pre-flight first — `bin/story-check.py`, `bin/asset-audit.sh`, provider access — and print
+the plan (blocks remaining, cost each from `config.costs`, total as a floor, run budget).
+Then render sequentially at 480p with `generate_audio: true`, passing each block's
+references in the shot list's order. No music. Never `start_image` on 2.5.
 
-Every still is `image_references`: the previous block's last frame **first**, declared
-in the prompt as `@Image 1 is the first frame`, then the sheets and plates. Never
-`start_image` — 2.5 ignores it. Voices are black-frame mp4 in `video_references`. No
-music.
-
-Write `.storyseam/state.json` after every block. Announce credits and runs as you go,
-and stop at the run budget.
+Write `.storyseam/state.json` after every block with what it actually billed. Announce
+credits and runs as you go, and stop at the run budget.

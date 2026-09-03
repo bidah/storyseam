@@ -91,7 +91,8 @@ Three consequences worth internalising:
 
 - **Media handling is the biggest practical difference.** On the API-key providers the stills
   must be *publicly reachable URLs*, so they have to be published somewhere before a render.
-  `.storyseam/media.json` is a Higgsfield concept and is not used on Atlas or fal.
+  `.storyseam/media.json` records how each reference was registered: a `media_id` on
+  Higgsfield, a public `url` on Atlas or fal. The audit reads it the same way on both.
 - **The black-frame voice trick is a Higgsfield workaround, not a Seedance requirement.** On
   Atlas, pass the `.mp3` directly in `reference_audios` and skip
   `bin/voice-to-blackmp4.sh` entirely.

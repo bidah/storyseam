@@ -65,11 +65,26 @@ frame → `image-to-video`, else `text-to-video`.
 regardless, so this changes nothing for the engine — but do not promise the author a tier
 this provider does not have.
 
-## References are plain URLs — no upload step
+## Registering a reference: publish it to a public URL
 
-Reference arrays take absolute, publicly fetchable URLs. No upload, no confirm, no media id
-cache. The stills must be reachable by fal, so publish them rather than pointing at local
-paths.
+Reference arrays take absolute, publicly fetchable URLs. No upload, no confirm, no media id.
+"Registering" a reference in `/cast` means **publishing the file** somewhere fal can fetch
+it and recording the URL against the local path in `.storyseam/media.json` as
+`{ "url": "…", "mtime": … }`, so the audit can still flag a stale file. The anchor frame
+each block produces is published the same way before the next block cites it.
+
+## Submitting a video block
+
+The pipeline hands you a built block: prompt, an **ordered** reference list, duration,
+resolution, aspect ratio, `generate_audio`. Submit to the `reference-to-video` endpoint
+with the block's image references in `reference_images` **in the block's `references`
+order** (anchor first on a chained block — the director numbered `@Image 1..K` in that
+order), voices in `reference_audios` as the `.mp3` takes, then poll status and fetch the
+result; download `video.url` to `renders/clips/block_<NN>.mp4`. There is no preset gate
+on fal.
+
+**Voice reference form:** the `.mp3` take itself. The black-frame `.mp4` is a Higgsfield
+workaround and is not needed here; skip `bin/voice-to-blackmp4.sh`.
 
 ## Billing
 
@@ -77,9 +92,10 @@ Token-based rather than credit-based: around **$0.22 per second of 480p** output
 **$0.47 per second at 720p** for Seedance 2.5. A 30-second 480p block is therefore roughly
 **$6.60**, and a four-block film about **$26**.
 
-That is a different unit from Higgsfield credits, so **the `producer` skill's credit
-arithmetic does not transfer**. When fal is the video provider, price in dollars and say so
-— reporting "300 credits" for a fal render is meaningless to the author.
+That is a different unit from Higgsfield credits, so **`config.costs` and the `producer`
+skill's credit arithmetic do not transfer**. When fal is the video provider, price in
+dollars, say so, and record each job's dollar cost in `state.json` under `credits` with a
+note of the unit — reporting "300 credits" for a fal render is meaningless to the author.
 
 ## Capability gaps against the Higgsfield default
 
