@@ -11,8 +11,10 @@ each, total, run budget). Then render sequentially: `seedance_2_5`, `mode:
 "omni_reference"`, `resolution: "480p"`, `generate_audio: true`, prompt +
 `prompts/video_style_prompt.txt`.
 
-Character sheets are `image_references`. Only the previous block's last frame is ever
-`start_image`. Voices are black-frame mp4 in `video_references`. No music.
+Every still is `image_references`: the previous block's last frame **first**, declared
+in the prompt as `@Image 1 is the first frame`, then the sheets and plates. Never
+`start_image` — 2.5 ignores it. Voices are black-frame mp4 in `video_references`. No
+music.
 
 Write `.storyseam/state.json` after every block. Announce credits and runs as you go,
 and stop at the run budget.

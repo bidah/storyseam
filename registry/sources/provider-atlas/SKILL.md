@@ -76,9 +76,9 @@ publicly fetchable URLs directly**:
 { "model": "bytedance/seedance-2.5/reference-to-video",
   "prompt": "...", "ratio": "adaptive", "duration": 10,
   "resolution": "480p", "generate_audio": true,
-  "reference_images": ["https://.../theo.png", "https://.../room.png"],
+  "reference_images": ["https://.../noah.png", "https://.../noah-living-room.png"],
   "reference_videos": ["https://..."],
-  "reference_audios": ["https://.../theo.mp3"] }
+  "reference_audios": ["https://.../noah.mp3"] }
 ```
 
 No `media_upload`, no `media_confirm`, no `media_id` cache. The stills must be reachable by

@@ -63,12 +63,12 @@ the moment of the join — and *only then* say what happens next. Every failure 
 traces back to describing the new action before establishing the boundary.
 
 ```
-BOUNDARY: The segment opens exactly on the source's final frame: Theo crouched screen-left
-and Milo crouched screen-right at the open mouth of the blanket fort, both still, warm amber
+BOUNDARY: The segment opens exactly on the source's final frame: Noah crouched screen-left
+and Maya crouched screen-right at the open door of the garden shed, both still, warm amber
 afternoon light low across the floor, camera at eye level and at rest.
 
-THEN: Theo ducks his head and crawls in first, Milo follows, and the camera pushes gently
-after them toward the dark opening.
+THEN: Noah ducks his head and steps in first, Maya follows, and the camera pushes gently
+after them toward the dark doorway.
 ```
 
 ## The phrase that breaks it

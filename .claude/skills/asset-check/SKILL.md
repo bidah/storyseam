@@ -32,7 +32,7 @@ cost** — before generating anything:
 
 | Asset | Kind | Status | Cost to make |
 | --- | --- | --- | --- |
-| `noah` | character sheet | missing | 2 credits |
+| `noah` | character sheet | missing | ~2.5 credits |
 | `maya` | voice | missing | 15 credits |
 | `noah-living-room` | location plate | present | — |
 
@@ -64,7 +64,7 @@ generate_image {
   model: "gpt_image_2",
   resolution: "2k",
   quality: "high",
-  aspect_ratio: <config.aspect_ratio>,
+  aspect_ratio: "3:4",              // sheets are portrait — the director's call, not config's
   prompt: "<character description, full figure, neutral pose, plain background>\n\n<image_style_prompt.txt>"
 }
 ```
@@ -74,7 +74,9 @@ a job id in the chat is not.
 
 ## Step 3 — location plates and prop plates
 
-Same call, same model, same 2k, same style-prompt append.
+Same call, same model, same 2k, same style-prompt append — but `aspect_ratio` is
+`<config.aspect_ratio>` here: a plate is a frame the film will match, where a sheet is a
+figure the film will cite.
 
 - **Locations** — an empty establishing view of the place, no characters in it.
   Characters in a location plate confuse the model about who is in the block.
@@ -133,12 +135,15 @@ in `/render`, so the expensive skill never blocks on an upload:
 Write the mapping into `.storyseam/media.json`:
 
 ```json
-{ "assets/images/characters/noah.png": { "media_id": "…", "confirmed": true } }
+{ "assets/images/characters/noah.png":
+    { "media_id": "…", "confirmed": true, "mtime": 1756830000, "sha256": "…" } }
 ```
 
-`/render` reads this cache. A cache miss there means an upload happened at the worst
-possible moment; a stale cache means a render against the wrong file. Re-upload when
-the local file's mtime is newer than the cache entry.
+`mtime` is the file's modification time (`stat -f %m <file>` on macOS, `stat -c %Y` on
+Linux) and `sha256` its content hash at upload time. `/render` reads this cache. A cache
+miss there means an upload happened at the worst possible moment; a stale cache means a
+render against the wrong file. `bin/asset-audit.sh` reports **STALE** when the file on
+disk is newer than its entry — re-upload it and refresh the entry.
 
 ## Step 6 — the go/no-go
 

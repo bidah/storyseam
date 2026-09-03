@@ -60,10 +60,9 @@
     "gpt_image_2": "Not offered. Use a fal image endpoint (e.g. nano-banana) and record it here once verified.",
     "seed_audio": "No Seed Audio equivalent — fal has single-SFX endpoints, not multi-voice dialogue scenes."
   },
-  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
   "version": 1,
-  "updated": "2026-09-02",
   "sha256": "a11596e66a559d33",
+  "updated": "2026-09-02",
   "files": [
     {
       "path": ".claude/skills/provider-fal/SKILL.md",

@@ -10,8 +10,11 @@
 # Seedance takes a voice as a black-frame VIDEO in `video_references`, not as
 # `audio_references` — that path is narrower and rejects mode "fast".
 set -euo pipefail
+for t in ffmpeg ffprobe; do
+  command -v "$t" >/dev/null || { echo "voice-to-blackmp4: $t is required (brew install ffmpeg)" >&2; exit 2; }
+done
 SLUG="${1:?usage: voice-to-blackmp4.sh <slug> [story-root]}"
-ROOT="${2:-$PWD}"
+ROOT="${2:-${STORYSEAM_ROOT:-$PWD}}"
 SRC="$ROOT/assets/audio/voices/$SLUG.mp3"
 OUT="$ROOT/assets/audio/voices/blackframe/$SLUG.mp4"
 
@@ -19,6 +22,7 @@ OUT="$ROOT/assets/audio/voices/blackframe/$SLUG.mp4"
 mkdir -p "$(dirname "$OUT")"
 
 DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$SRC")
+[ -n "$DUR" ] || { echo "voice-to-blackmp4: ffprobe could not read a duration from $SRC" >&2; exit 1; }
 
 ffmpeg -y -loglevel error \
   -f lavfi -i "color=c=black:s=640x360:r=25:d=$DUR" \

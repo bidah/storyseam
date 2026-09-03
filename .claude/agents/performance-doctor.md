@@ -86,12 +86,12 @@ performance.
 
 ## Runtime
 
-Estimate **spoken runtime**, scene by scene and for the episode. Use roughly
+Estimate **spoken runtime**, scene by scene and for the film. Use roughly
 **150 words per minute** for ordinary delivery, slower for weight, and add the
 pauses the action implies — a beat of business between two lines is real time on
 the timeline. State the rate you used. Runtime is what tells the author whether
-this is a three-minute episode or a nine-minute one, and it is almost always
-longer than they think.
+this is a two-minute film or a four-minute one, and it is almost always longer
+than they think. Hold it against `config.json.target_seconds`.
 
 ## What to return
 
@@ -108,10 +108,11 @@ why: "1847" spoken as a year, not a number; "wound" and "read" are both
      homographs but both survive here because the syntax forces them -- the
      real fix was the run-on, which was flattening all three clauses.
 
-sc.5 MOTE (was): "the project keeps its own hours."
-sc.5 MOTE (now): "the project keeps its own hours."   [deliver as: WHISSEL-wood]
-why: name unchanged in the script; phonetic respelling for the render text so
-     it does not drift between sc.5 and sc.7.
+sc.5 MOTE (was): "Whistlewood keeps its own hours."
+sc.5 MOTE (now): "Whistlewood keeps its own hours."   [deliver as: WHISSEL-wood]
+why: text deliberately unchanged -- the canonical spelling stays in the script.
+     The fix is the delivery note: a phonetic respelling for the render text so
+     the name does not drift between sc.5 and sc.7.
 
 sc.7 SARA (was): "I didn't say she took it."
 sc.7 SARA (now): "It wasn't me who said it."
@@ -129,12 +130,14 @@ sc.8 SARA  "I'm fine."       -> add (too quickly). It is a lie and nothing in
 
 RUNTIME (150 wpm + implied pauses)
 
-  sc.1   0:22      sc.5   1:04
-  sc.2   0:48      sc.6   0:51
-  sc.3   1:10      sc.7   1:33
-  sc.4   0:36      sc.8   0:29
-  Dialogue total 7:13. With the action beats that need screen time, expect
-  roughly 8:30-9:00 of finished episode.
+  sc.1   0:08      sc.5   0:15
+  sc.2   0:14      sc.6   0:12
+  sc.3   0:16      sc.7   0:18
+  sc.4   0:10      sc.8   0:07
+  Dialogue total 1:40. With the action beats that need screen time, expect
+  roughly 2:00 of finished film -- 4 blocks. config.json.target_seconds is 120,
+  so it fits. When the estimate overshoots the target, the script is over
+  budget: say by how much, and which scene to trim.
 ```
 
 End with a one-line **speakability verdict**: how many lines need a rewrite, how

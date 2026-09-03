@@ -17,7 +17,7 @@ question an author actually asks about them — **"what now?"**
 
 ## 1. Read the ledger first
 
-`script/reviews.json` is the record. Each entry is
+`script/reviews.json` is the record: `{ "passes": [ … ] }`, each entry
 `{ specialist, draft, words, when, findings, summary }`. Compare each entry's
 `draft`/`words` against the current `script/script.md`:
 

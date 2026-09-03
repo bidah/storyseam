@@ -4,6 +4,15 @@ This folder is a film. The filesystem is the state: there is no database and no 
 Any agent that opens this folder can pick up where the last one left off by reading
 the tree below.
 
+```
+STORYSEAM_HOME={{ENGINE}}
+```
+
+That is the Storyseam engine this story was scaffolded from. Its `bin/` holds the
+scripts named below and its `.claude/` holds the pipeline skills and the specialist
+room. Run every script as `$STORYSEAM_HOME/bin/<script> [this folder]`, or export
+`STORYSEAM_ROOT` to this folder first; each script takes the story root either way.
+
 ## Where everything is
 
 | Path | What |
@@ -38,7 +47,7 @@ A voice is cast once and reused by every block that character speaks in.
   (`mode: "fast"`, `duration: 10`, `resolution: "480p"`, ~15 credits): generate the
   character speaking a short paragraph in their own voice, then keep the audio.
 - `assets/audio/voices/blackframe/<slug>.mp4` — the same audio muxed against a black
-  video track by `bin/voice-to-blackmp4.sh`. **This is the file that goes into a
+  video track by `$STORYSEAM_HOME/bin/voice-to-blackmp4.sh`. **This is the file that goes into a
   render**, passed as `video_references`. Not `audio_references`.
 - The prompt citing it must say: *"use the attached voice; ignore the black frames;
   output only the spoken dialogue — no music."*
@@ -54,10 +63,11 @@ A voice is cast once and reused by every block that character speaks in.
 4. **The backend is configuration.** `config.json` names a provider per capability.
    `higgsfield` is reached by MCP; `atlas` and `fal` by an API key the user exports
    (`ATLAS_KEY` / `FAL_KEY`) — **never stored in this folder**. Verify with
-   `bin/provider-check.py` before spending.
-5. **Blocks render one at a time, chained**: the last frame of block N is the
-   `start_image` of block N+1. Character sheets are `image_references` — putting one
-   in `start_image` makes the whole block look like the sheet.
+   `$STORYSEAM_HOME/bin/provider-check.py` before spending.
+5. **Blocks render one at a time, chained**: the last frame of block N is the first
+   `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the
+   first frame`. Never `start_image` — Seedance 2.5 accepts it and ignores it. The
+   character sheets follow it in the same list, each labelled in prose.
 
 ## What to run next
 

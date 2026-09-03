@@ -28,43 +28,44 @@ You are the only pass that turns a script into a bill. Compute it, don't gesture
 
 | Line item | Cost |
 | --- | --- |
-| One 30-second video block (`seedance_2_5`, 480p, `t2v`) | **75 credits**, and **1 run** |
-| One 30-second block in `omni_reference` with references | **75-105 credits**, and **1 run** |
+| One 30-second video block (`seedance_2_5`, 480p) | **75 credits** (2.5 credits/second — a shorter block costs proportionally), and **1 run** |
 | One voice cast (`seedance_2_0` fast, 10s, 480p) | **15 credits**, and **1 run** |
 | One still — character sheet, location plate, prop plate (`gpt_image_2`, 2k) | **~2.5 credits** |
 
 The arithmetic you owe the author, every time:
 
 ```
-blocks   = ceil(estimated_runtime_seconds / 30)
-video    = blocks * 105   # price the CEILING; omni_reference bills 75-105
+blocks   = ceil(target_seconds / 30)   # config.json.target_seconds; a script that runs longer is over budget
+video    = blocks * 75                 # 2.5 credits/second; a short final block costs proportionally less
 voices   = (number of SPEAKING characters) * 15
 stills   = (characters + locations + consistent props) * 2.5
 runs     = blocks + speaking characters
 ```
 
+Worked, for a small film: 2 minutes with 2 speaking characters, 1 location and 1
+consistent prop is 4 blocks (300) + 2 voices (30) + 4 stills (~10) ≈ **340 credits
+and 6 runs** — before a single re-render.
+
 State the total in credits **and in runs**, because runs are usually the binding
 constraint — an author working to a 10-run budget can afford four blocks and two
 voices, and cannot afford a fifth location that needs its own block.
 
-> **Preflight lies low, and the real price moves.** `get_cost` on a bare `t2v` call
-> returns 75 for a 30s 480p block. Observed `omni_reference` blocks carrying character
-> sheets, a location plate and voice references have billed **75 and 105** for the same
-> duration and resolution — the charge is not a fixed function of duration alone.
-> **Quote the ceiling (105) and report the actual from `balance`**, because a film
-> quoted at the floor and billed at the ceiling is a 40% overrun the author did not
-> agree to.
+> **The tally is a floor, not a quote.** A block that comes back wrong — music in
+> it, a face that drifted, a whip-pan poisoning the chain — is re-rendered at full
+> price: another 75 credits and another run for the same 30 seconds. Three blocks is
+> 225 credits before a single retry; two is 150. Quote the floor, say it is the
+> floor, and say which blocks are the likely re-renders (anything on the risk list).
 
 **What actually moves the number:**
 
 - **Runtime.** It is the only linear term and it is set by the word count. A script
-  30 seconds long is one whole extra block — 75 credits — so a 2:05 film costs the
-  same as a 2:30 one and 25% more than a 2:00 one. **Say when a script is just over a
-  block boundary and what to cut to get under it.** That is the single most valuable
-  sentence you write.
+  that runs 30 seconds longer is one whole extra block — 75 credits and a run — and
+  even five seconds over a boundary buys a fifth block and a fifth run that a 2:00
+  film does not. **Say when a script is just over a block boundary and what to cut
+  to get under it.** That is the single most valuable sentence you write.
 - **Location count.** A location change is a hard block boundary, so N locations means
   at least N blocks regardless of runtime. Three locations in a 60-second film costs
-  three blocks (315) where one location would cost two (210). Merging two scenes into
+  three blocks (225) where one location would cost two (150). Merging two scenes into
   one room is usually free dramatically and saves 75 credits.
 - **Speaking characters.** Each is a voice cast (15 credits, 1 run) plus a sheet. A
   character with one line is a whole fixture cost — ask whether the line can move to
@@ -124,38 +125,39 @@ Count what has to exist before anything can be generated:
 - **Shot estimate.** Break each scene into the shots it implies (a shot is a new
   angle, a new subject, or a cut in time) and give a per-scene and a total count.
   Be honest: dialogue scenes cost more shots than they read.
-- **Render cost.** Convert the shot count into the work it implies — a still per
-  shot, plus a video generation per shot that moves, plus retries. Assume roughly
-  **three attempts per shot** to get a usable one, more for anything on the risk
-  list. State the assumption you used so the number can be argued with.
+- **Render cost.** Nothing is generated per shot. Stills are references made
+  once: one sheet per character, one plate per location, one plate per consistent
+  prop. Video is one block per `ceil(target_seconds / 30)`, and the shots inside a
+  block are prose in that block's prompt, not separate renders. Price it with the
+  formula above, then say which blocks sit on the risk list — those are the ones
+  that come back wrong and cost a full block again.
 
 ## Half two — the known generative failure modes
 
 These are not "hard"; these are the beats that come back wrong however many
 times you re-roll. Flag every instance with its scene.
 
-**First read `productionType` off the `world/` files — it moves every threshold
-below.** All three types are generated; the word "live action" here names a
-*look*, not a film crew, so nothing in this list stops applying. What changes is
-how much slack the look gives you:
+**First read the LOOK — the "Look" row in `STORY.md` and
+`prompts/image_style_prompt.txt` — because it moves every threshold below.** The
+look is free text, not a setting, and every look is generated; "photoreal" here
+names a *look*, not a film crew, so nothing in this list stops applying. What
+changes is how much slack the look gives you. Three rough tiers:
 
-- **`2d`** — a stylised, flat look is the forgiving one. Faces survive being
-  small in frame, extra characters cost less, and a crowd can legitimately be a
-  shape. Grade the list below down a step.
-- **`3d-pixar`** — in the middle. Character consistency holds well because the
-  design is stylised, but lighting states and material continuity bite.
-- **`live-action`** — photoreal, and the unforgiving one. Everything below gets
-  *stricter*, not looser: a face that is 90% right reads as wrong rather than as
-  style, hands and eyelines are punishing, and background extras that a 2D look
-  absorbs become uncanny. Grade every threshold up a step, and say so in the
-  report — an author who picked photoreal has bought a tighter budget than they
-  probably realise.
+- **Flat, 2D, stylised** — the forgiving one. Faces survive being small in
+  frame, extra characters cost less, and a crowd can legitimately be a shape.
+  Grade the list below down a step.
+- **Rounded, 3D, stylised** — in the middle. Character consistency holds well
+  because the design is stylised, but lighting states and material continuity
+  bite.
+- **Photoreal** — the unforgiving one. Everything below gets *stricter*, not
+  looser: a face that is 90% right reads as wrong rather than as style, hands and
+  eyelines are punishing, and background extras that a flat look absorbs become
+  uncanny. Grade every threshold up a step, and say so in the report — an author
+  who picked photoreal has bought a tighter budget than they probably realise.
 
-Note the downstream shape too: `live-action` shot lists are written as BLOCK
-prompts (the `shot-list-live-action` skill), `2d` / `3d-pixar` as a single
-paragraph. It doesn't change your count, but a compression that collapses two
-shots into one has to survive being re-expressed in whichever shape this project
-uses.
+Whatever the look, every block goes out as one structured block prompt written by
+the director skill, so a compression that collapses two shots into one has to
+survive being re-expressed as beats inside that prompt.
 
 - **Crowds.** Any shot with an indistinct mass of people. Faces melt, counts
   drift shot to shot.
@@ -203,7 +205,8 @@ version, because implication beats depiction. The standard moves:
 - **A wet/dirty/injured continuity state gets confined to one scene**, or
   promoted onto the character sheet so every shot carries it.
 
-Give each compression a **before -> after render count** so the trade is visible.
+Give each compression a **before -> after block count** (and the plates it
+removes) so the trade is visible.
 
 ## What to return
 
@@ -221,11 +224,12 @@ Characters (4 speaking, 1 seen)
   MOTE    sheet: NO    voice: NO    -- blocks 4 scenes
 Persistent props: Sara's satchel (sc.2-9), the brass lantern (sc.5,7)
 
-SHOT ESTIMATE
-  sc.1  4   sc.2  9   sc.3  7   sc.4  6   sc.5 11   sc.6 14   sc.7  8   sc.8 5
-  Total 64 shots.
-  At ~3 attempts/shot for stills and ~3 for the ones that move (48 of them),
-  that is roughly 190 still generations and 145 video generations.
+BLOCKS AND COST  (config.json.target_seconds = 240 -> 8 blocks)
+  Blocks   8 x 30s (7 locations force at least 7 boundaries)   600 credits, 8 runs
+  Voices   4 speaking                                            60 credits, 4 runs
+  Stills   5 sheets + 9 location plates + 2 prop plates         ~40 credits
+  Total   ~700 credits, 12 runs -- a floor. Every block on the risk list is a
+          likely re-render at another 75.
 
 
 RISK LIST
@@ -246,18 +250,19 @@ C1. sc.6 EXT. MARKET - the crowd and the notice board.
     After: hold on Sara's face; market noise, one passing shoulder. Helena,
            off-frame, reads the notice aloud in one line. Cut to the seal on
            the paper, no text.
-    Renders: 14 shots -> 5. Also removes both HIGH risks and one location
-    sheet (the market never needs a wide).
+    Blocks: unchanged on its own, but both HIGH risks go -- and a HIGH-risk
+    block is the one you pay for twice. The market never needs a wide.
 
 C2. sc.6's location entirely.
     The scene needs "a public place where bad news arrives". The bridge
     already has a sheet and already means "crossing". Fold it there.
-    Renders: 5 -> 4, and one fewer reference sheet to generate.
+    Blocks: 8 -> 7 (one location boundary gone: 75 credits and a run), and
+    one fewer plate to generate.
     Cost: loses the market's texture. Author's call.
 ```
 
-End with a one-line **producibility verdict**: total shots before and after the
-compressions, the single biggest risk, and what must be generated first (usually
+End with a one-line **producibility verdict**: total blocks and credits before and
+after the compressions, the single biggest risk, and what must be generated first (usually
 a missing character sheet).
 
 ## The return contract — your FINAL message is the whole deliverable

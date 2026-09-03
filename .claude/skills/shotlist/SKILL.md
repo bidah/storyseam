@@ -5,7 +5,7 @@ description: >-
   blocks, each with its Seedance prompt and its required references. Use for
   "/shotlist", "make the shot list", "break the script into shots", "generate the
   next block". Writes shotlist/shotlist.json (canonical) and shotlist/shotlist.md.
-  Delegates every prompt to the seedance-director skill. Generates NO media — that
+  Delegates every prompt to the director skill for config.video.model. Generates NO media — that
   is /cast and /render. Run ONLY when the author asks; never off the back of writing
   the script in the same turn.
 ---
@@ -32,7 +32,7 @@ Seedance 2.5 renders **one block per call, up to 30 seconds**. A block is:
 
 - **One location.** A location change is always a block boundary. No exceptions —
   this is what makes the last-frame chain coherent.
-- **One set of character anchors**, written once and binding for the whole block.
+- **One set of character sheets**, cited once and binding for the whole block.
 - **2–4 timed shots** inside it, each with its own framing and one clear action.
 - **≤ 30 seconds.** Prefer a full 30s block to two short ones: blocks are billed per
   call, so two 15s blocks cost twice what one 30s block costs and add a seam.
@@ -59,12 +59,14 @@ per 30s block at 480p) — the author is entitled to know what they are about to
    - `props` — slugs for objects that must stay consistent.
    - `voices` — which characters speak in this block (drives the black-frame refs).
    - `video_refs` — only if a real motion or camera reference exists.
-5. **Write the prompt — via the `seedance-director` skill.** Load it and follow it.
-   Do not write Seedance prompts from memory of this file; the director skill is
-   where the craft lives and it is the reason blocks hold their blocking.
+5. **Write the prompt — via the director skill for `config.video.model`** (for
+   `seedance_2_5` that is `seedance-2-5-director`; install it with
+   `bin/registry-add.py <model>` if it is missing). Load it and follow it. Do not write
+   Seedance prompts from memory of this file; the director skill is where the craft
+   lives and it is the reason blocks hold their blocking.
    The prompt must:
-   - carry the block's spatial map, character anchors, state locks and contact points
-     once, up front;
+   - carry the block's spatial map, character identity locks, state locks and contact
+     points once, up front;
    - number its timed shots with their seconds;
    - end with `Audio: … No music.`;
    - end with a **final frame** description that the next block can open from — a
@@ -84,7 +86,7 @@ per 30s block at 480p) — the author is entitled to know what they are about to
 
 ```json
 {
-  "title": "Nothing To Do",
+  "title": "<title from config.json>",
   "aspect_ratio": "16:9",
   "block_seconds": 30,
   "blocks": [

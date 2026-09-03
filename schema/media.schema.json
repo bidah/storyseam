@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://storyseam.dev/schema/media.schema.json",
+  "title": "Storyseam media cache (.storyseam/media.json)",
+  "description": "Local asset path -> the provider's media handle. Written by /cast after upload+confirm, read by /render so it never uploads. Higgsfield-only: providers that take public URLs do not use it. An entry whose mtime is older than the file on disk is stale.",
+  "type": "object",
+  "patternProperties": {
+    "^(assets|renders)/.+$": {
+      "type": "object",
+      "required": ["media_id", "confirmed"],
+      "properties": {
+        "media_id": { "type": "string", "minLength": 1 },
+        "confirmed": { "type": "boolean" },
+        "type": { "type": "string", "enum": ["image", "video", "audio"] },
+        "mtime": { "type": "number" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{16,64}$" },
+        "uploaded_at": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

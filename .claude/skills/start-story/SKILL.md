@@ -96,8 +96,10 @@ renders/
   media.json                 local path → higgsfield media_id cache
 ```
 
-`bin/storyseam-init.sh` in the engine repo creates this tree in one call — run it
-rather than issuing thirty `mkdir`s.
+`bin/storyseam-init.sh --title "<title>" <folder>` in the engine repo creates this tree
+in one call and writes `CLAUDE.md` + `AGENTS.md` from the template — run it rather than
+issuing thirty `mkdir`s. It never overwrites, so it is safe on a folder that already has
+files.
 
 ## Step 3 — config.json
 
@@ -118,9 +120,14 @@ preferences.
   "image": { "model": "gpt_image_2", "resolution": "2k", "quality": "high" },
   "video": { "model": "seedance_2_5", "resolution": "480p", "generate_audio": true },
   "audio": { "music": "never_generated", "voice_ref_format": "blackframe_mp4" },
-  "continuity": { "chain_last_frame": true }
+  "continuity": { "chain_last_frame": true },
+  "costs": { "block_30s": 75, "voice": 15, "still": 2.5 }
 }
 ```
+
+`costs` is the one place the credit arithmetic lives: `bin/asset-audit.sh`, the producer
+and every "this will cost" sentence read it from here. Update it here when a provider's
+pricing changes, nowhere else.
 
 **`resolution` is load-bearing and is not a preference.** Video is `480p` because
 Seedance 2.5 bills by resolution and 480p is the only tier this engine renders.
@@ -165,8 +172,9 @@ prompts through these, and the craft they carry is model-specific. See the
 
 ## Step 5 — the story's own CLAUDE.md
 
-Write `CLAUDE.md` into the story folder (and symlink `AGENTS.md` to it) from
-`templates/story-CLAUDE.md` in the engine repo, substituting the title. It tells any
+`bin/storyseam-init.sh --title` already wrote `CLAUDE.md` (and the `AGENTS.md` symlink)
+from `templates/story-CLAUDE.md`; check it is there, carries the title, and records the
+engine's absolute path as `STORYSEAM_HOME`. It tells any
 agent that opens this folder — Claude Code, Codex, anything — where the script is,
 what the invariants are, and which command comes next. That file is why a story
 folder is portable.

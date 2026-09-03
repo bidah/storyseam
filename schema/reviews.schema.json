@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://storyseam.dev/schema/reviews.schema.json",
+  "title": "Storyseam specialist ledger (script/reviews.json)",
+  "description": "Every specialist pass over the script, recorded by the root agent. Nothing that is not in it happened. /script-agents compares each entry's draft and words against the current script to decide fresh vs stale.",
+  "type": "object",
+  "required": [
+    "passes"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "passes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "specialist",
+          "draft",
+          "words",
+          "when",
+          "findings",
+          "summary"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "specialist": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "draft": {
+            "type": "string",
+            "pattern": "^v[0-9]+$"
+          },
+          "words": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "when": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T"
+          },
+          "findings": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1
+          },
+          "verdict": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

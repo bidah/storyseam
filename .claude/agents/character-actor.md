@@ -129,5 +129,6 @@ not exist for the caller, and that wrap-up is the entire delegation's output. Th
 collator retypes your words into the room's report, so the words have to be
 there, in your voice, specific enough to be quoted.
 
-The table-read logs one pass on the whole room's behalf; a read is one pass, not
-one per actor.
+You record nothing. The root agent records ONE entry in `script/reviews.json`
+for the table read as a whole — never one per actor — so do not log a pass, and
+do not ask the collator to.

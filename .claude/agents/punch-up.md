@@ -105,8 +105,8 @@ why: concrete beats abstract; the danger is now a fact instead of a warning.
 sc.3 HELENA (was): "I don't think we should go."
 sc.3 HELENA (now): "I've buried people with better plans."
 why: [SWING] much darker than the scene's current temperature -- it either
-     sets up her whole deal or it is too much for a children's forest. Risk:
-     tonally out of register if the project stays gentle.
+     sets up her whole deal or it is too much for this story. Risk:
+     tonally out of register if the film stays gentle.
 
 sc.3 BUTTON (was): scene ends on "Okay. Let's go."
 sc.3 BUTTON (now): SARA: "You coming?" / HELENA doesn't move. / SARA: "You're

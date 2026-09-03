@@ -35,9 +35,9 @@ not prose.
 - Take protagonist, want, world, and length from the story-architect. State the
   **theme** (beat 2) explicitly and show how the Finale pays it off.
 - One line per beat: **Beat — function → what happens here** (+ rough placement).
-- Scale honestly: for a short episode, keep all 15 as *moments* even if some are a
+- Scale honestly: for a short film, keep all 15 as *moments* even if some are a
   single line; note which are compressed. Make sure Opening and Final Image rhyme.
-- *the project* tone; no dialogue/prose. End with the implied scene count.
+- The tone set in STORY.md; no dialogue/prose. End with the implied scene count.
 
 ## The return contract — your FINAL message is the whole deliverable
 

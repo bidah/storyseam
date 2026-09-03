@@ -27,7 +27,8 @@ here is arranged so that no credit is spent on a call that was going to fail.
 
 ## Step 0 — pre-flight (free, and not optional)
 
-Before the first paid call:
+Before the first paid call, `bin/story-check.py` and `bin/asset-audit.sh` must both pass.
+Then:
 
 1. Read `shotlist/shotlist.json`, `config.json`, `.storyseam/state.json`,
    `.storyseam/media.json`, and `prompts/video_style_prompt.txt`.
@@ -78,8 +79,8 @@ first, and the *prompt* is what makes it the first frame:
 And the prompt's **`Shot 1` must describe that frame**, not a new framing — a Shot 1 that
 opens on a different shot size overrides the anchor and wastes it. If you need a
 frame-exact splice rather than a matching opening composition, use
-`mode: "video_extension"` with `extension_mode: "forward"` (see the `seedance-director`
-skill).
+`mode: "video_extension"` with `extension_mode: "forward"` — the
+`seedance-2-5-extension-director` skill, installed by name with `bin/registry-add.py`.
 
 When a voice reference is attached, the prompt must acknowledge it:
 > Use the attached voice references; ignore the black frames. Output only the spoken
@@ -143,6 +144,7 @@ next. An interrupted run must never re-render a block that is already on disk:
   "blocks": {
     "block_01": { "status": "done", "job_id": "…", "clip": "renders/clips/block_01.mp4",
                   "last_frame": "renders/frames/block_01_last.jpg",
+                  "last_frame_media_id": "…", "duration": 30.04,
                   "credits": 75, "chained_from": null },
     "block_02": { "status": "pending" }
   },
@@ -150,6 +152,10 @@ next. An interrupted run must never re-render a block that is already on disk:
   "runs_used": 1
 }
 ```
+
+`duration` is the clip's real length from `ffprobe`, not the requested one — `/assemble`
+compares it to the block's `dur`. `credits` is what the job actually billed, which can
+differ from 75 (a declined preset re-send bills once, a re-render bills again).
 
 ## The run budget
 

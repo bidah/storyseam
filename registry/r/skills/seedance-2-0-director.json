@@ -36,10 +36,9 @@
     "start_image_supported": true,
     "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std."
   },
-  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
   "version": 1,
-  "updated": "2026-09-02",
   "sha256": "3d199430e3dff0aa",
+  "updated": "2026-09-02",
   "files": [
     {
       "path": ".claude/skills/seedance-2-0-director/SKILL.md",

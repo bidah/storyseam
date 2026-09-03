@@ -38,7 +38,7 @@ The filesystem is the state. Detect the stage and name the next command:
 | On disk | Stage | Next |
 | --- | --- | --- |
 | no `STORY.md` | nothing yet | `/start-story` |
-| `STORY.md`, no `script/script.md` (or it is empty) | scaffolded | `/write-script` |
+| `STORY.md`, no `script/script.md` (or it holds only a title) | scaffolded | `/write-script` |
 | a script, no `shotlist/shotlist.json` | written | `/shotlist` (once the author is happy) |
 | a shot list, missing assets | shot-listed | `/cast` |
 | assets complete, no clips | cast | `/render` |
@@ -63,7 +63,7 @@ sheets should look like — those are decisions this engine is built to make.
 
 Two numbers matter and both live in `.storyseam/state.json`:
 
-- **`credits_spent`** — 75 per 30s block, 15 per voice cast, ~2 per image.
+- **`credits_spent`** — 75 per 30s block, 15 per voice cast, ~2.5 per still.
 - **`runs_used`** — every `generate_video` call, including voice casts and retries.
 
 Announce them as you go. When the author sets a run budget, it is a hard stop, not a
@@ -99,3 +99,7 @@ renders/{clips,frames,final}/
 
 Nothing outside this tree is state. If a stage needs a value, it is in `config.json`
 or it is a decision, and decisions are the author's.
+
+`bin/` means the engine checkout's `bin/`. A story's own `CLAUDE.md` records that path as
+`STORYSEAM_HOME`; when the story is not a subfolder of the engine, run scripts as
+`$STORYSEAM_HOME/bin/<script> <story-root>`.

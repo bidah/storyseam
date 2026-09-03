@@ -41,14 +41,14 @@ against it. Hunt:
 
 - **Names and spellings.** The single most common defect and the most damaging
   downstream, because a name is a key: a character sheet, a voice and a set of
-  generated stills are all filed under the exact string. "the project" vs
-  "Whistle Wood" is two characters as far as the pipeline is concerned. Check
+  generated stills are all filed under the exact string. "Whistle Wood" vs
+  "Whistlewood" is two places as far as the pipeline is concerned. Check
   every proper noun character by character, including possessives and plurals.
 - **Places and geography.** Distances, adjacency, what you can see from where,
   what is north of what, how long it takes to get between two places, indoor vs
   outdoor, what a location contains.
 - **Established facts.** Ages, family relations, who knows whom, what happened
-  before the episode starts, what an object is and what it does.
+  before the film starts, what an object is and what it does.
 - **Rules of the world.** The constraints that make the world itself — what magic
   or technology can and cannot do, what is forbidden, what has a price. A rule
   broken silently is worse than a name misspelled, because the audience learns
@@ -56,7 +56,7 @@ against it. Hunt:
 - **Character canon.** A character described in the bible as never lying who
   lies in sc.4. Note it; do not fix the character.
 - **Timeline.** Season, time of day, elapsed time, what the bible says the
-  episode's position in the story is.
+  film's position in the story is.
 
 For each, give the **bible's version** and the **script's version** side by side,
 with the locations of both.
@@ -66,9 +66,10 @@ with the locations of both.
 Every location, character, creature, object and rule the script uses that has
 **no bible entry** is a gap that blocks the pipeline downstream. This is not
 pedantry about documentation: a location with no entry has no location reference
-sheet, and a character with no entry has no character sheet and no voice, so the
-storyboard stage cannot generate a consistent image of it. The script will
-board wrong or not at all, and nobody will know why.
+sheet, and a character with no entry has no character sheet and no voice, so
+`/shotlist` has nothing to cite and `/cast` cannot generate a consistent
+reference for it. The script will render wrong or not at all, and nobody will
+know why.
 
 So enumerate them, and then do the useful part: **write the proposed bible entry
 for each**, in the shape the bible already uses, filled in from what the script
@@ -87,8 +88,9 @@ Contradictions first, then the missing entries as ready-to-paste additions.
 ```
 CONTRADICTIONS
 
-1. [name] "Whistle Wood" (sc.2 slug, sc.5 action) vs bible "the project".
-   Keep: the bible's. One word, no space, everywhere. 3 occurrences.
+1. [name] "Whistle Wood" (sc.2 slug, sc.5 action) vs world/locations.md
+   "Whistlewood".
+   Keep: the world file's. One word, no space, everywhere. 3 occurrences.
 
 2. [geography] Script: Sara sees the boundary stone from the schoolhouse door
    (sc.4). Bible, Locations > Boundary Stone: "an hour's walk beyond the far
@@ -102,7 +104,7 @@ CONTRADICTIONS
    crosses, something about him must be different after.
 
 
-MISSING BIBLE ENTRIES (blocks storyboarding)
+MISSING BIBLE ENTRIES (blocks /shotlist and /cast)
 
 A. LOCATION — The Schoolhouse   [3 scenes: 3, 4, 8 — urgent]
    Proposed entry:

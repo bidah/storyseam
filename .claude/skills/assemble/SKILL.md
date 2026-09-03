@@ -63,6 +63,9 @@ happened.
 Report all three. Then watch it end to end and say plainly whether the cuts land —
 particularly at the chained seams, where a mismatched last frame shows as a jump.
 
+Record the result under `final` in `.storyseam/state.json` (path, duration, resolution,
+`"music": "none"`), so the story's stage reads as done from the folder alone.
+
 ## Step 4 — hand over
 
 Report:

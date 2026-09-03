@@ -61,10 +61,9 @@
       ]
     }
   },
-  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
   "version": 1,
-  "updated": "2026-09-02",
   "sha256": "d5bf0deacc7798ec",
+  "updated": "2026-09-02",
   "files": [
     {
       "path": ".claude/skills/provider-higgsfield/SKILL.md",

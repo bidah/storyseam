@@ -30,7 +30,7 @@ author accepts.
   want is *legible in this scene*.
 - **dialogue-doctor** owns the words. Quote a line only to locate a beat; do not
   rewrite it for voice.
-- **tension-doctor** scores pressure across the episode. You judge one scene at a
+- **tension-doctor** scores pressure across the film. You judge one scene at a
   time and don't draw curves.
 
 ## The one non-negotiable: the scene must turn

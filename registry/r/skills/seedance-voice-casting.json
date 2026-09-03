@@ -19,10 +19,9 @@
     },
     "notes": "A voice reference reaches a render as a black-frame .mp4 in video_references, never audio_references."
   },
-  "$schema": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/schema/registry-item.json",
   "version": 1,
-  "updated": "2026-09-02",
   "sha256": "1f027fadc9833845",
+  "updated": "2026-09-02",
   "files": [
     {
       "path": ".claude/skills/seedance-voice-casting/SKILL.md",

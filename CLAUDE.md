@@ -22,12 +22,18 @@ every skill can break them.
 2. **Video is Seedance 2.5 at 480p. Always 480p.** Never 720p, never 1080p.
    `seedance_2_5` is expensive and the resolution is the cost lever.
 3. **Images are GPT Image 2 at 2k.** `gpt_image_2`, `resolution: "2k"`.
-4. **Higgsfield MCP only.** `mcp__claude_ai_higgsfield__*`. Never the `higgsfield`
-   CLI — it can only pass one reference image, which breaks every character-anchored
-   shot. `ffmpeg` for local frame/audio work is fine and expected.
+4. **The backend is configuration, not code.** `config.json` names a provider per
+   capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`),
+   `atlas` or `fal` (reached with an API key the user exports; Storyseam never handles
+   the value). Verify access with `bin/provider-check.py` before spending, and never
+   fall back to another provider silently. Never the `higgsfield` CLI — it can only
+   pass one reference image, which breaks every character-anchored shot. `ffmpeg` for
+   local frame/audio work is fine and expected.
 5. **One clip at a time, chained.** Blocks render sequentially. The last frame of
-   block N becomes the `start_image` of block N+1. Never fan out video generation
-   in parallel — the chain is the continuity.
+   block N is the **first `image_references` entry** of block N+1, declared in the
+   prompt as `@Image 1 is the first frame`. Never `start_image` — Seedance 2.5
+   accepts the role and ignores it (see `docs/seedance-2.5-research.md`). Never fan
+   out video generation in parallel — the chain is the continuity.
 
 ## Resolution & model settings
 
@@ -40,8 +46,10 @@ the single source of truth; a skill reads the config rather than hardcoding.
 | Video blocks | `seedance_2_5` | `480p` | **never higher**; 4–30s; `generate_audio: true` |
 | Final assembly | ffmpeg concat | 854×480 | matches the block resolution; upscale is a separate, human decision |
 
-Aspect ratio is one project-wide value (`16:9` cinematic, `9:16` vertical). Images and
-video must use the same one or the stills will not match the frames they anchor.
+Aspect ratio is one project-wide value (`16:9` cinematic, `9:16` vertical). Video,
+location plates and prop plates use it. Character sheets are portrait (`3:4`) whatever
+the film is: a sheet is a figure the film cites, not a frame it matches. The image
+director owns that call.
 
 ## Where character voices live — and in what format
 
@@ -74,9 +82,10 @@ score there after `/assemble`.
 
 ## The Higgsfield facts that cost the most to relearn
 
-- **Reference images go in `image_references`** (repeatable). Only the continuity
-  anchor goes in `start_image`. Putting a character sheet in `start_image` silently
-  makes the whole shot look like the sheet.
+- **Every reference image goes in `image_references`** (repeatable), the continuity
+  anchor **first**, and the prompt says which is which (`@Image 1 is the first frame`,
+  `@Image 2 defines <character>'s face and wardrobe only`). `start_image` is a
+  Seedance 2.0 role; on 2.5 it is accepted, recorded on the job, and ignored.
 - **Voice references are black-frame `.mp4` files passed as `video_references`.**
   Not `audio_references`. Encode the voice with
   `bin/voice-to-blackmp4.sh`, pass it as `video_references`, keep
@@ -106,9 +115,40 @@ score there after `/assemble`.
 
 Each is a thin wrapper that loads the matching skill in `.claude/skills/`.
 
+## Per-model craft and per-backend plumbing live in the registry
+
+`.claude/skills/` holds the pipeline. The **director** skills (how to prompt one model)
+and the **provider** skills (how to submit a job to one backend) are installed from the
+registry and git-ignored:
+
+```bash
+bin/registry-add.py --list          # the catalogue
+bin/registry-add.py --all           # everything (do this on a fresh clone)
+bin/registry-add.py seedance_2_5    # the default director for a model id in config.json
+bin/registry-add.py provider-atlas  # a provider adapter, by name
+```
+
+`/shotlist` writes every block prompt through the director for `config.video.model`;
+`/cast` writes every still through the director for `config.image.model`. If the
+director for a configured model is not installed, install it — never prompt from memory.
+See the `model-directors` and `providers` skills.
+
+## The files the stages hand each other
+
+`shotlist/shotlist.json`, `.storyseam/state.json` and `.storyseam/media.json` are the
+seams between `/shotlist`, `/cast` and `/render`. Their shapes are fixed in `schema/` and
+checked by `bin/story-check.py`. A skill that adds or renames a field updates the schema
+in the same change. `CONTEXT.md` is the glossary; `docs/adr/` records the decisions that
+look wrong until you know why.
+
 ## Working on the engine itself
 
 - Skills live in `.claude/skills/<name>/SKILL.md`. Subagents live in `.claude/agents/`.
+- Director and provider skills are edited in `registry/sources/<name>/`, then
+  `bin/registry-build.py <BASE_URL>` and `bin/registry-add.py --all` to reinstall. Editing
+  the installed copy under `.claude/skills/` is lost on the next install.
+- Stories used for testing live under `test/`. Nothing in the engine may name a test
+  story's title, characters or premise — examples use placeholder names.
 - A skill is instructions for a model, not documentation for a human. Write the
   failure mode, not the happy path — the happy path is what the model already does.
 - When you change a rule that appears in more than one skill (the five above are all

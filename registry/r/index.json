@@ -1,7 +1,7 @@
 {
   "name": "storyseam-registry",
   "version": 2,
-  "description": "Installable per-model skills for Storyseam. A model has one default skill and any number of alternates, asked for by name.",
+  "description": "Installable per-model skills and provider adapters for Storyseam. A model has one default skill and any number of alternates, asked for by name.",
   "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
   "updated": "2026-09-02",
   "items": [
@@ -49,8 +49,14 @@
       "access": [
         "api_key"
       ],
+      "models": [
+        "nano_banana_2",
+        "seed_audio_1_0",
+        "seedance_2_0",
+        "seedance_2_5"
+      ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-atlas.json",
-      "sha256": "85d811da3adbae36",
+      "sha256": "8f2f752fecd83b87",
       "updated": "2026-09-02"
     },
     {
@@ -61,6 +67,10 @@
       "description": "",
       "access": [
         "api_key"
+      ],
+      "models": [
+        "seedance_2_0",
+        "seedance_2_5"
       ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-fal.json",
       "sha256": "a11596e66a559d33",
@@ -74,6 +84,11 @@
       "description": "",
       "access": [
         "mcp"
+      ],
+      "models": [
+        "gpt_image_2",
+        "seedance_2_0",
+        "seedance_2_5"
       ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-higgsfield.json",
       "sha256": "d5bf0deacc7798ec",
@@ -175,7 +190,7 @@
       "title": "Seedance 2.5 Extension Director",
       "description": "Frame-exact continuation on Seedance 2.5 via video_extension. Use when the seam between blocks must be invisible and a prose first-frame anchor is not enough.",
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/skills/seedance-2-5-extension-director.json",
-      "sha256": "2d595488a606af8c",
+      "sha256": "82d37b7ad3b8cb9e",
       "updated": "2026-09-02",
       "constraints": {
         "duration_seconds": [

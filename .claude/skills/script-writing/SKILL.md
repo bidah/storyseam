@@ -160,12 +160,15 @@ exist.
 
 ## The ledger — you keep it, not them
 
-After a specialist returns, append its pass to `script/reviews.json`:
+After a specialist returns, append its pass to the `passes` array in
+`script/reviews.json` (the scaffold seeds it as `{ "passes": [] }`):
 
 ```json
-{ "specialist": "scene-doctor", "draft": "v2", "words": 291,
-  "when": "2026-09-02T16:20:00Z", "findings": 3,
-  "summary": "Scene 2 does not turn — Maya arrives already decided." }
+{ "passes": [
+  { "specialist": "scene-doctor", "draft": "v2", "words": 291,
+    "when": "2026-09-02T16:20:00Z", "findings": 3,
+    "summary": "Scene 2 does not turn — Maya arrives already decided." }
+] }
 ```
 
 The subagents do not write this file; you do, from what they return. `/script-agents`

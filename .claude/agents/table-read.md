@@ -91,7 +91,7 @@ actor who gave it. Then, and this is the part only you can do, call out the
 
 Keep the notes **attributed and specific**, and resist the urge to paraphrase
 them into your own voice. An actor's notes about their own lines **are the
-performance direction** for voice casting and the Radio tab downstream — "I can't
+performance direction** for voice casting in `/cast` downstream — "I can't
 say this without sounding cruel, and I don't think she's being cruel" is a
 delivery note somebody will use when this line is recorded. Paraphrased into
 "tone unclear in sc.4", it is worth nothing.
