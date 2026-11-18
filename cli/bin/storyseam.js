@@ -14,6 +14,7 @@ import { checkStory } from "../src/check.js";
 import { runRecommend } from "../src/recommend.js";
 import { runAssets } from "../src/assets.js";
 import { runPreview } from "../src/shot-preview.js";
+import { runCompile } from "../src/reftags.js";
 import { runPresetAdd, runPresetList, runPresetPage } from "../src/presets.js";
 import { KNOWN_SERVERS, defaultServers, printInstall } from "../src/mcp.js";
 import { checkProviders } from "../src/providers.js";
@@ -234,6 +235,14 @@ program
   .argument("[folder]", "story folder")
   .option("--json", "print the sheet as JSON")
   .action((folder, opts) => process.exit(runAssets(storyRoot(folder), opts) ? 0 : 1));
+
+program
+  .command("compile")
+  .description("a block's prompt with its @path reference tags compiled to the model's (@Image1 ...), and the ordered references")
+  .argument("<block>", "block id or number")
+  .argument("[folder]", "story folder")
+  .option("--json", "prompt + ordered references as JSON, for /render")
+  .action((block, folder, opts) => process.exit(runCompile(storyRoot(folder), block, opts) ? 0 : 1));
 
 program
   .command("preview")

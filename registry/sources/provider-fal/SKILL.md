@@ -78,7 +78,7 @@ each block produces is published the same way before the next block cites it.
 The pipeline hands you a built block: prompt, an **ordered** reference list, duration,
 resolution, aspect ratio, `generate_audio`. Submit to the `reference-to-video` endpoint
 with the block's image references in `reference_images` **in the block's `references`
-order** (anchor first on a chained block — the director numbered `@Image 1..K` in that
+order** (anchor first on a chained block — the director numbered `@Image1..K` in that
 order), voices in `reference_audios` as the `.mp3` takes, then poll status and fetch the
 result; download `video.url` to `renders/clips/block_<NN>.mp4`. There is no preset gate
 on fal.

@@ -67,20 +67,24 @@ A block is exactly these things, and nothing provider-specific:
 
 | Field | From |
 | --- | --- |
-| `prompt` | every installed preset in `config.json` `presets` with `position: "before"` (look first), then `block.prompt`, then every other preset's `prompt` (camera, then audio, then any other section, alphabetically), then `prompts/video_style_prompt.txt`, joined by blank lines. Exactly what the shot previewer shows. Never edited here. |
+| `prompt` | in this order, joined by blank lines: every installed preset with `position: "before"` (look first); the block prompt **compiled** (`npx storyseam compile <block> --json` → `prompt`: its `@path` tags turned into the model's `@Image1`/`@Video1`/`@Audio1` with the reference plan line first, `docs/spec.md` §16); every other preset's `prompt` (camera, then audio, then any other section alphabetically); `prompts/video_style_prompt.txt`. Exactly what the shot previewer shows. Never edited here. |
 | `references` | the block's ordered reference list — see below |
 | `duration` | `block.dur` (4–30) |
 | `resolution` | `config.video.resolution` — `480p` |
 | `aspect_ratio` | `config.aspect_ratio` |
 | `generate_audio` | `config.video.generate_audio` (`false` on a silent story: the `audio` preset sets it) |
 
+**On a prompt with `@path` tags, the reference list is the compiler's**: pass
+`references` from `npx storyseam compile <block> --json`, in that order, and nothing else.
+The rest of this paragraph is for shot lists written before tags.
+
 **The reference list is ordered, and the order is the director's.** The director says how
 references are numbered in the prompt; the shot list records that order in the block's
 `references` array (anchor frame first on a chained block, then character sheets, then
 the location plate, then prop plates, then voice references). You pass them to the
 adapter **in that order** — the adapter maps positions to its own roles or arrays, and
-`@Image 1` in the prompt must be the first image you pass or the anchor is silently
-wasted. `bin/story-check.py` verifies the prompt's `@Image N` mentions agree with the
+`@Image1` in the prompt must be the first image you pass or the anchor is silently
+wasted. `bin/story-check.py` verifies the prompt's `@ImageN` mentions agree with the
 array. If a block has no `references` array (an older shot list), build the list in the
 director's order from `characters`, `location`, `props` and `voices`, anchor first.
 

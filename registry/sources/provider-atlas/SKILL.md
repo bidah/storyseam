@@ -95,12 +95,12 @@ No `media_upload`, no `media_confirm`, no `media_id` cache. The stills must be r
 Atlas — publish them (the project's R2 bucket works) rather than pointing at local paths.
 
 `reference_images` follows the block's `references` order exactly (anchor first on a
-chained block), because the director numbered `@Image 1..K` in that order in the prompt.
+chained block), because the director numbered `@Image1..K` in that order in the prompt.
 
 Limits: **≤9 reference images, ≤3 reference videos, ≤3 reference audios.** That is much
 tighter than Seedance's own 30/10/10 ceiling, so prune to the references that carry
 identity — and say so in the shot list, because dropping the fifth prop plate silently
-changes what the prompt's `@Image 5` points at.
+changes what the prompt's `@Image5` points at.
 
 Poll `GET /model/prediction/<id>` until `status` leaves `processing`, then download
 `outputs[0]` to `renders/clips/block_<NN>.mp4`. There is no preset gate on Atlas.

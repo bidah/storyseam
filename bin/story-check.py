@@ -147,10 +147,71 @@ def preset_problems(config):
     return out
 
 
+# Reference tags (docs/spec.md section 16). Mirrors cli/src/reftags.js reftagProblems.
+TAG_RE = re.compile(r"@((?:assets|renders)/[^\s,;:)\]\"'`]+\.(?:png|jpe?g|webp|mp4|mov|webm|mp3|wav|m4a|ogg))|@anchor\b", re.I)
+
+
+def path_tags(prompt):
+    seen = []
+    for m in TAG_RE.finditer(prompt or ""):
+        key = m.group(1) or "anchor"
+        if key not in seen:
+            seen.append(key)
+    return seen
+
+
+def reftag_problems(config, shotlist):
+    out = []
+    rt = (config.get("video") or {}).get("reference_tags")
+    if rt is not None:
+        if not isinstance(rt, dict):
+            out.append("config.json video.reference_tags must be an object")
+        else:
+            for k in ("image", "video", "audio"):
+                if rt.get(k) is not None and "{n}" not in str(rt[k]):
+                    out.append(f"config.json video.reference_tags.{k} must contain {{n}}")
+            if rt.get("numbering") is not None and rt["numbering"] not in ("per_kind", "global"):
+                out.append('config.json video.reference_tags.numbering must be "per_kind" or "global"')
+    blocks = (shotlist or {}).get("blocks") or []
+    for i, b in enumerate(blocks):
+        tags = path_tags(b.get("prompt"))
+        if not tags:
+            continue
+        bid = b.get("id")
+        chained = bool(b.get("start_from_previous_last_frame"))
+        anchor_path = f"renders/frames/{blocks[i - 1].get('id')}_last.jpg" if i > 0 else None
+        refs = b.get("references")
+        problems = []
+        if isinstance(refs, list) and refs:
+            for t in tags:
+                p = anchor_path if t == "anchor" else t
+                if t == "anchor" and not chained:
+                    problems.append(f"{bid}: prompt cites @anchor but the block is not chained")
+                elif not any(r.get("path") == p or (t == "anchor" and r.get("kind") == "anchor") for r in refs):
+                    problems.append(f"{bid}: prompt tags @{t} but references does not list it")
+            listed = refs
+        else:
+            if "anchor" in tags and not chained:
+                problems.append(f"{bid}: prompt cites @anchor but the block is not chained")
+            listed = [{"kind": "anchor", "path": anchor_path or "renders/frames/(no previous block)"} if t == "anchor" else {"kind": "?", "path": t} for t in tags]
+        if chained and not any(r.get("kind") == "anchor" for r in listed):
+            problems.append(f"{bid}: chained but the prompt never tags @anchor (the previous block's last frame)")
+        for r in listed:
+            if not re.match(r"^(assets|renders)/", r.get("path") or ""):
+                problems.append(f"{bid}: reference {r.get('path')} is outside assets/ and renders/")
+        out.extend(problems)
+        if re.search(r"@(Image|Video|Audio)\s*\d+", b.get("prompt") or ""):
+            out.append(f"{bid}: prompt mixes @path tags with hand-numbered @Image/@Video/@Audio; use one")
+    return out
+
+
 def cross_checks(root):
     """What the schemas cannot say: the files the JSON points at must exist."""
     ok = True
     config = load_json(root / "config.json") or {}
+    for p in reftag_problems(config, load_json(root / "shotlist/shotlist.json")):
+        print(f"BROKEN   {p}")
+        ok = False
     for p in preset_problems(config):
         print(f"BROKEN   {p}")
         ok = False
@@ -268,7 +329,7 @@ def reference_contract(sl):
             print(f"BROKEN   {bid}: not chained but carries an anchor reference")
             ok = False
         prompt = b.get("prompt", "")
-        mentioned = sorted({int(n) for n in re.findall(r"@Image\s+(\d+)", prompt)})
+        mentioned = sorted({int(n) for n in re.findall(r"@Image\s*(\d+)", prompt)})
         if mentioned and mentioned[-1] > len(images):
             print(f"BROKEN   {bid}: prompt cites @Image {mentioned[-1]} but only {len(images)} image references are listed")
             ok = False

@@ -245,7 +245,7 @@ The limits come from the registry, never from memory:
 
 | Model | Clip length | Images | Videos | Audio | Seam |
 | --- | --- | --- | --- | --- | --- |
-| `seedance_2_5` | 4–30s | 30 | 10 | 10 | first frame declared in prose (`@Image 1`) |
+| `seedance_2_5` | 4–30s | 30 | 10 | 10 | first frame declared in prose (`@Image1`) |
 | `seedance_2_0` | 4–15s | 9 | 3 | 3 | a real `start_image`, so the seam is frame-exact |
 
 The recommendation, in order:
@@ -492,6 +492,63 @@ npx -y github:bidah/storyseam-preview ./my-film     # or: git clone, npm install
 It serves on `127.0.0.1` only. It reads and writes only inside the folder it was given, and
 writes only `.md`, `.json` and `.txt`. Fork it to change the look. Nothing in a story depends
 on it.
+
+## 16. Reference tags
+
+A reference-to-video model reads its references by tag. On Seedance, each file is tagged by
+kind and numbered from 1 in the order it is passed: `@Image1`, `@Video1`, `@Audio1`. Every tag
+should be given a role in plain words ("@Image1 is Theo's identity reference"). A prompt that
+says "the boy from the second picture" leaves the model guessing. Hand-numbering tags is also
+fragile: insert one character sheet and every number after it points at the wrong file.
+
+So a block's prompt names its references **the way a coding harness names files**, by path:
+
+```text
+Open on @anchor. @assets/images/characters/theo.png and @assets/images/characters/milo.png
+sit on the rug in @assets/images/locations/theo-living-room.png. Theo speaks in
+@assets/audio/voices/blackframe/theo.mp4.
+```
+
+- **`@<path>`** cites a file under `assets/` or `renders/`. **`@anchor`** cites the previous
+  block's last frame (`renders/frames/<previous>_last.jpg`), on a chained block only.
+- **Compiled before it is sent.** `npx storyseam compile <block>` replaces every path tag
+  with the model's tag. It orders the references to match: the block's `references` when it
+  lists them, otherwise first appearance, with the anchor always first. It also opens the
+  prompt with a **reference plan**, one sentence of role per tag. The shot preview (§13) shows
+  the compiled prompt with each tag next to its file. `/render` sends exactly that, with the
+  references in exactly that order.
+- **The model's syntax lives in config.** `config.json` `video.reference_tags` overrides the
+  model's default. Each value must contain `{n}`:
+
+  ```json
+  "reference_tags": { "image": "@Image{n}", "video": "@Video{n}", "audio": "@Audio{n}",
+                      "numbering": "per_kind", "legend": true }
+  ```
+
+  | Model | Image | Video | Audio | Numbering |
+  | --- | --- | --- | --- | --- |
+  | `seedance_2_5`, `seedance_2_0` | `@Image{n}` | `@Video{n}` | `@Audio{n}` | per kind |
+  | `minimax_h3` | `Image {n}` | `Video {n}` | `Audio {n}` | per kind |
+
+  `numbering: "global"` counts across kinds for a model that wants that. `legend: false`
+  drops the reference plan, for a prompt that already writes its own.
+- **What a file is to the model** comes from its extension. `.png`/`.jpg`/`.webp` are
+  images, `.mp4`/`.mov`/`.webm` are videos (a black-frame voice clip is a video), and
+  `.mp3`/`.wav`/`.m4a` are audio. Its role comes from its folder: `characters/`,
+  `locations/`, `props/`, `voices/`, `video_refs/`, and `renders/frames/` for the anchor.
+
+`check` reports:
+
+- a tag that `references` does not list;
+- `@anchor` on a block that is not chained;
+- a chained block that never tags `@anchor`;
+- a reference outside `assets/` and `renders/`;
+- a prompt that mixes path tags with hand-numbered `@Image N`;
+- a `reference_tags` value without `{n}`.
+
+A prompt with no path tags, from a shot list written before this section, is sent as written.
+Its own `@Image1`…`@ImageK` mentions are still checked against `references`. `@Image 1`,
+with a space, is accepted for the same old shot lists.
 
 ## Template
 

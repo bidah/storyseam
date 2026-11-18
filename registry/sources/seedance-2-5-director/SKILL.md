@@ -100,12 +100,12 @@ intact, and not one block opened on that frame.
 
 1. Put the anchor frame **first** in `image_references`.
 2. Name its role in the prompt, in its own sentence:
-   > `@Image 1 is the first frame. It defines the opening composition, subject position, pose, prop state, scene, and camera direction.`
+   > `@Image1 is the first frame. It defines the opening composition, subject position, pose, prop state, scene, and camera direction.`
 3. Add the positive lock:
-   > `Do not change the first-frame composition defined by @Image 1.`
+   > `Do not change the first-frame composition defined by @Image1.`
 4. **Write `Shot 1` as that frame.** This is the other half of the failure: a Shot 1 that
    opens on a different framing than the anchor will win, because the shot list is a later
-   and more specific instruction. If @Image 1 is a wide and Shot 1 says "medium two-shot",
+   and more specific instruction. If @Image1 is a wide and Shot 1 says "medium two-shot",
    you get a medium two-shot and the anchor is wasted. **The first shot of a chained block
    never introduces a new framing** — it re-states the anchor, then moves from it.
 
@@ -140,8 +140,8 @@ a face, a product, a location, a style.
 
 Label each one **narrowly**, and say what to *use* rather than what to leave out:
 
-> `@Image 1 defines the woman's face and green jacket only.`
-> `@Image 2 defines the coffee shop counter and the window light only.`
+> `@Image1 defines the woman's face and green jacket only.`
+> `@Image2 defines the coffee shop counter and the window light only.`
 
 ## Core Seedance formula
 
@@ -290,20 +290,20 @@ and they must agree.
 **Two mistakes here, both expensive.** Putting a character sheet in `start_image`
 silently makes the whole block look like the sheet — a static portrait that slowly
 breathes. And on 2.5, `start_image` does nothing at all: the continuity anchor belongs
-in `image_references`, first in the list, declared in prose as `@Image 1 is the first
+in `image_references`, first in the list, declared in prose as `@Image1 is the first
 frame`. See "The first frame on 2.5" above.
 
 **The reference-order contract.** The shot list records each block's references as an
 ordered list (`references[]`: anchor frame first on a chained block, then character
 sheets, the location plate, prop plates, then voice references). Number the image-kind
-references `@Image 1..K` in exactly that order, give every one a role in prose, and the
+references `@Image1..K` in exactly that order, give every one a role in prose, and the
 provider adapter passes them to the model in the same order — that is the only thing
-that makes `@Image 1` be the anchor. The roles in the table above are Higgsfield's; on a
+that makes `@Image1` be the anchor. The roles in the table above are Higgsfield's; on a
 URL-based provider the adapter maps the same ordered list to its own arrays.
-> @Image 1 is the first frame. It defines the opening composition, subject position, pose,
-> prop state, scene, and camera direction. @Image 2 defines Noah's face and wardrobe only.
-> @Image 3 defines Maya's face and wardrobe only. @Image 4 defines the living-room layout
-> and window light only. Do not change the first-frame composition defined by @Image 1.
+> @Image1 is the first frame. It defines the opening composition, subject position, pose,
+> prop state, scene, and camera direction. @Image2 defines Noah's face and wardrobe only.
+> @Image3 defines Maya's face and wardrobe only. @Image4 defines the living-room layout
+> and window light only. Do not change the first-frame composition defined by @Image1.
 
 ## Mode selection rules
 

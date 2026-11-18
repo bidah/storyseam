@@ -1,6 +1,6 @@
 {
   "name": "storyseam",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A storytelling engine. An idea goes in; a finished film comes out.",
   "type": "module",
   "license": "MIT",

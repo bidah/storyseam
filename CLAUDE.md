@@ -42,7 +42,7 @@ its **headline** and never changes wording.
    expected on every provider.
 5. **One block at a time, chained.** Blocks render sequentially, and the last frame of
    block N is the first `image_references` entry of block N+1, declared in the prompt as
-   `@Image 1 is the first frame`. Never `start_image` on 2.5 — the API accepts the role
+   `@Image1 is the first frame`. Never `start_image` on 2.5 — the API accepts the role
    and the model ignores it (ADR-0001, `docs/seedance-2.5-research.md`). Never fan out
    video generation in parallel; the chain is the continuity.
 
@@ -94,8 +94,8 @@ score there after `/assemble`.
 ## The Higgsfield facts that cost the most to relearn
 
 - **Every reference image goes in `image_references`** (repeatable), the continuity
-  anchor **first**, and the prompt says which is which (`@Image 1 is the first frame`,
-  `@Image 2 defines <character>'s face and wardrobe only`). `start_image` is a
+  anchor **first**, and the prompt says which is which (`@Image1 is the first frame`,
+  `@Image2 defines <character>'s face and wardrobe only`). `start_image` is a
   Seedance 2.0 role; on 2.5 it is accepted, recorded on the job, and ignored.
 - **Voice references are black-frame `.mp4` files passed as `video_references`.**
   Not `audio_references`. Encode the voice with

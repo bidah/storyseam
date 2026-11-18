@@ -156,7 +156,7 @@ fails if a copy drifts, or if any skill anywhere contradicts one.
 2. **Video is rendered at 480p.** A story may not raise the video resolution, because resolution is the cost lever, whichever model renders it.
 3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft reference poisons every block that cites it.
 4. **The backend is configuration.** `config.json` names a provider per capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or `fal` (reached with an API key the author exports; Storyseam never handles the value).
-5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the first frame`.
+5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image1 is the first frame`.
 <!-- /rules -->
 
 ### Character voices are stored in two forms
@@ -180,6 +180,7 @@ wrong character speaks, and nothing errors — you find out by watching the clip
 | `npx storyseam add <model\|skill>` | install one more skill — an alternate director, another provider |
 | `npx storyseam update` | reinstall what `config.json` names, from the registry |
 | `npx storyseam assets` | write `shotlist/assets.json`: every sheet and plate needed, and whether each is made from your references or generated |
+| `npx storyseam compile <block>` | a block's prompt with its `@path` reference tags compiled to the model's (`@Image1`, `@Video1`, `@Audio1`), plus the ordered references (`--json` for `/render`) |
 | `npx storyseam preview <block>` | the HTML previewer for a block before it is sent: the exact prompt, references in order, model, settings, cost (`--open`) |
 | `npx storyseam preset list` / `add <section/id or url>` / `page` | prompt presets (look, camera, audio): shareable pre-prompts every video prompt carries; see [storyseam.app/presets](https://storyseam.app/presets) |
 | `npx storyseam camera` | the camera presets page; `--set <id>` installs one |

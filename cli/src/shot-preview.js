@@ -16,6 +16,7 @@ import { slug } from "./assets.js";
 import { blockNeeds } from "./recommend.js";
 import { die } from "./util.js";
 import { presetLines } from "./presets.js";
+import { compileBlock } from "./reftags.js";
 
 export const previewEnabled = (config) => config?.shot_preview?.enabled !== false;
 
@@ -67,8 +68,10 @@ export function buildPreview(root, blockId) {
   const style = fs.existsSync(stylePath) ? fs.readFileSync(stylePath, "utf8").trim() : "";
   // the order /render assembles it in: presets that open every prompt (look, ...), block prompt,
   // the other preset lines (camera, audio, ...), style prompt
-  const prompt = [...presetLines(config, "before"), block.prompt || "", ...presetLines(config, "after"), style].filter(Boolean).join("\n\n");
-  const refs = referencesFor(root, block, blocks, config);
+  // @path reference tags compiled to the model's own (@Image1 ...), docs/spec.md §16
+  const compiled = compileBlock(block, blocks, config);
+  const prompt = [...presetLines(config, "before"), compiled.prompt, ...presetLines(config, "after"), style].filter(Boolean).join("\n\n");
+  const refs = compiled.refs || referencesFor(root, block, blocks, config);
   const model = block.model || config.video?.model || (config.video?.models || [])[0] || "(not chosen)";
   const needs = blockNeeds(block, config);
   const perBlock = Number(config.costs?.block_30s ?? 75);
@@ -120,19 +123,20 @@ dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}dt{color:va
 figure{margin:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg)}
 figure img,figure video{display:block;width:100%;aspect-ratio:1;object-fit:cover}figure audio{width:100%;margin:40px 0}
 .ph{aspect-ratio:1;display:grid;place-items:center;color:var(--warn);font-size:13px}
-figcaption{padding:8px 10px;font-size:13px}figcaption b{color:var(--accent);font:600 12px ui-monospace,monospace;margin-right:6px}
+figcaption{padding:8px 10px;font-size:13px}figcaption code{font:11px ui-monospace,monospace;color:var(--mute);overflow-wrap:anywhere}figcaption b{color:var(--accent);font:600 12px ui-monospace,monospace;margin-right:6px}
 .shots{width:100%;border-collapse:collapse;font-size:14px}.shots th,.shots td{text-align:left;vertical-align:top;padding:8px;border-top:1px solid var(--line)}.shots th{color:var(--mute);font-weight:500}
 .full{grid-column:1/-1}
 </style></head><body><main>
 <div class="eyebrow">Shot preview · block ${index + 1} of ${blocks.length}</div>
 <h1>${esc(block.id)}${block.movement ? ` — ${esc(block.movement)}` : ""}</h1>
 <p class="sub">This is what will be sent. Approve it in chat, or say what to change.</p>
+${compiled.problems.length ? `<p class="warn">${compiled.problems.map(esc).join("<br>")}</p>` : ""}
 ${missing.length ? `<p class="warn">Not ready: ${missing.map((r) => esc(r.path)).join(", ")} ${missing.length === 1 ? "does" : "do"} not exist yet.</p>` : ""}
 <div class="grid">
 <section><h2>Prompt</h2><pre>${esc(prompt)}</pre></section>
 <section><h2>Model &amp; settings</h2><dl>${settings.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl></section>
 <section class="full"><h2>References, in the order they are passed</h2><div class="refs">${refs
-    .map((r, i) => `<figure>${media(r)}<figcaption><b>${i + 1}</b>${esc(r.kind)} · ${esc(r.label)}</figcaption></figure>`)
+    .map((r, i) => `<figure>${media(r)}<figcaption><b>${esc(r.tag || i + 1)}</b>${esc(r.kind)} · ${esc(r.label)}<br><code>${esc(r.path)}</code></figcaption></figure>`)
     .join("") || `<p class="sub">No references.</p>`}</div></section>
 ${(block.shots || []).length ? `<section class="full"><h2>Shots</h2><table class="shots"><thead><tr><th>Time</th><th>Camera</th><th>Action</th><th>Dialogue</th></tr></thead><tbody>${block.shots
     .map((s) => `<tr><td>${esc(s.t)}</td><td>${esc(s.camera)}</td><td>${esc(s.action)}</td><td>${esc(s.dialogue)}</td></tr>`)
@@ -143,7 +147,7 @@ ${block.final_frame ? `<section class="full"><h2>Final frame</h2><p style="margi
   const out = path.join(root, "shotlist/previews", `${block.id}.html`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
   fs.writeFileSync(out, html);
-  return { out, block, missing, model, cost };
+  return { out, block, missing: [...missing, ...compiled.problems.map((p) => ({ path: p }))], model, cost };
 }
 
 export function runPreview(root, blockId, opts = {}) {

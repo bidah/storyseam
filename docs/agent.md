@@ -108,6 +108,15 @@ camera with `/camera` (it opens `npx storyseam preset page --open`), and offer
 `audio/dialogue-foley` if people talk. A preset someone shares is a URL: read it, say what it
 adds to every prompt, then `npx storyseam preset add <url>`.
 
+## Reference tags in prompts
+
+Write each block's prompt with **path tags**, the way you would cite a file in a coding agent:
+`@assets/images/characters/theo.png`, `@assets/images/locations/hall.png`, and `@anchor` for
+the previous block's last frame. Never hand-number `@Image1`. `npx storyseam compile <block>`
+turns the path tags into the model's own tags (`@Image1`, `@Video1`, `@Audio1` on Seedance,
+from `config.json` `video.reference_tags`), orders the references to match, and opens the
+prompt with one line of role per reference (`docs/spec.md` §16).
+
 ## Before each block — the shot preview
 
 `shot_preview.enabled` is `true` by default. Before you send a block, run

@@ -96,7 +96,7 @@ generate_video {
 ```
 
 **`medias[]` follows the block's `references` order exactly**, because the director
-numbered `@Image 1..K` in that order in the prompt. Each image-kind reference (anchor,
+numbered `@Image1..K` in that order in the prompt. Each image-kind reference (anchor,
 character, location, prop) becomes `{ role: "image_references", value: <media_id> }`; each
 voice or video reference becomes `{ role: "video_references", value: <media_id> }`.
 

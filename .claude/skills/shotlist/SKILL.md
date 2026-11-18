@@ -87,7 +87,7 @@ the author is entitled to know what they are about to spend.
    the block's reference files in exactly that order (on a chained block the anchor frame
    `renders/frames/block_<N-1>_last.jpg` first, then character sheets, the location
    plate, prop plates, then voice references). `/render` passes them in this order, and
-   `bin/story-check.py` verifies the prompt's `@Image N` mentions agree with it.
+   `bin/story-check.py` verifies the prompt's `@ImageN` mentions agree with it.
 6. **Write the prompt — through the director.** Give the director the block's shots,
    its `references` and its `final_frame`, and take back the prompt it produces. Two
    things this skill checks on what comes back, because they are breakable here:
@@ -131,14 +131,14 @@ the author is entitled to know what they are about to spend.
         { "t": "10-22", "camera": "Medium two-shot, slow push-in", "action": "...", "dialogue": "..." },
         { "t": "22-30", "camera": "Close-up on Noah", "action": "...", "dialogue": "(none)" }
       ],
-      "prompt": "<what the director wrote — numbers @Image 1..5 and the voices in the order above>",
+      "prompt": "<what the director wrote — numbers @Image1..5 and the voices in the order above>",
       "final_frame": "Noah centre frame, eyes lifting toward Maya, both hands still on the rug."
     }
   ]
 }
 ```
 
-Image-kind references (`anchor`, `character`, `location`, `prop`) are numbered `@Image 1..K`
+Image-kind references (`anchor`, `character`, `location`, `prop`) are numbered `@Image1..K`
 in list order; `voice` and `video` references follow, numbered by the director's convention.
 A voice reference path is the form the video provider accepts — the adapter names it.
 
@@ -206,3 +206,16 @@ camera look, the audio line); `/render` appends them, so never write them into
 cited. A shot's `camera` field is framing and movement only ("medium two-shot, slow
 push-in"), and agrees with the look (no tripod lock-offs on a handheld look unless the
 story turns on it).
+
+## Reference tags: write paths, the engine numbers them
+
+In `block.prompt`, cite every reference by **path tag**, as a coding agent cites a file:
+`@assets/images/characters/theo.png`, `@assets/images/locations/theo-living-room.png`,
+`@assets/images/props/star-blanket.png`, a voice as `@assets/audio/voices/blackframe/theo.mp4`,
+and the previous block's last frame as `@anchor` (a chained block must tag it). **Never write
+`@Image1` by hand**: `npx storyseam compile <block>` numbers them the model's way
+(`config.json` `video.reference_tags`), orders `references` to match, and writes the
+reference plan line for you (`docs/spec.md` §16). Name each reference where its role is
+plain: "@assets/images/characters/theo.png walks in", not "the boy from the picture". Run
+`npx storyseam compile <block>` after writing a block to see what will be sent.
+

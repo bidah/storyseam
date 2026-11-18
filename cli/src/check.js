@@ -13,6 +13,7 @@ import { mcpProblems } from "./mcp.js";
 import { assetSheetProblems } from "./assets.js";
 import { beatProblems } from "./beats.js";
 import { presetProblems } from "./presets.js";
+import { reftagProblems } from "./reftags.js";
 
 const typeOf = (v) => (Array.isArray(v) ? "array" : v === null ? "null" : typeof v);
 
@@ -152,7 +153,7 @@ function referenceContract(sl) {
       ok = false;
     }
     const prompt = b.prompt || "";
-    const mentioned = [...new Set([...prompt.matchAll(/@Image\s+(\d+)/g)].map((m) => Number(m[1])))].sort((a, z) => a - z);
+    const mentioned = [...new Set([...prompt.matchAll(/@Image\s*(\d+)/g)].map((m) => Number(m[1])))].sort((a, z) => a - z);
     if (mentioned.length && mentioned[mentioned.length - 1] > images.length) {
       console.log(`BROKEN   ${bid}: prompt cites @Image ${mentioned[mentioned.length - 1]} but only ${images.length} image references are listed`);
       ok = false;
@@ -258,6 +259,10 @@ export function checkStory(root) {
   ok = checkFile(root, "script/reviews.json", "reviews.schema.json", false) && ok;
   ok = checkFile(root, "shotlist/assets.json", "assets.schema.json", false) && ok;
   const storyConfig = loadJson(path.join(root, "config.json")) || {};
+  for (const p of reftagProblems(root, loadJson(path.join(root, "shotlist/shotlist.json")) || {}, storyConfig)) {
+    console.log(`BROKEN   ${p}`);
+    ok = false;
+  }
   for (const p of presetProblems(storyConfig)) {
     console.log(`BROKEN   ${p}`);
     ok = false;
