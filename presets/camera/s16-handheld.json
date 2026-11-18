@@ -1,0 +1,21 @@
+{
+  "section": "camera",
+  "id": "s16-handheld",
+  "name": "Super 16 handheld",
+  "description": "Best for intimate, indie, documentary-feel, coming-of-age.",
+  "prompt": "Shot handheld on Super 16mm film: visible organic grain, soft halation on highlights, warm muted colour, slight gate weave, the operator breathing with the actors and reframing quickly.",
+  "fields": {
+    "body": "Super 16mm film camera",
+    "lens": "12–120mm zoom, mostly 25mm",
+    "movement": "handheld, breathing, quick reframes"
+  },
+  "swatch": {
+    "palette": [
+      "#3a2f24",
+      "#7d6b4f",
+      "#c9a66b",
+      "#e8d9b5"
+    ],
+    "grain": 0.6
+  }
+}

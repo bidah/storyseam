@@ -91,6 +91,11 @@ film will match, where a sheet is a figure the film will cite).
 
 ## Step 4 — casting voices
 
+**Skip this step when `config.json` `video.generate_audio` is `false`** (the `audio:
+silent` preset, a new story's default): a silent clip speaks no lines, so a voice reference
+is credits spent on nothing. Say so in one line ("audio is silent, so no voices to cast;
+`npx storyseam preset add audio/dialogue-foley` turns dialogue on") and move on.
+
 A voice is cast once and reused by every block that character speaks in. Follow
 `seedance-voice-casting` for the take (the cheap model, the character's own delivery, the
 audio kept and the picture thrown away). Then produce the form the **video provider's

@@ -1,0 +1,9 @@
+{
+  "section": "audio",
+  "id": "ambience-only",
+  "name": "Ambience only",
+  "description": "Room tone and Foley but nobody speaks: for montage, music-video and voice-over films where the words are added later.",
+  "prompt": "Audio: natural room tone and Foley for every action on screen only. No dialogue, no voices, no music.",
+  "settings": { "video.generate_audio": true },
+  "swatch": { "palette": ["#1c2421", "#40594f", "#93a88f", "#e3e6d6"], "grain": 0 }
+}

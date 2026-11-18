@@ -1,0 +1,10 @@
+{
+  "section": "look",
+  "id": "imax-naturalist",
+  "name": "IMAX naturalist",
+  "description": "Opens every video prompt: photoreal large-format look, natural light only, physical lens, pore-level skin, Hollywood acting, real physics and strict continuity. Environmental sound only.",
+  "position": "before",
+  "prompt": "8K IMAX. Photorealistic — no 3D render, no game engine.\n\nLighting: Natural light only — contre-jour backlight, camera on shadow side, atmospheric haze throughout. Key light from sky and windows only. No artificial lightning.\n\nColor: 60:30:10 — dominant / secondary / accent.\n\nCamera: Physical cine lens. 180° shutter motion blur.\n\nSkin: Pore-level realism — vellus hair, asymmetric moles, capillary flush, pore-shadow matching on-set light.\n\nActing: Hollywood — micro-pauses before reactions, precise eye-line, living eyes with catch-lights, chest rise from breathing. Characters never standing, always reacting.\n\nPhysics: Gravity and inertia respected — mass has real weight, correct contact shadows. No floating props.\n\nComposition: Rule of thirds + golden ratio. Every person moving from frame one.\n\nContinuity: Characters, props, environment identical across every cut. No identity drift.\n\nTechnical: 24fps smooth motion. 8K detail. No jitter.\n\nAudio: Environmental SFX only. No music. No subtitles.",
+  "fields": { "lighting": "natural only, contre-jour, haze", "color": "60:30:10", "camera": "physical cine lens, 180° shutter", "fps": "24" },
+  "swatch": { "palette": ["#1b2026", "#5a6470", "#c9b48f", "#f3ead8"], "grain": 0.05 }
+}

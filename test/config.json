@@ -29,5 +29,31 @@
   },
   "continuity": {
     "chain_last_frame": true
+  },
+  "presets": {
+    "audio": {
+      "section": "audio",
+      "id": "dialogue-foley",
+      "name": "Dialogue and Foley",
+      "description": "The model speaks the lines in the cast voices and renders room tone and Foley. Needs voices from /cast. Never music.",
+      "prompt": "Audio: the spoken dialogue in the referenced voices, natural room tone and Foley for every action on screen. No music, no score, no subtitles.",
+      "settings": {
+        "video.generate_audio": true
+      },
+      "source": "https://storyseam.app/spec/presets/audio/dialogue-foley.json"
+    },
+    "camera": {
+      "section": "camera",
+      "id": "storybook-animation",
+      "name": "Animated, storybook camera",
+      "description": "Best for animated, children's, fairy tale.",
+      "prompt": "A virtual animation camera with a 35mm feel: soft depth of field, smooth glides and gentle parallax between layers, compositions framed like picture-book spreads.",
+      "fields": {
+        "body": "virtual camera (animation)",
+        "lens": "virtual 35mm, gentle depth",
+        "movement": "smooth glides and gentle parallax"
+      },
+      "source": "https://storyseam.app/spec/presets/camera/storybook-animation.json"
+    }
   }
 }

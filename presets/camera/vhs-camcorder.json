@@ -1,0 +1,21 @@
+{
+  "section": "camera",
+  "id": "vhs-camcorder",
+  "name": "VHS camcorder",
+  "description": "Best for home video, horror, nostalgia.",
+  "prompt": "Shot on a 1990s VHS camcorder: low resolution, colour bleed, soft chroma, tracking noise at the bottom of frame, blown highlights, shaky handheld and crash zooms.",
+  "fields": {
+    "body": "1990s consumer camcorder",
+    "lens": "built-in zoom",
+    "movement": "shaky handheld, crash zooms"
+  },
+  "swatch": {
+    "palette": [
+      "#16121f",
+      "#5b3a6e",
+      "#c94f7c",
+      "#f2d0a4"
+    ],
+    "grain": 0.8
+  }
+}

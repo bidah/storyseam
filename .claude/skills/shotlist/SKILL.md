@@ -196,3 +196,13 @@ Save attached images into that asset's `refs_dir`, then run `npx storyseam asset
 Set `source` to `"generate"` for the ones the author wants generated. Do not ask again about
 an asset that already has an answer, and generate nothing here: making the stills is `/cast`.
 
+## Camera and sound: the presets
+
+The video prompt carries the film's prompt presets from `config.json` `presets` (the
+camera look, the audio line); `/render` appends them, so never write them into
+`block.prompt`. If `presets.camera` is unset when you reach the first prompt, run the
+`camera` skill first. On a silent story (`video.generate_audio: false`) a block's
+`dialogue` is still written, because it is what the actors are acting, but no `voices` are
+cited. A shot's `camera` field is framing and movement only ("medium two-shot, slow
+push-in"), and agrees with the look (no tripod lock-offs on a handheld look unless the
+story turns on it).

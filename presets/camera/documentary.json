@@ -1,0 +1,21 @@
+{
+  "section": "camera",
+  "id": "documentary",
+  "name": "Observational documentary",
+  "description": "Best for mockumentary, realism, interviews.",
+  "prompt": "Shot like an observational documentary on a compact shoulder camera with a 24–70mm zoom: available light, natural colour, the camera follows the action and finds focus, occasional quick zoom-ins.",
+  "fields": {
+    "body": "compact documentary camera",
+    "lens": "24–70mm zoom",
+    "movement": "shoulder-mounted, follows action, occasional zoom"
+  },
+  "swatch": {
+    "palette": [
+      "#2e3330",
+      "#6f7a6e",
+      "#b6b9a8",
+      "#e6e4da"
+    ],
+    "grain": 0.1
+  }
+}

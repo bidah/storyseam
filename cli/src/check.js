@@ -12,6 +12,7 @@ import { die } from "./util.js";
 import { mcpProblems } from "./mcp.js";
 import { assetSheetProblems } from "./assets.js";
 import { beatProblems } from "./beats.js";
+import { presetProblems } from "./presets.js";
 
 const typeOf = (v) => (Array.isArray(v) ? "array" : v === null ? "null" : typeof v);
 
@@ -256,6 +257,15 @@ export function checkStory(root) {
   ok = checkFile(root, ".storyseam/media.json", "media.schema.json", false) && ok;
   ok = checkFile(root, "script/reviews.json", "reviews.schema.json", false) && ok;
   ok = checkFile(root, "shotlist/assets.json", "assets.schema.json", false) && ok;
+  const storyConfig = loadJson(path.join(root, "config.json")) || {};
+  for (const p of presetProblems(storyConfig)) {
+    console.log(`BROKEN   ${p}`);
+    ok = false;
+  }
+  if (storyConfig.shot_preview != null && typeof storyConfig.shot_preview?.enabled !== "boolean") {
+    console.log("BROKEN   config.json shot_preview must be { \"enabled\": true | false }");
+    ok = false;
+  }
   for (const p of beatProblems(root, (loadJson(path.join(root, "shotlist/shotlist.json")) || {}).blocks || [])) {
     console.log(`BROKEN   ${p}`);
     ok = false;

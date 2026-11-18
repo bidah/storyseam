@@ -1,0 +1,21 @@
+{
+  "section": "camera",
+  "id": "35mm-classic",
+  "name": "35mm film, classic",
+  "description": "Best for period pieces, family films, timeless storybook.",
+  "prompt": "Shot on 35mm film with a 50mm prime: fine grain, rich saturated colour, deep blacks, classical locked-off frames and measured pans.",
+  "fields": {
+    "body": "35mm film camera",
+    "lens": "50mm spherical prime",
+    "movement": "locked-off tripod and measured pans"
+  },
+  "swatch": {
+    "palette": [
+      "#1d1a17",
+      "#7a3b2e",
+      "#c58b4c",
+      "#efe1c6"
+    ],
+    "grain": 0.35
+  }
+}

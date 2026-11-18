@@ -3,6 +3,7 @@
 //
 // Idempotent by construction: `seed` never overwrites and directories are created with
 // { recursive: true }. Running init twice on a live story must not destroy a draft.
+import { defaultPresets } from "./presets.js";
 import fs from "node:fs";
 import path from "node:path";
 import { asset } from "./paths.js";
@@ -13,7 +14,7 @@ import { rewrite, danglingRefs } from "./rewrite.js";
 // `files` entry in package.json, and a director sitting in a dev checkout must not
 // silently become part of a scaffold.
 export const PIPELINE_SKILLS = [
-  "assemble", "asset-check", "edit", "model-directors", "providers", "render-clips",
+  "assemble", "asset-check", "camera", "edit", "model-directors", "providers", "render-clips",
   "script-agents", "script-writing", "shotlist", "start-story", "story-engine",
 ];
 
@@ -126,7 +127,7 @@ export function defaultConfig({ title, aspect, seconds, provider, videoModels = 
   // several it is left unset, and the agent asks the author (docs/spec.md §7).
   const video = { models: videoModels, resolution: "480p", generate_audio: true };
   if (videoModels.length === 1) video.model = videoModels[0];
-  return {
+  const config = {
     title,
     providers: {
       video: { id: provider, access: provider === "higgsfield" ? "mcp" : "api_key" },
@@ -142,7 +143,12 @@ export function defaultConfig({ title, aspect, seconds, provider, videoModels = 
     editor,
     continuity: { chain_last_frame: true },
     costs: { block_30s: 75, voice: 15, still: 2.5 },
+    // docs/spec.md §13: /render shows each block's HTML preview and waits for a yes
+    shot_preview: { enabled: true },
   };
+  // docs/spec.md §14: new stories start silent (audio: silent sets
+  // video.generate_audio = false); the camera is asked for, never defaulted.
+  return defaultPresets(config);
 }
 
 /** Lay down the tree, the seeds, config.json and the entry file. Returns what it wrote. */

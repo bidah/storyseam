@@ -19,6 +19,7 @@ const portableStages = (dir) => `A \`/command\` above is a name for a stage, not
 | \`/shotlist\` | \`${dir}/shotlist/SKILL.md\` |
 | \`/cast\` | \`${dir}/asset-check/SKILL.md\` |
 | \`/render\` | \`${dir}/render-clips/SKILL.md\` |
+| \`/camera\` | \`${dir}/camera/SKILL.md\` (prompt presets: camera, audio) |
 | \`/edit\` | \`${dir}/edit/SKILL.md\` |
 | \`/assemble\` | \`${dir}/assemble/SKILL.md\` (what \`/edit\` runs when \`editor.id\` is \`none\`) |
 

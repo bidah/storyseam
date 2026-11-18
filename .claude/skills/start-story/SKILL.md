@@ -58,7 +58,14 @@ here that spends money.
    when `config.json` already has an `editor` other than the scaffold's `none` default.
    Write it to `config.json` `editor` (`docs/spec.md` §8).
 
-**Do not ask a ninth question.** Arc structure, character names, act breaks and
+9. **Camera and sound** — the prompt presets (`docs/spec.md` §14). Load the `camera`
+   skill: it opens the presets page (`npx storyseam preset page --open`), you recommend two
+   or three camera looks, and the pick is installed with `npx storyseam preset add
+   camera/<id>`. In the same question, say the film is **silent by default** (the `audio:
+   silent` preset: picture only, sound added in the edit) and offer `dialogue-foley` if the
+   premise has people talking. Skip what is already in `config.json` `presets`.
+
+**Do not ask a tenth question.** Arc structure, character names, act breaks and
 shot style are `/write-script`'s business, and asking about them now is asking the
 author to design a film before they have a premise. If they volunteer any of it,
 write it into `storyseam.md` under `## Notes` and move on.

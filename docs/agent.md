@@ -98,6 +98,24 @@ as its beats. Only a beat longer than the model's maximum splits across blocks, 
 `beat_part`. Every block records its `beats` (`docs/spec.md` §12), and `check` fails a block
 that cuts a beat in half.
 
+## Presets: camera and sound
+
+Every video prompt is the block's own prompt plus the story's **prompt presets**
+(`docs/spec.md` §14): a house look that opens every prompt (`look`, `position: "before"`), the
+camera it is shot on and what its audio carries. A new story is
+**silent** (`audio: silent`, `video.generate_audio: false`) and has no camera yet. Ask for the
+camera with `/camera` (it opens `npx storyseam preset page --open`), and offer
+`audio/dialogue-foley` if people talk. A preset someone shares is a URL: read it, say what it
+adds to every prompt, then `npx storyseam preset add <url>`.
+
+## Before each block — the shot preview
+
+`shot_preview.enabled` is `true` by default. Before you send a block, run
+`npx storyseam preview <block> --open`. It writes the HTML previewer
+(`shotlist/previews/<block>.html`): the exact prompt, the references in order, the model,
+the settings and the cost. Wait for the author's yes. Never send a block the preview calls
+not ready.
+
 ## After the shot list — the reference pass
 
 `/shotlist` ends with `npx -y https://storyseam.app/spec/storyseam.tgz assets`, which writes

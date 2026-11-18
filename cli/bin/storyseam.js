@@ -13,6 +13,8 @@ import { REG, IS_LOCAL, fetchJson, install, loadConfig, itemsForConfig } from ".
 import { checkStory } from "../src/check.js";
 import { runRecommend } from "../src/recommend.js";
 import { runAssets } from "../src/assets.js";
+import { runPreview } from "../src/shot-preview.js";
+import { runPresetAdd, runPresetList, runPresetPage } from "../src/presets.js";
 import { KNOWN_SERVERS, defaultServers, printInstall } from "../src/mcp.js";
 import { checkProviders } from "../src/providers.js";
 import { auditAssets } from "../src/audit.js";
@@ -232,6 +234,48 @@ program
   .argument("[folder]", "story folder")
   .option("--json", "print the sheet as JSON")
   .action((folder, opts) => process.exit(runAssets(storyRoot(folder), opts) ? 0 : 1));
+
+program
+  .command("preview")
+  .description("write the HTML previewer for a block before it is sent: prompt, references, model, cost")
+  .argument("[block]", "block id or number, or \"all\"", "all")
+  .argument("[folder]", "story folder")
+  .option("--open", "open the page in the browser")
+  .option("--force", "write it even when config.json shot_preview.enabled is false")
+  .action((block, folder, opts) => process.exit(runPreview(storyRoot(folder), block, opts) ? 0 : 1));
+
+const preset = program.command("preset").description("prompt presets: shareable pre-prompts (camera, audio, ...) every video prompt carries");
+preset
+  .command("list")
+  .description("the preset catalogue, by section")
+  .argument("[section]", "only one section, e.g. camera")
+  .option("--json", "print it as JSON")
+  .action((section, opts) => process.exit(runPresetList(section, opts) ? 0 : 1));
+preset
+  .command("add")
+  .description("install a preset into config.json presets.<section>: <section>/<id>, a URL, or a .json file")
+  .argument("<preset>", "e.g. camera/s16-handheld or https://storyseam.app/spec/presets/camera/s16-handheld.json")
+  .argument("[folder]", "story folder")
+  .action(async (spec, folder) => process.exit((await runPresetAdd(storyRoot(folder), spec)) ? 0 : 1));
+preset
+  .command("page")
+  .description("write shotlist/previews/presets.html: every preset, and the ones in use")
+  .argument("[section]", "only one section")
+  .argument("[folder]", "story folder")
+  .option("--open", "open the page in the browser")
+  .action((section, folder, opts) => process.exit(runPresetPage(storyRoot(folder), section, opts) ? 0 : 1));
+
+program
+  .command("camera")
+  .description("the camera presets page (preset page camera); --set <id> installs one")
+  .argument("[folder]", "story folder")
+  .option("--set <id>", "install camera/<id>")
+  .option("--open", "open the page in the browser")
+  .action(async (folder, opts) => {
+    const root = storyRoot(folder);
+    if (opts.set) await runPresetAdd(root, `camera/${opts.set}`);
+    process.exit(runPresetPage(root, "camera", opts) ? 0 : 1);
+  });
 
 program
   .command("recommend")

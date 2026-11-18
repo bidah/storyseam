@@ -180,6 +180,9 @@ wrong character speaks, and nothing errors — you find out by watching the clip
 | `npx storyseam add <model\|skill>` | install one more skill — an alternate director, another provider |
 | `npx storyseam update` | reinstall what `config.json` names, from the registry |
 | `npx storyseam assets` | write `shotlist/assets.json`: every sheet and plate needed, and whether each is made from your references or generated |
+| `npx storyseam preview <block>` | the HTML previewer for a block before it is sent: the exact prompt, references in order, model, settings, cost (`--open`) |
+| `npx storyseam preset list` / `add <section/id or url>` / `page` | prompt presets (look, camera, audio): shareable pre-prompts every video prompt carries; see [storyseam.app/presets](https://storyseam.app/presets) |
+| `npx storyseam camera` | the camera presets page; `--set <id>` installs one |
 | `npx storyseam recommend` | the video model each block should use, from its length and reference count |
 | `npx storyseam check` | validate the machine-read files against `schema/` |
 | `npx storyseam audit` | every reference the shot list cites, vs. what is on disk and uploaded |
@@ -354,3 +357,13 @@ behind.
 Storyseam orchestrates paid third-party generation APIs. It shows you the price before it
 spends and never spends without being asked, but the bill is yours. It is not an official
 product of Anthropic, ByteDance, Higgsfield, Atlas Cloud or fal.ai.
+
+## Browse a story
+
+[storyseam-preview](https://github.com/bidah/storyseam-preview) opens a story folder as a
+desktop. It has explorer windows, an editable markdown viewer, a visual `config.json`
+viewer with a raw `.json` toggle, and the HTML previewer for shot previews:
+
+```bash
+npx -y github:bidah/storyseam-preview ./my-film
+```

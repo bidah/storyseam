@@ -38,8 +38,9 @@ film gets rendered against a role the model ignores.
 
 1. **Video is rendered at 480p, on the block's model. Always 480p.** If someone asks for higher, quote the
    multiplier from the adapter and leave it at 480p.
-2. **Every video prompt ends with an audio line that says no music.** The clip should come
-   back with dialogue, room tone and Foley — and nothing else.
+2. **Every video prompt carries an audio line that says no music.** The `audio` preset is
+   that line (`silent` by default: no sound at all; `dialogue-foley`: lines, room tone and
+   Foley). With no `audio` preset installed, end the prompt with "No music." yourself.
 3. **One clip at a time, chained.** Never a batch, never two blocks in flight. Block N+1
    needs a frame that does not exist until block N has finished.
 4. **Resume, never restart.** `.storyseam/state.json` records what is done. A re-run
@@ -66,12 +67,12 @@ A block is exactly these things, and nothing provider-specific:
 
 | Field | From |
 | --- | --- |
-| `prompt` | `block.prompt` + `"\n\n"` + `prompts/video_style_prompt.txt`. Never edited here. |
+| `prompt` | every installed preset in `config.json` `presets` with `position: "before"` (look first), then `block.prompt`, then every other preset's `prompt` (camera, then audio, then any other section, alphabetically), then `prompts/video_style_prompt.txt`, joined by blank lines. Exactly what the shot previewer shows. Never edited here. |
 | `references` | the block's ordered reference list — see below |
 | `duration` | `block.dur` (4–30) |
 | `resolution` | `config.video.resolution` — `480p` |
 | `aspect_ratio` | `config.aspect_ratio` |
-| `generate_audio` | `true` |
+| `generate_audio` | `config.video.generate_audio` (`false` on a silent story: the `audio` preset sets it) |
 
 **The reference list is ordered, and the order is the director's.** The director says how
 references are numbered in the prompt; the shot list records that order in the block's
@@ -85,6 +86,20 @@ director's order from `characters`, `location`, `props` and `voices`, anchor fir
 
 On a chained block the first reference is `renders/frames/block_<N-1>_last.jpg`, and it
 must already be registered with the provider (Step 4 of the previous block).
+
+## Step 1b — the shot preview (on by default)
+
+Unless `config.json` has `"shot_preview": { "enabled": false }`, run
+`npx storyseam preview <block_id> --open` before submitting. It writes
+`shotlist/previews/<block_id>.html` (the HTML previewer, `docs/spec.md` §13): the full
+prompt exactly as assembled above, every reference in the order it will be passed, the
+model, duration, resolution, aspect, camera, beats and cost. Show it, say the block id and
+the cost in one line, and **wait for the author's yes**. A change they ask for goes back
+into the shot list (or the camera), the preview is rebuilt, and you ask again. If the
+command reports `NOT READY`, a reference is missing: do not submit.
+
+With previews off, submit without stopping, as before. The author can turn them on or off
+at any point ("stop showing me previews"): set `shot_preview.enabled` and say so.
 
 ## Step 2 — submit through the provider adapter
 

@@ -1,0 +1,21 @@
+{
+  "section": "camera",
+  "id": "anamorphic-epic",
+  "name": "Anamorphic widescreen",
+  "description": "Best for epic, sci-fi, westerns, big landscapes.",
+  "prompt": "Shot on anamorphic 40mm lenses: oval bokeh, horizontal blue lens flares on practicals, slight edge falloff, wide compositions with depth, slow crane and push-in moves.",
+  "fields": {
+    "body": "digital cinema camera, anamorphic",
+    "lens": "40mm anamorphic, 2x squeeze",
+    "movement": "slow crane and wide push-ins"
+  },
+  "swatch": {
+    "palette": [
+      "#0e1a2b",
+      "#1f4e79",
+      "#d98e3a",
+      "#f5d7a1"
+    ],
+    "grain": 0.15
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "section": "camera",
+  "id": "phone-vertical",
+  "name": "Phone camera",
+  "description": "Best for vertical shorts, UGC, found footage.",
+  "prompt": "Shot on a smartphone main camera: deep focus, crisp digital sharpness, punchy HDR colour, handheld walking and selfie framing, slight rolling-shutter wobble on fast moves.",
+  "fields": {
+    "body": "smartphone, main camera",
+    "lens": "26mm-equivalent wide",
+    "movement": "handheld selfie and walking shots"
+  },
+  "swatch": {
+    "palette": [
+      "#1b2430",
+      "#3f7cac",
+      "#f2a65a",
+      "#f7f7f2"
+    ],
+    "grain": 0
+  }
+}

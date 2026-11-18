@@ -115,10 +115,49 @@ def check_file(root, rel, schema_name, required):
     return True
 
 
+PRESET_SETTINGS = {"video.generate_audio"}
+
+
+def preset_problems(config):
+    """config.json presets (docs/spec.md section 14). Mirrors cli/src/presets.js presetProblems."""
+    p = config.get("presets")
+    if p is None:
+        return []
+    if not isinstance(p, dict):
+        return ["config.json presets must be an object keyed by section"]
+    out = []
+    for section, v in p.items():
+        if not isinstance(v, dict):
+            out.append(f"config.json presets.{section} must be an object")
+            continue
+        if v.get("section") and v["section"] != section:
+            out.append(f'config.json presets.{section} holds a "{v["section"]}" preset')
+        if not v.get("id"):
+            out.append(f"config.json presets.{section} has no id")
+        if not isinstance(v.get("prompt"), str) or not v.get("prompt"):
+            out.append(f"config.json presets.{section} has no prompt line, so no block will carry it")
+        if v.get("position") is not None and v.get("position") not in ("before", "after"):
+            out.append(f'config.json presets.{section} has position "{v.get("position")}"; use before or after')
+        for k, val in (v.get("settings") or {}).items():
+            if k not in PRESET_SETTINGS:
+                out.append(f'config.json presets.{section} sets "{k}", which a preset may not change')
+            elif k == "video.generate_audio" and (config.get("video") or {}).get("generate_audio") != val:
+                js = lambda x: "true" if x is True else "false" if x is False else "undefined" if x is None else x
+                out.append(f"config.json presets.{section} ({v.get('id')}) sets video.generate_audio to {js(val)} but video.generate_audio is {js((config.get('video') or {}).get('generate_audio'))}")
+    return out
+
+
 def cross_checks(root):
     """What the schemas cannot say: the files the JSON points at must exist."""
     ok = True
     config = load_json(root / "config.json") or {}
+    for p in preset_problems(config):
+        print(f"BROKEN   {p}")
+        ok = False
+    sp = config.get("shot_preview")
+    if sp is not None and not isinstance((sp or {}).get("enabled") if isinstance(sp, dict) else None, bool):
+        print('BROKEN   config.json shot_preview must be { "enabled": true | false }')
+        ok = False
     # mcp_servers: what the story needs connected, and how to install it (docs/spec.md section 10).
     # The same rules as cli/src/mcp.js mcpProblems.
     servers = config.get("mcp_servers")

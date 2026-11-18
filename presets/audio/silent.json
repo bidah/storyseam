@@ -1,0 +1,9 @@
+{
+  "section": "audio",
+  "id": "silent",
+  "name": "Silent picture",
+  "description": "The default. The model renders picture only; dialogue, effects and the score are added in the edit. Voices are not cast.",
+  "prompt": "Audio: none. Silent picture: no dialogue, no sound effects, no room tone, no music.",
+  "settings": { "video.generate_audio": false },
+  "swatch": { "palette": ["#1f1f1f", "#3a3a3a", "#6a6a6a", "#a8a8a8"], "grain": 0 }
+}

@@ -406,6 +406,93 @@ split, a beat no block covers, a block citing a beat the outline does not have, 
 where only some blocks say which beats they cover. Shot lists written before this section, with
 no `beats` at all, are still valid.
 
+## 13. The shot preview
+
+Before a block is sent, the author sees exactly what will be sent. `npx storyseam preview
+<block>` writes `shotlist/previews/<block>.html`, the **HTML previewer** for that shot. It is
+one self-contained page holding:
+
+- the full prompt as `/render` assembles it: the presets that open every prompt, the block's
+  prompt, the other preset lines, the style prompt;
+- every reference image, voice and video, in the order it will be passed, numbered as the
+  prompt numbers them;
+- the model, duration, resolution, aspect ratio, audio, the installed presets, the beats it
+  lands on, whether it opens on the previous block's last frame, and the estimated cost;
+- the timed shots and the final frame.
+
+A reference that does not exist yet makes the page say **not ready**, and the command exits
+non-zero. `/render` does not submit that block.
+
+It is **on by default**. `config.json` `"shot_preview": { "enabled": true }` makes `/render`
+show each block's page and wait for the author's yes. A change the author asks for goes into
+the shot list, and the page is rebuilt. `false` turns the stop off, and `/render` submits
+straight away. The page links its media by relative path, so it works opened from the
+folder, inside storyseam-preview (§15), or zipped and sent.
+
+## 14. Prompt presets
+
+A block's prompt says what happens in that shot. A **preset** says how every shot is made.
+Each preset is one JSON file (`schema/preset.schema.json`) for one **section**, with its own
+URL, and one preset per section is in use:
+
+| Section | What it is | Default |
+| --- | --- | --- |
+| `look` | the house style every shot opens with: format, light, colour, skin, acting, physics, continuity. Has `position: "before"`. | none |
+| `camera` | the look: body, lens, format and movement, as one prompt line. A video model has no camera, only a sentence about one. | none; asked at `/start-story` |
+| `audio` | what the clip's soundtrack carries. Sets `video.generate_audio`. Never music. | `silent`: picture only, sound added in the edit, no voices cast |
+
+Any other section name a shared preset uses (`lighting`, ...) works the same way. Its line is
+added after the known sections, alphabetically.
+
+A preset's `position` says which side of the block's prompt it goes on: `"before"` opens
+every video prompt, ahead of the block's own text (a look preset, which sets the rules a shot
+is made under before the shot is described); `"after"`, the default, follows it.
+
+- **Installed** with `npx storyseam preset add <section>/<id>` from the catalogue, `add
+  <url>` for one someone shared, or `add <file>.json` for the author's own. The preset is
+  written into `config.json` `presets.<section>`, along with its `source`.
+- **Applied** by `/render`. A video prompt is every installed preset with `position:
+  "before"`, then the block's `prompt`, then every other installed preset's `prompt` (camera,
+  audio, then the rest alphabetically), then
+  `prompts/video_style_prompt.txt`, joined by blank lines. A preset line is never pasted into
+  a block, so changing a preset changes every block not yet rendered.
+- **Words only.** A preset's `settings` may set `video.generate_audio` and nothing else. It
+  cannot raise the resolution, change the model or add music.
+- **Shared** by URL. Every catalogue preset is served at
+  `https://storyseam.app/spec/presets/<section>/<id>.json` and listed at
+  `https://storyseam.app/presets`, each with an install line. For an agent, the line is
+  `Read <url> and install it in this story with npx storyseam preset add <url>.`
+
+`npx storyseam preset page` writes `shotlist/previews/presets.html`, every preset by section
+with the ones in use marked. `/camera` opens it and installs the pick. `check` reports:
+
+- a preset in the wrong section;
+- a preset with no prompt;
+- a preset that sets anything but `video.generate_audio`;
+- an `audio` preset whose `generate_audio` disagrees with `video.generate_audio`.
+
+## 15. The folder previewer
+
+A story is a folder, so it can be browsed like one. **storyseam-preview**
+(`https://github.com/bidah/storyseam-preview`) is a small open-source Vite app that opens a
+story folder as a desktop:
+
+- the top-level files and folders as icons;
+- explorer windows with a sidebar tree, an icon grid and a preview pane;
+- a markdown viewer that renders front matter as a table and **edits** in place;
+- a **visual** viewer for config and JSON files, with a toggle to the raw `.json` that only
+  saves when it parses;
+- the HTML previewer for shot previews and the presets page;
+- images, video and audio.
+
+```bash
+npx -y github:bidah/storyseam-preview ./my-film     # or: git clone, npm install, npm run dev
+```
+
+It serves on `127.0.0.1` only. It reads and writes only inside the folder it was given, and
+writes only `.md`, `.json` and `.txt`. Fork it to change the look. Nothing in a story depends
+on it.
+
 ## Template
 
 A blank file to start from is in `docs/storyseam.template.md`. A complete, rendered example is

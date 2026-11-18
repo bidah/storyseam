@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://storyseam.app/spec/schema/preset.schema.json",
+  "title": "Storyseam prompt preset",
+  "description": "One shareable pre-prompt for one section (camera, audio, ...). docs/spec.md section 14. Installed with `npx storyseam preset add <url or section/id>` into config.json presets.<section>; /render appends its prompt after the block's own.",
+  "type": "object",
+  "required": ["section", "id", "name", "prompt"],
+  "properties": {
+    "section": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$", "description": "Where it installs: config.json presets.<section>. One preset per section is in use." },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "name": { "type": "string" },
+    "description": { "type": "string" },
+    "position": { "type": "string", "enum": ["before", "after"], "default": "after", "description": "Where the prompt goes: \"before\" opens every video prompt, ahead of the block's own text (a look every shot is made in); \"after\" follows it." },
+    "prompt": { "type": "string", "minLength": 1, "description": "The line every video prompt carries. Words only: a preset never raises the resolution or changes the model." },
+    "fields": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Human-readable parts of the setup (a camera's body, lens, movement)." },
+    "settings": { "type": "object", "description": "config.json values the preset sets, by dotted path. Only video.generate_audio is allowed.", "propertyNames": { "enum": ["video.generate_audio"] } },
+    "swatch": { "type": "object", "description": "How the presets page draws it when no sample still exists." },
+    "source": { "type": "string", "description": "Written on install: the URL or catalogue id it came from." }
+  }
+}
