@@ -25,11 +25,11 @@ _Avoid_: user, human, client
 
 **Premise**:
 The one- or two-sentence answer to "who wants what, and what is in the way", recorded in
-`STORY.md`. Everything downstream is derived from it.
+`storyseam.md`. Everything downstream is derived from it.
 _Avoid_: idea, pitch, prompt
 
 **Look**:
-The visual world in a phrase, recorded in `STORY.md` and expanded into the two style
+The visual world in a phrase, recorded in `storyseam.md` and expanded into the two style
 prompts. Free text, not an enum.
 _Avoid_: style (that is the prompt file), production type
 

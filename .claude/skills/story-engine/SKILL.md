@@ -11,14 +11,14 @@ description: >-
 # Storyseam — the engine
 
 ```
-idea ──▶ /start-story ──▶ /write-script ──▶ /shotlist ──▶ /cast ──▶ /render ──▶ /assemble
+idea ──▶ /start-story ──▶ /write-script ──▶ /shotlist ──▶ /cast ──▶ /render ──▶ /edit
 ```
 
 ## The five hard rules
 
 <!-- rules: generated from CLAUDE.md, do not edit here -->
 1. **Never generate music.** Every video prompt ends with the canonical audio line, and a render that comes back with music is a failed render.
-2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because resolution is the cost lever.
+2. **Video is rendered at 480p.** A story may not raise the video resolution, because resolution is the cost lever, whichever model renders it.
 3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft reference poisons every block that cites it.
 4. **The backend is configuration.** `config.json` names a provider per capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or `fal` (reached with an API key the author exports; Storyseam never handles the value).
 5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the first frame`.
@@ -30,13 +30,14 @@ The filesystem is the state. Detect the stage and name the next command:
 
 | On disk | Stage | Next |
 | --- | --- | --- |
-| no `STORY.md` | nothing yet | `/start-story` |
-| `STORY.md`, no `script/script.md` (or it holds only a title) | scaffolded | `/write-script` |
+| `config.json` `video.models` has several entries and no `video.model` | model unchosen | ask the author which, write `video.model` (`docs/spec.md` §7), then carry on |
+| no `storyseam.md` (a legacy `STORY.md` counts — offer `git mv STORY.md storyseam.md` + front matter, per `docs/spec.md` §5) | nothing yet | `/start-story` |
+| `storyseam.md`, no `script/script.md` (or it holds only a title) | scaffolded | `/write-script` |
 | a script, no `shotlist/shotlist.json` | written | `/shotlist` (once the author is happy) |
 | a shot list, missing assets | shot-listed | `/cast` |
 | assets complete, no clips | cast | `/render` |
 | some clips, not all | rendering | `/render` (it resumes) |
-| all clips, no `renders/final/` | rendered | `/assemble` |
+| all clips, no `renders/final/` | rendered | `/edit` (in the program `config.json` `editor` names; `none` = ffmpeg) |
 | a film | done | hand it over; music is the human's |
 
 ## Running the whole pipeline in one go
@@ -80,7 +81,7 @@ it — do not fall back on general knowledge. See the `model-directors` skill.
 ## The convention
 
 ```
-STORY.md  CLAUDE.md  config.json
+storyseam.md  CLAUDE.md  config.json
 script/{outline.md, script.md, drafts/, reviews.json}
 world/{characters.md, locations.md, props.md}
 prompts/{image_style_prompt.txt, video_style_prompt.txt}

@@ -37,7 +37,7 @@ story-architect; you return an ordered beat outline, not prose.
 - One line per beat: **Beat — function → what happens in this story.**
 - Scale to length: for a single scene, treat it as a mini three-act (setup / turn /
   resolution). Note compressions.
-- The tone set in STORY.md; no dialogue/prose. End with the implied scene count.
+- The tone set in storyseam.md; no dialogue/prose. End with the implied scene count.
 
 ## Return
 

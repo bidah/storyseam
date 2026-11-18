@@ -1,3 +1,14 @@
+---
+storyseam: 0.1
+title: Nothing To Do
+logline: >-
+  Milo comes over to play. For one long second, neither boy can think of a
+  single thing to do — and then Theo looks at the blanket.
+look: Pixar-style 3D animation, warm late-afternoon light, rounded stylised character design
+arc: kishotenketsu
+language: en
+audience: all ages
+---
 # Nothing To Do
 
 **Logline.** Milo comes over to play. For one long second, neither boy can think of a

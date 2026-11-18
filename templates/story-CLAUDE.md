@@ -4,20 +4,13 @@ This folder is a film. The filesystem is the state: there is no database and no 
 Any agent that opens this folder can pick up where the last one left off by reading
 the tree below.
 
-```
-STORYSEAM_HOME={{ENGINE}}
-```
-
-That is the Storyseam engine this story was scaffolded from. Its `bin/` holds the
-scripts named below and its `.claude/` holds the pipeline skills and the specialist
-room. Run every script as `$STORYSEAM_HOME/bin/<script> [this folder]`, or export
-`STORYSEAM_ROOT` to this folder first; each script takes the story root either way.
+{{RUNTIME}}
 
 ## Where everything is
 
 | Path | What |
 | --- | --- |
-| `STORY.md` | premise, logline, decisions, status |
+| `storyseam.md` | premise, logline, decisions, status |
 | `config.json` | **providers**, models, **resolution**, aspect ratio, block length |
 | `script/script.md` | **the script** — the current draft, the one true version |
 | `script/drafts/` | immutable snapshots (`script.v1.md`, …). Never edit these. |
@@ -47,7 +40,7 @@ A voice is cast once and reused by every block that character speaks in.
   (`mode: "fast"`, `duration: 10`, `resolution: "480p"`, ~15 credits): generate the
   character speaking a short paragraph in their own voice, then keep the audio.
 - `assets/audio/voices/blackframe/<slug>.mp4` — the same audio muxed against a black
-  video track by `$STORYSEAM_HOME/bin/voice-to-blackmp4.sh`. **This is the file that goes into a
+  video track by `{{VOICE_TOOL}}`. **This is the file that goes into a
   render**, passed as `video_references`. Not `audio_references`.
 - The prompt citing it must say: *"use the attached voice; ignore the black frames;
   output only the spoken dialogue — no music."*
@@ -58,7 +51,7 @@ A voice is cast once and reused by every block that character speaks in.
 
 <!-- rules: generated from CLAUDE.md, do not edit here -->
 1. **Never generate music.** Every video prompt ends with the canonical audio line, and a render that comes back with music is a failed render.
-2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because resolution is the cost lever.
+2. **Video is rendered at 480p.** A story may not raise the video resolution, because resolution is the cost lever, whichever model renders it.
 3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft reference poisons every block that cites it.
 4. **The backend is configuration.** `config.json` names a provider per capability: `higgsfield` (the default, reached through `mcp__claude_ai_higgsfield__*`), `atlas` or `fal` (reached with an API key the author exports; Storyseam never handles the value).
 5. **One block at a time, chained.** Blocks render sequentially, and the last frame of block N is the first `image_references` entry of block N+1, declared in the prompt as `@Image 1 is the first frame`.
@@ -67,12 +60,15 @@ A voice is cast once and reused by every block that character speaks in.
 ## What to run next
 
 ```
-/start-story ──▶ /write-script ──▶ /shotlist ──▶ /cast ──▶ /render ──▶ /assemble
+/start-story ──▶ /write-script ──▶ /shotlist ──▶ /cast ──▶ /render ──▶ /edit
 ```
+
+{{STAGES}}
 
 Read the tree to find the stage: a script but no shot list means `/shotlist`; a shot
 list with missing assets means `/cast`; clips but no `renders/final/` means
-`/assemble`. `/render` resumes from `.storyseam/state.json` — it never re-renders a
+`/edit`, which cuts the film in the program `config.json` `editor` names (or alone with
+ffmpeg when it is `none`). `/render` resumes from `.storyseam/state.json` — it never re-renders a
 block that is already on disk.
 
 ## Money

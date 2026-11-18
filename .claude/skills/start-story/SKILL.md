@@ -5,7 +5,7 @@ description: >-
   skill reads. Use for "/start-story", "start a new story", "set up a story here",
   "make me a film project", "scaffold a story". Interviews for the premise FIRST
   (one card, not a questionnaire), then writes the folder tree, config.json,
-  STORY.md, the two style prompt files and the story's own CLAUDE.md/AGENTS.md.
+  storyseam.md, the two style prompt files and the story's own CLAUDE.md/AGENTS.md.
   Never generates media. Never overwrites an existing story without saying so.
 ---
 
@@ -16,13 +16,13 @@ shape right once and nothing downstream needs configuration.
 
 ## Step 0 — is there already a story here?
 
-`ls -a` the target folder. If `STORY.md` **and** `config.json` already exist, this
+`ls -a` the target folder. If `storyseam.md` **and** `config.json` already exist, this
 folder is a story. Do NOT re-scaffold. Say what is already there (title, whether a
 script exists, how many shots, how many clips are rendered) and ask whether they
 want a *new* story in a subfolder instead. Re-running the scaffold over live work
 destroys drafts.
 
-If the folder has files but no `STORY.md`, scaffold into it — the convention is
+If the folder has files but no `storyseam.md`, scaffold into it — the convention is
 additive and never deletes.
 
 ## Step 1 — the interview (ONE round trip)
@@ -47,10 +47,21 @@ Tell them the cost implication in one line before they answer — "a 2-minute fi
 4 Seedance blocks, about 300 credits at 480p" — because runtime is the only choice
 here that spends money.
 
-**Do not ask a seventh question.** Arc structure, character names, act breaks and
+7. **Video model** — ONLY when `config.json` has `video.models` with more than one entry
+   and no `video.model` (`init --video a,b` leaves it unset on purpose). List each
+   candidate with one line from its director skill on what it is for. Write the answer to
+   `video.model` and the reason under `## Decisions` in `storyseam.md`. With one entry, or
+   `video.model` already set, do not ask; it is decided.
+
+8. **Editing** — where the film is finished: `none` (the agent cuts it with ffmpeg), DaVinci
+   Resolve, or another program, and whether that program's MCP server is installed. Skip it
+   when `config.json` already has an `editor` other than the scaffold's `none` default.
+   Write it to `config.json` `editor` (`docs/spec.md` §8).
+
+**Do not ask a ninth question.** Arc structure, character names, act breaks and
 shot style are `/write-script`'s business, and asking about them now is asking the
 author to design a film before they have a premise. If they volunteer any of it,
-write it into `STORY.md` under `## Notes` and move on.
+write it into `storyseam.md` under `## Notes` and move on.
 
 If the delegation or the user's message already answers all five, skip the interview
 entirely, state the five values you inferred in one line, and scaffold.
@@ -60,7 +71,7 @@ entirely, state the five values you inferred in one line, and scaffold.
 Create exactly this. Empty directories get a `.gitkeep` so the shape survives git.
 
 ```
-STORY.md                     the premise, the status, the decisions
+storyseam.md                 the premise, the status, the decisions
 CLAUDE.md                    how an agent works in THIS story (written from the template)
 AGENTS.md                    the same file under the cross-tool name (symlink, or a copy)
 config.json                  models, resolution, aspect, block length
@@ -118,7 +129,7 @@ preferences.
   "target_seconds": 120,
   "block_seconds": 30,
   "image": { "model": "gpt_image_2", "resolution": "2k", "quality": "high" },
-  "video": { "model": "seedance_2_5", "resolution": "480p", "generate_audio": true },
+  "video": { "models": ["seedance_2_5"], "model": "seedance_2_5", "resolution": "480p", "generate_audio": true },
   "audio": { "music": "never_generated", "voice_ref_format": "blackframe_mp4" },
   "continuity": { "chain_last_frame": true },
   "costs": { "block_30s": 75, "voice": 15, "still": 2.5 }
@@ -135,6 +146,14 @@ Images are `2k` because a still is cheap and it is the reference every frame is
 anchored to — a soft character sheet poisons every block that cites it. If an author
 asks for 720p or 1080p video, tell them the rule and what it would cost, and leave
 the config at 480p unless they overrule it in writing.
+
+## Step 3b — storyseam.md
+
+Write `storyseam.md` from `docs/storyseam.template.md`, following `docs/spec.md`: front
+matter with `storyseam`, `title`, `logline`, `look` (and `arc`, `language`, `audience`
+when known), then `## Premise` and `## Status`. Volunteered detail goes under `## Notes`.
+**Never copy a `config.json` value into it** — runtime, aspect, models and providers live
+in the config, and a copy is a value that will drift.
 
 ## Step 4 — the two style prompts
 
@@ -157,7 +176,7 @@ Right after `config.json` exists:
 
 ```bash
 bin/registry-add.py provider-<config.providers.video.id>   # the backend adapter
-bin/registry-add.py <config.video.model>                   # e.g. seedance_2_5
+bin/registry-add.py <each id in config.video.models>       # e.g. seedance_2_5
 bin/registry-add.py <config.image.model>                   # e.g. gpt_image_2
 bin/provider-check.py                                      # is access satisfied?
 ```

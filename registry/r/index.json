@@ -3,7 +3,7 @@
   "version": 2,
   "description": "Installable per-model skills and provider adapters for Storyseam. A model has one default skill and any number of alternates, asked for by name.",
   "base_url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r",
-  "updated": "2026-09-02",
+  "updated": "2026-11-18",
   "items": [
     {
       "name": "gpt-image-2-director",
@@ -56,8 +56,8 @@
         "seedance_2_5"
       ],
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-atlas.json",
-      "sha256": "a2a70cd278f1dfbc",
-      "updated": "2026-09-02"
+      "sha256": "121133d4dbf66b48",
+      "updated": "2026-11-18"
     },
     {
       "name": "provider-fal",
@@ -132,7 +132,12 @@
           "audio_references"
         ],
         "start_image_supported": true,
-        "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std."
+        "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std. Reference ceiling 9 images / 3 videos / 3 audio per request (the published multimodal limit; total reference video and audio each ≤15s).",
+        "reference_ceiling": {
+          "images": 9,
+          "videos": 3,
+          "audio": 3
+        }
       }
     },
     {

@@ -37,7 +37,7 @@ not prose.
 - One line per beat: **Beat — function → what happens here** (+ rough placement).
 - Scale honestly: for a short film, keep all 15 as *moments* even if some are a
   single line; note which are compressed. Make sure Opening and Final Image rhyme.
-- The tone set in STORY.md; no dialogue/prose. End with the implied scene count.
+- The tone set in storyseam.md; no dialogue/prose. End with the implied scene count.
 
 ## Return
 

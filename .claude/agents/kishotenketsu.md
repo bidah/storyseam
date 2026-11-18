@@ -39,7 +39,7 @@ quiet "oh — I see" rather than a victory.
   the fight in favor of a reframing turn — and offer the turn.
 - One line per act: **Act (Ki/Shō/Ten/Ketsu) — function → what happens in this
   story.** Spell out the **Ten** clearly; it's the whole point.
-- The tone set in STORY.md; no dialogue/prose. End with the implied scene count.
+- The tone set in storyseam.md; no dialogue/prose. End with the implied scene count.
 
 ## Return
 

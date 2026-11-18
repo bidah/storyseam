@@ -6,7 +6,7 @@ looking in known places. There is no database, no server, no app. The filesystem
 the state.
 
 ```
-idea ──▶ /start-story ──▶ /write-script ──▶ /shotlist ──▶ /cast ──▶ /render ──▶ /assemble ──▶ film.mp4
+idea ──▶ /start-story ──▶ /write-script ──▶ /shotlist ──▶ /cast ──▶ /render ──▶ /edit ──▶ film.mp4
               scaffold        script          30s blocks    assets    clips        concat
 ```
 
@@ -23,9 +23,10 @@ its **headline** and never changes wording.
    "subtle ambient bed". The human adds music after `/assemble`, into `assets/audio/music/`,
    the one folder Storyseam never writes to. The canonical audio line is:
    `Audio: diegetic only — dialogue, room tone and Foley. No music.`
-2. **Video is Seedance 2.5 at 480p.** A story may not raise the video resolution, because
-   resolution is the cost lever. `config.json` carries the model and resolution the engine
-   ships with (`seedance_2_5`, `480p`); a skill reads them from there rather than
+2. **Video is rendered at 480p.** A story may not raise the video resolution, because
+   resolution is the cost lever, whichever model renders it. `config.json` names the models
+   a story may use (`video.models`, `seedance_2_5` by default) and the one in use
+   (`video.model`, or a block's own `model`); a skill reads them from there rather than
    hardcoding, and if an author asks for 720p or 1080p, quote the multiplier and leave it.
 3. **Images are GPT Image 2 at 2k.** Every still — character sheet, location plate, prop
    plate — is `gpt_image_2` at `resolution: "2k"`, `quality: "high"`, because a soft
@@ -142,7 +143,8 @@ If you are not Claude Code, three things here are Claude-shaped and translate di
 | `/shotlist` | Signed script → ordered shots packed into ≤30s Seedance blocks. |
 | `/cast` | Audits every reference the shotlist needs; generates what is missing. |
 | `/render` | Renders blocks one at a time, chaining last frame → next start frame. |
-| `/assemble` | ffmpeg-concats the clips into `renders/final/`. |
+| `/edit` | Cuts the film in the program `config.json` `editor` names, or alone with ffmpeg when it is `none`. |
+| `/assemble` | ffmpeg-concats the clips into `renders/final/` (what `/edit` runs for `none`). |
 
 Each is a thin wrapper that loads the matching skill in `.claude/skills/`.
 
@@ -172,12 +174,56 @@ checked by `bin/story-check.py`. A skill that adds or renames a field updates th
 in the same change. `CONTEXT.md` is the glossary; `docs/adr/` records the decisions that
 look wrong until you know why.
 
+## The engine ships as an npm package
+
+`npx storyseam init <folder>` is how a story starts outside this checkout. It asks for a
+title and an **agent target**, then copies the pipeline skills, the specialist room, the
+schemas and the decision records into that folder and installs the registry skills
+`config.json` names. The folder is self-contained: there is no engine beside it and no
+`STORYSEAM_HOME` to resolve.
+
+The target decides only *where the same files land*, because that is all that differs
+between tools:
+
+| Target | Skills | Specialists | Entry file |
+| --- | --- | --- | --- |
+| `claude` | `.claude/skills/` | `.claude/agents/` | `CLAUDE.md` (+ `AGENTS.md` symlink), `.claude/commands/` |
+| `codex` | `.storyseam/skills/` | `.storyseam/agents/` | `AGENTS.md`, with a table mapping each `/command` to its skill file |
+| `cursor` | `.storyseam/skills/` | `.storyseam/agents/` | `AGENTS.md` + `.cursor/rules/storyseam.mdc` |
+
+`cli/` is the Node port of `bin/`: `storyseam check` = `story-check.py`, `storyseam
+providers` = `provider-check.py`, `storyseam add/update/list` = `registry-add.py`,
+`storyseam voice` and `storyseam last-frame` = the two shell wrappers. **The pair must
+agree** — they read the same `schema/` and the same `registry/r/`, and a change to one is
+a change to both. The Python scripts stay as the development tools this repo runs;
+end users get the Node ones.
+
+`templates/story-CLAUDE.md` carries one placeholder per thing that differs between a
+checkout and an `npx` folder (`{{TITLE}}`, `{{RUNTIME}}`, `{{STAGES}}`, `{{VOICE_TOOL}}`).
+`bin/storyseam-init.sh` and `cli/src/targets.js` each answer all of them. A raw
+`{{PLACEHOLDER}}` in a scaffolded story means one of the two fell behind.
+
+### Skills are written for this repo and rehomed on install
+
+A skill here says `bin/asset-audit.sh` and `.claude/agents/`, because that is what is true
+*here*. A scaffolded story has no `bin/` beside it, and on a non-Claude target the
+specialists are not under `.claude/`. `cli/src/rewrite.js` substitutes both on the way in —
+every `.md` and `.json` the install copies, registry items included — and
+`danglingRefs` then **fails the install** if any `bin/<script>` or stray `.claude/` path
+survived. A path the reader cannot open is worse than no path at all.
+
+So: **a skill that starts naming a new script must add that script's mapping to
+`CLI_MAP`**, and the script itself needs a `storyseam` subcommand to map to. The failing
+install is the reminder; do not silence it by loosening the check.
+
 ## Working on the engine itself
 
 - Skills live in `.claude/skills/<name>/SKILL.md`. Subagents live in `.claude/agents/`.
 - Before committing an engine change run `bin/rules-check.py` (the five rules: one owner,
   generated copies, no known contradiction anywhere) and `bin/story-check.py test` (the
-  schemas still accept a real story). Both are free and dependency-free.
+  schemas still accept a real story). Both are free and dependency-free. If the change
+  touches `schema/`, the template or the registry, run `node cli/bin/storyseam.js check test`
+  too — the Node port must give the same answer as the Python one.
 - Director and provider skills are edited in `registry/sources/<name>/`, then
   `bin/registry-build.py <BASE_URL>` and `bin/registry-add.py --all` to reinstall. Editing
   the installed copy under `.claude/skills/` is lost on the next install.

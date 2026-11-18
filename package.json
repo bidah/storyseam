@@ -1,0 +1,64 @@
+{
+  "name": "storyseam",
+  "version": "0.6.0",
+  "description": "A storytelling engine. An idea goes in; a finished film comes out.",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "storyseam": "cli/bin/storyseam.js"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "files": [
+    "cli/",
+    "registry/r/",
+    "schema/",
+    "templates/",
+    "docs/adr/",
+    "docs/spec.md",
+    "docs/storyseam.template.md",
+    "docs/agent.md",
+    "docs/specialist-contract.md",
+    "docs/seedance-2.5-research.md",
+    ".claude/commands/",
+    ".claude/agents/",
+    ".claude/skills/assemble/",
+    ".claude/skills/asset-check/",
+    ".claude/skills/edit/",
+    ".claude/skills/model-directors/",
+    ".claude/skills/providers/",
+    ".claude/skills/render-clips/",
+    ".claude/skills/script-agents/",
+    ".claude/skills/script-writing/",
+    ".claude/skills/shotlist/",
+    ".claude/skills/start-story/",
+    ".claude/skills/story-engine/",
+    "CLAUDE.md",
+    "README.md"
+  ],
+  "keywords": [
+    "film",
+    "video",
+    "ai",
+    "seedance",
+    "higgsfield",
+    "claude-code",
+    "agents",
+    "skills"
+  ],
+  "scripts": {
+    "test": "node cli/bin/storyseam.js --help >/dev/null && python3 bin/rules-check.py && python3 bin/story-check.py test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bidah/storyseam.git"
+  },
+  "homepage": "https://storyseam.app/spec",
+  "bugs": {
+    "url": "https://github.com/bidah/storyseam/issues"
+  }
+}

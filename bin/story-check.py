@@ -118,6 +118,61 @@ def check_file(root, rel, schema_name, required):
 def cross_checks(root):
     """What the schemas cannot say: the files the JSON points at must exist."""
     ok = True
+    config = load_json(root / "config.json") or {}
+    # mcp_servers: what the story needs connected, and how to install it (docs/spec.md section 10).
+    # The same rules as cli/src/mcp.js mcpProblems.
+    servers = config.get("mcp_servers")
+    if servers is not None:
+        if not isinstance(servers, dict):
+            print("BROKEN   config.json mcp_servers must be an object keyed by server name")
+            ok = False
+            servers = {}
+        for name, s in servers.items():
+            if not isinstance(s, dict):
+                print(f"BROKEN   config.json mcp_servers.{name} must be an object")
+                ok = False
+                continue
+            if not isinstance(s.get("used_for"), list) or not s["used_for"]:
+                print(f"BROKEN   config.json mcp_servers.{name} needs used_for (what the story uses it for)")
+                ok = False
+            if not isinstance(s.get("install"), dict) or not s["install"]:
+                print(f'BROKEN   config.json mcp_servers.{name} needs install (a command per agent, or "any")')
+                ok = False
+        for p in (config.get("providers") or {}).values():
+            if p.get("access") == "mcp" and p.get("id") not in servers:
+                print(f"BROKEN   config.json provider {p.get('id')} is reached by MCP but mcp_servers has no {p.get('id')} entry")
+                ok = False
+        ed = config.get("editor") or {}
+        if ed.get("mcp") and ed.get("id") != "none" and not any("editor" in (s.get("used_for") or []) for s in servers.values() if isinstance(s, dict)):
+            print(f'BROKEN   config.json editor {ed.get("id")} has mcp: true but no mcp_servers entry is used_for "editor"')
+            ok = False
+    # editor: where /edit cuts the film (docs/spec.md section 8). Absent = none.
+    if "editor" in config:
+        e = config["editor"]
+        if not isinstance(e, dict) or not isinstance(e.get("id"), str) or not e.get("id"):
+            print('BROKEN   config.json editor must be an object with an id ("none", "davinci_resolve", ...)')
+            ok = False
+        elif e["id"] != "none" and not (isinstance(e.get("mcp"), bool) and isinstance(e.get("computer_use"), bool)):
+            print(f"BROKEN   config.json editor {e['id']} needs mcp and computer_use set to true or false")
+            ok = False
+    # video.models is the candidate list, video.model the pick (docs/spec.md section 7).
+    video = config.get("video") or {}
+    candidates = video.get("models") if isinstance(video.get("models"), list) else []
+    # A block's own `model` (docs/spec.md section 9) must be a model the story offers.
+    allowed = candidates or [m for m in [video.get("model")] if m]
+    for b in (load_json(root / "shotlist/shotlist.json") or {}).get("blocks") or []:
+        if b.get("model") and b["model"] not in allowed:
+            print(f"BROKEN   shotlist.json {b.get('id')} renders on {b['model']}, which is not in config.json video.models ({', '.join(allowed)})")
+            ok = False
+    if not video.get("model") and len(candidates) > 1:
+        print(f"UNCHOSEN config.json lists video models {', '.join(candidates)} and video.model is unset — ask the author which to use")
+        ok = False
+    elif not video.get("model") and not candidates:
+        print("BROKEN   config.json names no video model (video.model or video.models)")
+        ok = False
+    elif video.get("model") and candidates and video["model"] not in candidates:
+        print(f"BROKEN   config.json video.model {video['model']} is not one of video.models ({', '.join(candidates)})")
+        ok = False
     state = load_json(root / ".storyseam/state.json") or {}
     for bid, b in (state.get("blocks") or {}).items():
         if b.get("status") == "done":
@@ -187,6 +242,55 @@ def reference_contract(sl):
     return ok
 
 
+def outline_beats(root):
+    p = root / "script/outline.md"
+    if not p.exists():
+        return []
+    return [int(m.group(1)) for line in p.read_text().split("\n")
+            for m in [re.match(r"^(?:\*\*|#{2,4}\s+)(\d+)\.\s", line)] if m]
+
+
+def beat_problems(root, blocks):
+    """Blocks land on beats (docs/spec.md section 12). Mirrors cli/src/beats.js."""
+    out = []
+    tagged = [b for b in blocks if isinstance(b.get("beats"), list)]
+    if not tagged:
+        return out
+    if len(tagged) != len(blocks):
+        return [f"shotlist.json: {len(blocks) - len(tagged)} block(s) have no beats; every block must say which beats it lands on"]
+    prev = None
+    for b in blocks:
+        beats = b["beats"]
+        for i in range(1, len(beats)):
+            if beats[i] != beats[i - 1] + 1:
+                out.append(f"{b['id']} covers beats {', '.join(map(str, beats))}, which are not consecutive")
+        if b.get("beat_part") and len(beats) != 1:
+            out.append(f"{b['id']} is part of a split beat but covers {len(beats)} beats")
+        if prev:
+            last, first = prev["beats"][-1], beats[0]
+            if first == last:
+                a, c = prev.get("beat_part"), b.get("beat_part")
+                if not a or not c or len(prev["beats"]) != 1 or c.get("n") != a.get("n", 0) + 1 or c.get("of") != a.get("of"):
+                    out.append(f"{prev['id']} ends in the middle of beat {last} and {b['id']} picks it up: end {prev['id']} on the beat, or mark both blocks beat_part")
+            elif first != last + 1:
+                gap = f"beat {last + 1} is" if first - 1 == last + 1 else f"beats {last + 1}-{first - 1} are"
+                out.append(f"{b['id']} starts on beat {first} but {prev['id']} ended on beat {last}: {gap} in no block")
+            elif prev.get("beat_part") and prev["beat_part"].get("n") != prev["beat_part"].get("of"):
+                pp = prev["beat_part"]
+                out.append(f"{prev['id']} is part {pp.get('n')} of {pp.get('of')} of beat {last}, but the next block moves on")
+        prev = b
+    outline = outline_beats(root)
+    if outline:
+        covered = {n for b in blocks for n in b["beats"]}
+        missing = [n for n in outline if n not in covered]
+        unknown = sorted(n for n in covered if n not in outline)
+        if missing:
+            out.append(f"outline beats {', '.join(map(str, missing))} land in no block")
+        if unknown:
+            out.append(f"blocks cite beats {', '.join(map(str, unknown))}, which script/outline.md does not have")
+    return out
+
+
 def main(argv):
     if argv and argv[0] in ("-h", "--help"):
         sys.exit(__doc__)
@@ -210,6 +314,20 @@ def main(argv):
     # media.json exists only on upload-then-confirm providers (Higgsfield); URL providers have none
     ok &= check_file(root, ".storyseam/media.json", "media.schema.json", required=False)
     ok &= check_file(root, "script/reviews.json", "reviews.schema.json", required=False)
+    ok &= check_file(root, "shotlist/assets.json", "assets.schema.json", required=False)
+    for p in beat_problems(root, (load_json(root / "shotlist/shotlist.json") or {}).get("blocks") or []):
+        print(f"BROKEN   {p}")
+        ok = False
+    # the same rules as cli/src/assets.js assetSheetProblems
+    sheet = load_json(root / "shotlist/assets.json") or {}
+    for a in sheet.get("assets") or []:
+        if a.get("source") == "refs" and not a.get("refs"):
+            print(f'BROKEN   assets.json {a.get("kind")} {a.get("slug")} is source "refs" with no reference images')
+            ok = False
+        for r in a.get("refs") or []:
+            if not (root / r).exists():
+                print(f"BROKEN   assets.json {a.get('kind')} {a.get('slug')} cites {r}, which is not on disk")
+                ok = False
     ok &= cross_checks(root)
     print("story is consistent" if ok else "story has problems — fix them before spending credits")
     sys.exit(0 if ok else 1)

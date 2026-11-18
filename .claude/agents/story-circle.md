@@ -37,7 +37,7 @@ architect can track the arc.
 - One line per step: **Step — function → what happens in this story.**
 - Keep the upper half (1–4) and lower half (5–8) balanced; the circle should feel
   symmetric. Note any steps you compress for a short piece.
-- The tone set in STORY.md; no dialogue/prose. End with the scene count implied.
+- The tone set in storyseam.md; no dialogue/prose. End with the scene count implied.
 
 ## Return
 

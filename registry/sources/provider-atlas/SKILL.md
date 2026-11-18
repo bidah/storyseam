@@ -26,7 +26,7 @@ If it is missing, tell the user how to set it and **stop**:
 > `export ATLAS_KEY=...` in the shell you run Storyseam from.
 
 **Never ask the user to paste the key into the chat, and never write it into `config.json`,
-`STORY.md`, or any file in the story folder.** `config.json` names the *variable*, not the
+`storyseam.md`, or any file in the story folder.** `config.json` names the *variable*, not the
 value. The key lives in the environment, and Storyseam only ever reads `os.environ`.
 
 ## The shape: one prediction API

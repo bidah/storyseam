@@ -143,7 +143,7 @@ Count what has to exist before anything can be generated:
 These are not "hard"; these are the beats that come back wrong however many
 times you re-roll. Flag every instance with its scene.
 
-**First read the LOOK — the "Look" row in `STORY.md` and
+**First read the LOOK — the "Look" row in `storyseam.md` and
 `prompts/image_style_prompt.txt` — because it moves every threshold below.** The
 look is free text, not a setting, and every look is generated; "photoreal" here
 names a *look*, not a film crew, so nothing in this list stops applying. What

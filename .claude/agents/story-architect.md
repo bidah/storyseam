@@ -58,7 +58,7 @@ beats mapped onto **this** story. Trust its structural expertise.
 
 Give the root a clean, ordered **beat outline** it can write from — for each beat:
 the beat's name, its dramatic function in one clause, and 1–2 lines of what
-happens here in this story. Keep it to the tone set in `STORY.md` and the voices
+happens here in this story. Keep it to the tone set in `storyseam.md` and the voices
 established in `world/characters.md`. Example shape:
 
 ```

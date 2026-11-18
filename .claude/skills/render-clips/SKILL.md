@@ -20,7 +20,8 @@ spent on a call that was going to fail.
 This skill owns the **order of operations** and the **state**. Two other skills own the
 detail, and you load both before the first paid call:
 
-- **The director for `config.video.model`** (`seedance_2_5` → `seedance-2-5-director`)
+- **The director for the block's model**: the block's own `model` when it has one, otherwise
+  `config.video.model` (`seedance_2_5` → `seedance-2-5-director`)
   owns the prompt contract: how the anchor frame is declared, how references are numbered
   in the prompt, the audio line, what never goes in a prompt. The shot list was written
   through it; you pass what it wrote and do not edit the prompt here.
@@ -35,7 +36,7 @@ film gets rendered against a role the model ignores.
 
 ## The invariants
 
-1. **Video is Seedance 2.5 at 480p. Always 480p.** If someone asks for higher, quote the
+1. **Video is rendered at 480p, on the block's model. Always 480p.** If someone asks for higher, quote the
    multiplier from the adapter and leave it at 480p.
 2. **Every video prompt ends with an audio line that says no music.** The clip should come
    back with dialogue, room tone and Foley — and nothing else.

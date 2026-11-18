@@ -7,7 +7,7 @@
 # With --title it also writes the story's CLAUDE.md from templates/story-CLAUDE.md
 # (and the AGENTS.md symlink), recording this engine's path as STORYSEAM_HOME so the
 # folder can be opened from anywhere and still find bin/.
-# STORY.md and config.json are the /start-story skill's job: they need the interview.
+# storyseam.md and config.json are the /start-story skill's job: they need the interview.
 set -euo pipefail
 
 ENGINE="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -64,8 +64,28 @@ if [ -n "$TITLE" ] && [ ! -e CLAUDE.md ]; then
   TEMPLATE="$ENGINE/templates/story-CLAUDE.md"
   [ -f "$TEMPLATE" ] || { echo "storyseam-init: template not found at $TEMPLATE" >&2; exit 1; }
   # literal substitution; the title may contain characters sed would treat as syntax
-  TITLE="$TITLE" ENGINE="$ENGINE" python3 -c 'import os,sys; sys.stdout.write(sys.stdin.read().replace("{{TITLE}}", os.environ["TITLE"]).replace("{{ENGINE}}", os.environ["ENGINE"]))' \
-    < "$TEMPLATE" > CLAUDE.md
+  # The template carries one placeholder per thing that differs between a git checkout and
+  # an `npx storyseam init` folder. This is the checkout's answer to each; cli/src/targets.js
+  # is the package's. Keep them in step — a raw {{PLACEHOLDER}} in a story is a broken scaffold.
+  TITLE="$TITLE" ENGINE="$ENGINE" python3 - "$TEMPLATE" > CLAUDE.md <<'PY'
+import os, sys
+runtime = """```
+STORYSEAM_HOME=%s
+```
+
+That is the Storyseam engine this story was scaffolded from. Its `bin/` holds the
+scripts named below and its `.claude/` holds the pipeline skills and the specialist
+room. Run every script as `$STORYSEAM_HOME/bin/<script> [this folder]`, or export
+`STORYSEAM_ROOT` to this folder first; each script takes the story root either way.""" % os.environ["ENGINE"]
+stages = ("Each `/command` is a thin wrapper that loads `$STORYSEAM_HOME/.claude/skills/<name>/SKILL.md`, "
+          "and the\nspecialist room is `$STORYSEAM_HOME/.claude/agents/` — 21 subagents, dispatched in stage order.")
+text = open(sys.argv[1]).read()
+for k, v in (("{{TITLE}}", os.environ["TITLE"]), ("{{ENGINE}}", os.environ["ENGINE"]),
+             ("{{RUNTIME}}", runtime), ("{{STAGES}}", stages),
+             ("{{VOICE_TOOL}}", "$STORYSEAM_HOME/bin/voice-to-blackmp4.sh")):
+    text = text.replace(k, v)
+sys.stdout.write(text)
+PY
   echo "wrote CLAUDE.md for \"$TITLE\""
 fi
 # AGENTS.md is the cross-tool name for the same instructions: a symlink where the

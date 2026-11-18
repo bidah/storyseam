@@ -3,20 +3,26 @@ node_modules/
 *.log
 __pycache__/
 
-# Story working state — the tree is convention, the media is not source
-test/**/renders/
-test/**/assets/images/
-test/**/assets/audio/
-test/**/assets/video_refs/
-test/**/.storyseam/media.json
+# Story working state — the tree is convention, the media is not source.
+# Unanchored so it holds for a story folder anywhere in the checkout, not just under test/.
+**/renders/
+**/assets/images/
+**/assets/audio/
+**/assets/video_refs/
+**/.storyseam/media.json
 
-# Director skills are installed from the registry (bin/registry-add.py --all).
-# The sources live in registry/sources/; these are build output.
-.claude/skills/seedance-2-5-director/
-.claude/skills/seedance-2-5-extension-director/
-.claude/skills/seedance-2-0-director/
-.claude/skills/seedance-voice-casting/
-.claude/skills/gpt-image-2-director/
-.claude/skills/provider-higgsfield/
-.claude/skills/provider-atlas/
-.claude/skills/provider-fal/
+# npm build output
+*.tgz
+site/dist/
+
+# Director and provider skills are installed from the registry (bin/registry-add.py --all,
+# or `storyseam init`). The sources live in registry/sources/; these are build output.
+# Unanchored: a story folder installs them too, under .claude/ or .storyseam/.
+**/skills/seedance-2-5-director/
+**/skills/seedance-2-5-extension-director/
+**/skills/seedance-2-0-director/
+**/skills/seedance-voice-casting/
+**/skills/gpt-image-2-director/
+**/skills/provider-higgsfield/
+**/skills/provider-atlas/
+**/skills/provider-fal/

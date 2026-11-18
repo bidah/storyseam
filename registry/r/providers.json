@@ -68,8 +68,8 @@
         }
       },
       "url": "https://pub-597aecbeb0f64dee8c8894e4da9a211c.r2.dev/r/providers/provider-atlas.json",
-      "sha256": "a2a70cd278f1dfbc",
-      "updated": "2026-09-02"
+      "sha256": "121133d4dbf66b48",
+      "updated": "2026-11-18"
     },
     "fal": {
       "name": "provider-fal",

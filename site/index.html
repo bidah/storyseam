@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Storyseam — an idea goes in, a story goes out</title>
+    <meta name="description" content="A storytelling engine. One command scaffolds a story folder; every later command finds what it needs by looking in known places. No database, no server, no app — the filesystem is the state." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Unica+One&family=Archivo:wght@400;500;600&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="sheet">
+      <header class="titleblock">
+        <div class="titleblock__id">
+          <span class="label">Drawing</span>
+          <strong>STORYSEAM</strong>
+        </div>
+        <dl class="titleblock__meta">
+          <div><dt class="label">Rev</dt><dd>0.1.0</dd></div>
+          <div><dt class="label">Scale</dt><dd>30s / block</dd></div>
+          <div><dt class="label">Sheet</dt><dd>1 of 1</dd></div>
+        </dl>
+      </header>
+
+      <main>
+        <section class="hero">
+          <p class="label accentless">A storytelling engine</p>
+          <h1 class="display">An idea goes in.<br />A story goes out.</h1>
+          <p class="lede">
+            Storyseam is <em>convention over configuration</em>. One command scaffolds a story
+            folder; every later command finds what it needs by looking in known places. There is
+            no database, no server, no app. <strong>The filesystem is the state.</strong>
+          </p>
+
+          <div class="cta">
+            <code id="install">npx storyseam init my-film</code>
+            <button class="btn" data-copy="npx storyseam init my-film">Copy</button>
+          </div>
+          <p class="note">Requires <span class="mono">node</span> 18.17+, <span class="mono">ffmpeg</span>, and a backend.</p>
+        </section>
+
+        <section class="plate" id="pipeline">
+          <h2 class="plate__title"><span class="label">Fig. 01</span> The pipeline</h2>
+          <ol class="pipeline">
+            <li><span class="pipeline__cmd">/start-story</span><span class="pipeline__what">scaffold</span></li>
+            <li><span class="pipeline__cmd">/write-script</span><span class="pipeline__what">script</span></li>
+            <li><span class="pipeline__cmd">/shotlist</span><span class="pipeline__what">30s blocks</span></li>
+            <li><span class="pipeline__cmd">/cast</span><span class="pipeline__what">assets</span></li>
+            <li><span class="pipeline__cmd">/render</span><span class="pipeline__what">clips</span></li>
+            <li><span class="pipeline__cmd">/assemble</span><span class="pipeline__what">concat</span></li>
+            <li class="pipeline__out"><span class="pipeline__cmd">film.mp4</span><span class="pipeline__what">done</span></li>
+          </ol>
+          <p class="caption">
+            Each command is a thin wrapper that loads one skill. Blocks render sequentially and
+            the last frame of block N becomes the first reference of block N+1 — the chain is
+            the continuity.
+          </p>
+        </section>
+
+        <section class="plate" id="convention">
+          <h2 class="plate__title"><span class="label">Fig. 02</span> Convention over configuration</h2>
+          <div class="split">
+            <pre class="tree" aria-label="the scaffolded story folder"><span class="c">STORY.md</span>                <span class="a">premise, status, decisions</span>
+<span class="c">config.json</span>             <span class="a">models, resolution, providers</span>
+script/
+  outline.md            <span class="a">approved before any pages</span>
+  script.md             <span class="a">the one true draft</span>
+  drafts/               <span class="a">immutable snapshots</span>
+  reviews.json          <span class="a">the specialist ledger</span>
+world/
+  characters.md         <span class="a">names here are canonical</span>
+  locations.md
+  props.md
+prompts/
+  image_style_prompt.txt  <span class="a">appended to every image</span>
+  video_style_prompt.txt  <span class="a">appended to every video</span>
+shotlist/
+  shotlist.json         <span class="a">machine-read seam</span>
+assets/
+  images/{characters,locations,props}/
+  audio/voices/blackframe/  <span class="a">what Seedance accepts</span>
+  audio/music/          <span class="a">human-filled. never written to</span>
+renders/
+  clips/  frames/  final/
+.storyseam/
+  state.json            <span class="a">progress, job ids, credits</span>
+  media.json            <span class="a">path to media_id cache</span></pre>
+            <div class="split__aside">
+              <p>
+                Nothing downstream needs configuring, because everything knows where to look.
+                <span class="mono">/cast</span> finds character sheets in
+                <span class="mono">assets/images/characters/</span> without being told.
+              </p>
+              <p>
+                The tree is also the program counter. A script but no shot list means
+                <span class="mono">/shotlist</span> is next. Clips but no
+                <span class="mono">final/</span> means <span class="mono">/assemble</span>.
+                <span class="mono">/render</span> resumes from
+                <span class="mono">state.json</span> and never re-renders a block already on
+                disk.
+              </p>
+              <p class="caption">
+                Absence is meaningful: <span class="mono">script.md</span> is deliberately not
+                seeded, because its absence is how the engine knows the script is unwritten.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="plate" id="cli">
+          <h2 class="plate__title"><span class="label">Fig. 03</span> The CLI</h2>
+          <table class="spec">
+            <tbody>
+              <tr><td class="mono">storyseam init [folder]</td><td>scaffold a story and install the skills for your agent</td></tr>
+              <tr><td class="mono">storyseam list</td><td>the registry catalogue, grouped by model</td></tr>
+              <tr><td class="mono">storyseam add &lt;model|skill&gt;</td><td>an alternate director, another provider adapter</td></tr>
+              <tr><td class="mono">storyseam update</td><td>reinstall what config.json names, from the registry</td></tr>
+              <tr><td class="mono">storyseam check</td><td>validate the machine-read files against schema/</td></tr>
+              <tr><td class="mono">storyseam audit</td><td>every reference the shot list cites, vs. disk and uploads</td></tr>
+              <tr><td class="mono">storyseam providers</td><td>is the backend reachable? never reads a key's value</td></tr>
+              <tr><td class="mono">storyseam voice &lt;slug&gt;</td><td>mux a cast voice into the black-frame mp4</td></tr>
+              <tr><td class="mono">storyseam last-frame &lt;clip&gt;</td><td>pull a block's final frame for chaining</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="plate" id="targets">
+          <h2 class="plate__title"><span class="label">Fig. 04</span> Write it with any agent</h2>
+          <p class="plate__intro">
+            <span class="mono">init</span> asks which agent you use. The target changes only
+            <em>where the same files land</em> — because that is all that differs between tools.
+            Paths inside every skill are rewritten to match on the way in.
+          </p>
+          <table class="spec spec--cols">
+            <thead>
+              <tr><th class="label">Target</th><th class="label">Skills</th><th class="label">Specialists</th><th class="label">Entry file</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Claude Code</td><td class="mono">.claude/skills/</td><td class="mono">.claude/agents/</td><td class="mono">CLAUDE.md + commands</td></tr>
+              <tr><td>Codex / generic</td><td class="mono">.storyseam/skills/</td><td class="mono">.storyseam/agents/</td><td class="mono">AGENTS.md</td></tr>
+              <tr><td>Cursor</td><td class="mono">.storyseam/skills/</td><td class="mono">.storyseam/agents/</td><td class="mono">AGENTS.md + .cursor/rules/</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="plate" id="registry">
+          <h2 class="plate__title"><span class="label">Fig. 05</span> The registry</h2>
+          <p class="plate__intro">
+            Knowing how to prompt one model is craft that changes when the model does, so it does
+            not live in the pipeline. Each model has one <strong>default director</strong> and any
+            number of alternates, asked for by name. A registry ships bundled with the package —
+            <span class="mono">init</span> works offline and is pinned to the release;
+            <span class="mono">update</span> pulls newer ones.
+          </p>
+
+          <div class="reg">
+            <article class="card">
+              <h3 class="card__id"><span class="label">Model</span> gpt_image_2</h3>
+              <ul class="skills">
+                <li><span class="tag">default</span> gpt-image-2-director</li>
+              </ul>
+              <p class="card__foot"><span class="label">Served by</span> higgsfield</p>
+            </article>
+
+            <article class="card">
+              <h3 class="card__id"><span class="label">Model</span> seedance_2_5</h3>
+              <ul class="skills">
+                <li><span class="tag">default</span> seedance-2-5-director</li>
+                <li><span class="tag tag--alt">alt</span> seedance-2-5-extension-director</li>
+                <li><span class="tag tag--alt">alt</span> seedance-voice-casting</li>
+              </ul>
+              <p class="card__foot"><span class="label">Served by</span> atlas · fal · higgsfield</p>
+            </article>
+
+            <article class="card">
+              <h3 class="card__id"><span class="label">Model</span> seedance_2_0</h3>
+              <ul class="skills">
+                <li><span class="tag">default</span> seedance-2-0-director</li>
+                <li><span class="tag tag--alt">alt</span> seedance-voice-casting</li>
+              </ul>
+              <p class="card__foot"><span class="label">Served by</span> atlas · fal · higgsfield</p>
+            </article>
+          </div>
+
+          <h3 class="sub"><span class="label">Providers</span> the backend is configuration</h3>
+          <table class="spec spec--cols">
+            <thead>
+              <tr><th class="label">Adapter</th><th class="label">Access</th><th class="label">Serves</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="mono">provider-higgsfield</td><td>MCP server</td><td class="mono">gpt_image_2, seedance_2_0, seedance_2_5</td></tr>
+              <tr><td class="mono">provider-atlas</td><td>API key</td><td class="mono">seedance_2_0/2_5, nano_banana_2, seed_audio_1_0</td></tr>
+              <tr><td class="mono">provider-fal</td><td>API key</td><td class="mono">seedance_2_0, seedance_2_5</td></tr>
+            </tbody>
+          </table>
+          <p class="caption">
+            Every item is hash-checked against the catalogue and may only write under the skills
+            directory. Storyseam never handles an API key's value — it reports whether the
+            variable is set, and its length, and nothing else.
+          </p>
+        </section>
+
+        <section class="plate" id="rules">
+          <h2 class="plate__title"><span class="label">Fig. 06</span> Load-bearing constraints</h2>
+          <p class="plate__intro">
+            Five invariants, not defaults. They are written in exactly one file and generated into
+            every copy; a build check fails if a copy drifts or any skill contradicts one.
+          </p>
+          <ol class="rules">
+            <li><strong>Never generate music.</strong> Every video prompt ends with the canonical audio line. A render that comes back with music is a failed render. The human scores it afterwards, in the one folder Storyseam never writes to.</li>
+            <li><strong>Video is rendered at 480p.</strong> A story may not raise the resolution, whichever model renders it, because resolution is the cost lever.</li>
+            <li><strong>Images are GPT Image 2 at 2k.</strong> A soft reference poisons every block that cites it.</li>
+            <li><strong>The backend is configuration.</strong> One provider named per capability, verified before anything is spent, never swapped silently.</li>
+            <li><strong>One block at a time, chained.</strong> Never fan out video generation in parallel; the chain is the continuity.</li>
+          </ol>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p class="label">End of drawing</p>
+        <p>
+          <span class="mono">npx storyseam init my-film</span> — then open your agent and run
+          <span class="mono">/start-story</span>.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

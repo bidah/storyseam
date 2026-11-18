@@ -10,6 +10,9 @@
       "movement": "KI — introduction",
       "location": "theo-living-room",
       "dur": 30,
+      "beats": [
+        1
+      ],
       "characters": [
         "Theo",
         "Milo"
@@ -52,6 +55,9 @@
       "movement": "SHŌ — development, the long second",
       "location": "theo-living-room",
       "dur": 30,
+      "beats": [
+        2
+      ],
       "characters": [
         "Theo",
         "Milo"
@@ -94,6 +100,9 @@
       "movement": "TEN — the turn, the idea",
       "location": "theo-living-room",
       "dur": 30,
+      "beats": [
+        3
+      ],
       "characters": [
         "Theo",
         "Milo"
@@ -133,6 +142,9 @@
       "movement": "KETSU — resolution, inside",
       "location": "fort-interior",
       "dur": 30,
+      "beats": [
+        4
+      ],
       "characters": [
         "Theo",
         "Milo"

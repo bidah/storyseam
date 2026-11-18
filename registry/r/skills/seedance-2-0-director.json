@@ -34,7 +34,12 @@
       "audio_references"
     ],
     "start_image_supported": true,
-    "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std."
+    "notes": "fast supports 480p/720p only and rejects audio_references; 1080p/4k require std. Reference ceiling 9 images / 3 videos / 3 audio per request (the published multimodal limit; total reference video and audio each ≤15s).",
+    "reference_ceiling": {
+      "images": 9,
+      "videos": 3,
+      "audio": 3
+    }
   },
   "version": 1,
   "sha256": "3d199430e3dff0aa",
